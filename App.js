@@ -1,112 +1,163 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {useState, useEffect} from 'react';
+import {View, Button, Switch, Image, ScrollView} from 'react-native';
+import {Card, Title} from 'react-native-paper';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App = () => {
+  const [count, setCount] = useState(50);
+  const [newcount, setNewCount] = useState(count);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [showwaterdata, setShowWaterdata] = useState([]);
+  const [showImage, setShowImage] = useState([]);
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  const [isLoaded, setIsLoaded] = useState(true);
+  const toggleSwitch = () => {
+    if (isEnabled) {
+      // alert("whie")
+      setNewCount(count);
+    } else {
+      setNewCount(count);
+      // alert("yellw")
+    }
+    // console.log(count)
+    setIsEnabled(previousState => !previousState);
+  };
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const addWater = () => {
+    setCount(count + 10);
+  };
+
+  const subWater = () => {
+    setCount(count - 10);
+  };
+
+  const getshowimage = async () => {
+    try {
+      const res = await fetch('http://107.20.37.104:8000/api/water-level', {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      // console.log(data)
+      setShowImage(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getshowimage();
+  }, [showImage]);
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={{flex: 1}}>
+      <View style={{borderWidth: 1, margin: 10}}>
+        <Card>
+          <Card.Content>
+            <Title style={{textAlign: 'center'}}>Water Tracker</Title>
+          </Card.Content>
+        </Card>
+      </View>
+      <View style={{margin: 10}}>
+        <Card style={{borderWidth: 1}}>
+          <Card.Content>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              {isEnabled ? <Title>switchon</Title> : <Title>switchoff</Title>}
+              <Switch
+                trackColor={{false: '#767577', true: '#81b0ff'}}
+                thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: 50,
+          margin: 10,
+        }}>
+        <View>
+          <Title>Cups</Title>
+        </View>
+        <View
+          style={{
+            height: 200,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderBottomWidth: 2,
+            width: 200,
+            justifyContent: 'flex-end',
+            marginLeft: 30,
+            position: 'relative',
+          }}>
+          <View
+            style={{
+              // marginTop: 80,
+              backgroundColor: 'skyblue',
+              height: isEnabled
+                ? count
+                : newcount && isEnabled
+                ? newcount
+                : count,
+              alignItems: 'center',
+            }}>
+            <Title
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {count + '%'}
+            </Title>
+          </View>
+        </View>
+        <View>
+          <Title>{count + '%'}</Title>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {isEnabled ? (
+          <Button title="+" onPress={() => addWater()} />
+        ) : (
+          <Button title="-" onPress={() => subWater()} />
+        )}
+      </View>
+      <ScrollView>
+        {showImage != undefined
+          ? showImage.map((ele, index) => {
+              return (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    marginTop: 10,
+                    backgroundColor: 'yellow',
+                  }}
+                  key={index}>
+                  <Image
+                    source={{
+                      uri: `${'http://107.20.37.104:8000/'}` + ele.image,
+                    }}
+                    style={{width: 300, height: 250}}
+                  />
+                </View>
+              );
+            })
+          : null}
+      </ScrollView>
     </View>
   );
 };
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
