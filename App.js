@@ -1,36 +1,30 @@
-import React, {useState, useEffect} from 'react';
-import {View, Button, Switch, Image, ScrollView} from 'react-native';
-import {Card, Title} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  Touchable,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+  Animated
+} from 'react-native';
+import {Title} from 'react-native-paper';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import Svg, { Path,Circle } from 'react-native-svg';
+// import Animated from 'react-native-reanimated';
+
+const SIZE = Dimensions.get('window').width;
+// const AnimatedPath = Animated.createAnimatedComponent(Path)
 
 const App = () => {
-  const [count, setCount] = useState(50);
-  const [newcount, setNewCount] = useState(count);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [showwaterdata, setShowWaterdata] = useState([]);
-  const [showImage, setShowImage] = useState([]);
+  const [waterimage, setwaterimage] = useState([]);
 
-  const [isLoaded, setIsLoaded] = useState(true);
-  const toggleSwitch = () => {
-    if (isEnabled) {
-      // alert("whie")
-      setNewCount(count);
-    } else {
-      setNewCount(count);
-      // alert("yellw")
-    }
-    // console.log(count)
-    setIsEnabled(previousState => !previousState);
-  };
-
-  const addWater = () => {
-    setCount(count + 10);
-  };
-
-  const subWater = () => {
-    setCount(count - 10);
-  };
-
-  const getshowimage = async () => {
+  const liveimage = async () => {
     try {
       const res = await fetch('http://107.20.37.104:8000/api/water-level', {
         method: 'get',
@@ -40,124 +34,193 @@ const App = () => {
       });
       const data = await res.json();
       // console.log(data)
-      setShowImage(data.data);
+      setwaterimage(data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getshowimage();
-  }, [showImage]);
+    liveimage();
+  }, [waterimage]);
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{borderWidth: 1, margin: 10}}>
-        <Card>
-          <Card.Content>
-            <Title style={{textAlign: 'center'}}>Water Tracker</Title>
-          </Card.Content>
-        </Card>
-      </View>
-      <View style={{margin: 10}}>
-        <Card style={{borderWidth: 1}}>
-          <Card.Content>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              {isEnabled ? <Title>switchon</Title> : <Title>switchoff</Title>}
-              <Switch
-                trackColor={{false: '#767577', true: '#81b0ff'}}
-                thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-              />
-            </View>
-          </Card.Content>
-        </Card>
-      </View>
+    <View style={{flex: 1, backgroundColor: '#FA9494'}}>
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          width: '100%',
+          height: 50,
+          backgroundColor: '#fff',
+          justifyContent: 'center',
           alignItems: 'center',
-          marginTop: 50,
-          margin: 10,
+          flexDirection: 'row',
         }}>
-        <View>
-          <Title>Cups</Title>
+        <Title style={{fontWeight:"bold"}}>Water info </Title>
+        <Ionicons
+          // name="md-water-outline"
+          color="skyblue"
+          name="ios-water"
+          size={35}
+        />
+      </View>
+      <ScrollView>
+        <View
+          style={{
+            margin: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems:"center",
+            width:"100%",
+            // backgroundColor:"green"
+          }}>
+          <Image
+            source={require('./img/1.png')}
+            style={{width: 200, height: 200}}
+          />
+          <View style={{width: '45%'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: "space-evenly",
+                alignItems: 'center',
+              }}>
+              <TextInput style={styles.input} />
+              <Text>user</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: "space-evenly",
+                alignItems: 'center',
+              }}>
+              <TextInput style={styles.input} />
+              <Text>user</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: "space-evenly",
+                alignItems: 'center',
+              }}>
+              <TextInput style={styles.input} />
+              <Text>user</Text>
+            </View>
+          </View>
+        </View>
+        <View style={{margin: 10}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <Title>Need Cleaning</Title>
+            <TextInput style={styles.input} value={'yes'} />
+            <View>
+              <Text>Yes</Text>
+              <Text>Not now</Text>
+            </View>
+          </View>
         </View>
         <View
           style={{
-            height: 200,
-            borderLeftWidth: 1,
-            borderRightWidth: 1,
-            borderBottomWidth: 2,
-            width: 200,
-            justifyContent: 'flex-end',
-            marginLeft: 30,
-            position: 'relative',
+            width: 150,
+            height: 150,
+            backgroundColor: 'skyblue',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignSelf: 'center',
+            borderRadius: 500,
+            marginTop: 10,
+            borderWidth:2
           }}>
-          <View
-            style={{
-              // marginTop: 80,
-              backgroundColor: 'skyblue',
-              height: isEnabled
-                ? count
-                : newcount && isEnabled
-                ? newcount
-                : count,
-              alignItems: 'center',
-            }}>
-            <Title
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {count + '%'}
-            </Title>
-          </View>
+          <Title style={{alignSelf: 'center'}}>{'100%'}</Title>
         </View>
-        <View>
-          <Title>{count + '%'}</Title>
+        <View style={{margin: 10}}>
+          {waterimage != undefined
+            ? waterimage.map((ele, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      // alignItems:"center"
+                    }}>
+                    <Image
+                      source={{
+                        uri: `${'http://107.20.37.104:8000/'}` + ele.image,
+                        
+                      }}
+                      alt='not found image'
+                      style={{width: 200, height: 200,borderRadius:10,backgroundColor:"red"}}
+                    />
+                    <Title>Ledstatus</Title>
+                    <TextInput
+                      style={styles.input1}
+                      value={ele.led_status.toString()}
+                      editable={false}
+                    />
+                  </View>
+                );
+              })
+            : null}
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        {isEnabled ? (
-          <Button title="+" onPress={() => addWater()} />
-        ) : (
-          <Button title="-" onPress={() => subWater()} />
-        )}
-      </View>
-      <ScrollView>
-        {showImage != undefined
-          ? showImage.map((ele, index) => {
-              return (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    marginTop: 10,
-                    backgroundColor: 'yellow',
-                  }}
-                  key={index}>
-                  <Image
-                    source={{
-                      uri: `${'http://107.20.37.104:8000/'}` + ele.image,
-                    }}
-                    style={{width: 300, height: 250}}
-                  />
-                </View>
-              );
-            })
-          : null}
       </ScrollView>
+      <View style={{backgroundColor: '#fff'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            margin: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              alert('setting');
+            }}>
+            <AntDesign size={25} name="setting" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              alert('history');
+            }}>
+            <Octicons size={20} name="history" />
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  input: {
+    height: 30,
+    width: 70,
+    margin: 5,
+    borderWidth: 1,
+    elevation: 10,
+    padding: -6,
+    paddingLeft: 10,
+    borderRadius: 5,
+    backgroundColor: '#F5EDDC',
+    shadowOpacity: 5,
+    shadowRadius: 10,
+  },
+  input1: {
+    height: 30,
+    width: 50,
+    margin: 5,
+    borderWidth: 1,
+    elevation: 10,
+    padding: -6,
+    paddingLeft: 10,
+    borderRadius: 5,
+    backgroundColor: '#F5EDDC',
+    shadowOpacity: 5,
+    shadowRadius: 10,
+    color: 'black',
+    fontSize: 20,
+  },
+});
