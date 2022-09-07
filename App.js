@@ -24,6 +24,7 @@ const SIZE = Dimensions.get('window').width;
 
 const App = () => {
   const [waterimage, setwaterimage] = useState([]);
+  // const [count, setcount] = useState(10)
 
   const liveimage = async () => {
     try {
@@ -71,31 +72,31 @@ const App = () => {
             marginBottom: 10,
             alignItems: 'center',
             // position: 'relative',
-            
-           
           }}>
           <Title>{'80%'}</Title>
           <Image
             source={require('./img/4.png')}
-            style={{width: 200, height: 240,zIndex:1}}
+            style={{width: 200, height: 240, zIndex: 1}}
           />
           <View
             style={{
               backgroundColor: 'skyblue',
               width: 190,
-              height: 181,
+              height: 180,
               position: 'absolute',
               // marginTop: 90,
-              marginVertical:90,
-              borderBottomRightRadius:36,
-              borderBottomLeftRadius:35,
-              overflow:'hidden',
-              zIndex:0
+              // marginVertical:90,
+              bottom: 28,
+              borderBottomRightRadius: 36,
+              borderBottomLeftRadius: 35,
+              // left:10,
+              zIndex: 0,
             }}></View>
           <Text style={{fontWeight: 'bold', marginBottom: 5}}>
             Live Water Level
           </Text>
         </View>
+        
         <View style={{marginBottom: 10}}>
           <View
             style={{
@@ -107,7 +108,20 @@ const App = () => {
             <Entypo name="camera" size={25} />
             <Text style={{marginLeft: 10}}>Cemera View</Text>
           </View>
-          {waterimage != undefined
+          <View style={{alignItems:"center"}}>
+        <View style={{
+            width: 200,
+            height: 200,
+            // backgroundColor: 'skyblue',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 100,
+            borderWidth:2
+          }}>
+            </View>
+          </View>
+          {/* {waterimage != undefined
             ? waterimage.map((ele, index) => {
                 return (
                   <View
@@ -116,30 +130,33 @@ const App = () => {
                       // flexDirection: 'row',
                       justifyContent: 'center',
                       alignItems: 'center',
+                      // backgroundColor:"red",
                     }}>
                     <Image
-                      source={{
-                        uri: `${'http://107.20.37.104:8000/'}` + ele.image,
-                      }}
+                      source={
+                        {
+                          uri:`${'http://107.20.37.104:8000/'}` +ele.image,
+                        }
+                      }
                       style={{
                         width: 200,
                         height: 200,
+                        borderRadius: 100,
                         elevation: 10,
                         backgroundColor: 'skyblue',
-                        borderRadius: 100,
-                        // tintColor:'white'
+                        zIndex: 1,
                       }}
                     />
                   </View>
                 );
               })
-            : null}
+            : null} */}
         </View>
         <View style={{margin: 10}}>
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-around',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}>
             <Text style={{fontSize: 16}}>Usages</Text>
@@ -150,12 +167,12 @@ const App = () => {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-around',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}>
             <Text style={{fontSize: 16}}>Leakage</Text>
             <TextInput style={styles.input} editable={false} value={'no'} />
-            <Text style={{fontSize: 16}}>Need Cleaning</Text>
+            <Text style={{fontSize: 16}}>NeedCleaning</Text>
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
@@ -170,7 +187,7 @@ const App = () => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              alert('setting');
+              // alert('setting');
             }}>
             <AntDesign size={30} name="setting" />
             <Text
@@ -221,7 +238,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: 70,
     margin: 5,
-    // borderWidth: 1,
+    borderWidth: 1,
     // elevation: 10,
     padding: -6,
     paddingLeft: 10,
@@ -251,3 +268,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
+
+
+// `${'http://107.20.37.104:8000/'}` +
