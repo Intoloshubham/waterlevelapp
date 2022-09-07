@@ -24,6 +24,7 @@ const SIZE = Dimensions.get('window').width;
 
 const App = () => {
   const [waterimage, setwaterimage] = useState([]);
+  // const [count, setcount] = useState(10)
 
   const liveimage = async () => {
     try {
@@ -59,7 +60,7 @@ const App = () => {
         <Title style={{fontWeight: 'bold'}}>Water info </Title>
         <Ionicons
           // name="md-water-outline"
-          // color="skyblue"
+          // color="#fff"
           name="ios-water"
           size={30}
         />
@@ -68,93 +69,133 @@ const App = () => {
       <ScrollView>
         <View
           style={{
-            marginBottom: 10,
+            marginTop: 10,
             alignItems: 'center',
             // position: 'relative',
-            
-           
           }}>
-          <Title>{'80%'}</Title>
+          <Title style={{position: 'absolute', top: 15, textAlign: 'center'}}>
+            {'80%'}
+          </Title>
           <Image
             source={require('./img/4.png')}
-            style={{width: 200, height: 240,zIndex:1}}
+            style={{width: 160, height: 190, zIndex: 1}}
           />
           <View
             style={{
               backgroundColor: 'skyblue',
-              width: 190,
-              height: 181,
+              width: 153,
+              height: 133,
               position: 'absolute',
-              // marginTop: 90,
-              marginVertical:90,
-              borderBottomRightRadius:36,
-              borderBottomLeftRadius:35,
-              overflow:'hidden',
-              zIndex:0
+              bottom: 27,
+              borderBottomRightRadius: 30,
+              borderBottomLeftRadius: 32,
+              // left:10,
+              zIndex: 0,
             }}></View>
-          <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+          <Text style={{fontWeight: 'bold', marginTop: 5}}>
             Live Water Level
           </Text>
         </View>
-        <View style={{marginBottom: 10}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 10,
-            }}>
-            <Entypo name="camera" size={25} />
-            <Text style={{marginLeft: 10}}>Cemera View</Text>
+
+        {waterimage.length > 0 ? (
+          waterimage.map((ele, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  alignItems: 'center',
+                  margin: 10,
+                }}>
+                <Image
+                  source={{uri: `${'http://107.20.37.104:8000/'}` + ele.image}}
+                  style={{
+                    width: 160,
+                    height: 160,
+                    borderRadius: 100,
+                    zIndex:1
+                  }}
+                />
+              </View>
+            );
+          })
+        ) : (
+          <View style={{alignItems: 'center',margin: 10,}}>
+            <View
+              style={{
+                width: 160,
+                height: 160,
+                backgroundColor: 'skyblue',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 100,
+                borderWidth: 2,
+
+              }}></View>
           </View>
-          {waterimage != undefined
-            ? waterimage.map((ele, index) => {
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      // flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={{
-                        uri: `${'http://107.20.37.104:8000/'}` + ele.image,
-                      }}
-                      style={{
-                        width: 200,
-                        height: 200,
-                        elevation: 10,
-                        backgroundColor: 'skyblue',
-                        borderRadius: 100,
-                        // tintColor:'white'
-                      }}
-                    />
-                  </View>
-                );
-              })
-            : null}
+        )}
+        <View style={{alignItems: 'center',position:"absolute"}}>
+            <View
+              style={{
+                width: 170,
+                height: 170,
+                // backgroundColor: 'skyblue',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 100,
+                borderWidth: 0.3,
+                top:229,
+                left:112,
+                right:10,
+                zIndex:0
+
+              }}></View>
+          </View>
+        <View
+          style={{
+            // flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 10,
+          }}>
+          <Entypo name="camera" size={25} style={{marginTop: 10}} />
+          <Text style={{marginLeft: 10}}>Live Cemera View</Text>
         </View>
         <View style={{margin: 10}}>
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-around',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}>
             <Text style={{fontSize: 16}}>Usages</Text>
             <TextInput style={styles.input} editable={false} value={'under'} />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
             <Text style={{fontSize: 16}}>Quality</Text>
             <TextInput style={styles.input} editable={false} value={'safe'} />
           </View>
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-around',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}>
             <Text style={{fontSize: 16}}>Leakage</Text>
             <TextInput style={styles.input} editable={false} value={'no'} />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
             <Text style={{fontSize: 16}}>Need Cleaning</Text>
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
@@ -165,40 +206,47 @@ const App = () => {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',
-            marginBottom: 10,
+            marginTop: 10,
             // backgroundColor:"skyblue"
           }}>
           <TouchableOpacity
             onPress={() => {
               alert('setting');
             }}>
-            <AntDesign size={30} name="setting" />
+            <AntDesign size={25} name="setting" />
             <Text
-              style={{fontSize: 16, textAlign: 'center', marginHorizontal: -6}}>
+              style={{fontSize: 16, textAlign: 'center', marginHorizontal: -8}}>
               Setting
             </Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              alert('refresh');
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              borderWidth: 1,
+              borderRadius: 50,
             }}>
-            <Ionicons size={30} name="refresh" />
-            <Text
-              style={{
-                fontSize: 16,
-                textAlign: 'center',
-                marginHorizontal: -10,
+            <TouchableOpacity
+              onPress={() => {
+                alert('refresh');
               }}>
-              Refresh
-            </Text>
-          </TouchableOpacity>
+              <Ionicons size={20} name="refresh" style={{left:20}} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  textAlign: 'center',
+                  // marginHorizontal: -,
+                }}>
+                Refresh
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             onPress={() => {
               alert('history');
             }}>
-            <Octicons size={30} name="history" />
+            <Octicons size={25} name="history" />
             <Text
               style={{
                 fontSize: 16,
@@ -219,9 +267,9 @@ export default App;
 const styles = StyleSheet.create({
   input: {
     height: 30,
-    width: 70,
+    width: 230,
     margin: 5,
-    // borderWidth: 1,
+    borderWidth: 0.2,
     // elevation: 10,
     padding: -6,
     paddingLeft: 10,
@@ -229,7 +277,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5EDDC',
     shadowOpacity: 5,
     shadowRadius: 10,
-
     color: 'black',
     fontSize: 15,
     marginLeft: 20,
@@ -238,7 +285,7 @@ const styles = StyleSheet.create({
     height: 25,
     width: 30,
     // margin: 5,
-    borderWidth: 1,
+    // borderWidth: 1,
     elevation: 10,
     padding: -6,
     paddingLeft: 10,
@@ -251,3 +298,5 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
+
+// `${'http://107.20.37.104:8000/'}` +
