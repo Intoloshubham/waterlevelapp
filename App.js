@@ -10,7 +10,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Water info"  component={AnimationWaterapp} />
+        <Stack.Screen name="Water info" component={AnimationWaterapp}  />
       </Stack.Navigator>
     </NavigationContainer>
   );
