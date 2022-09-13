@@ -54,7 +54,7 @@ const AnimationWaterapp = () => {
     }
   };
   useEffect(() => {
-    liveimage();
+    // liveimage();
   }, [waterimage, waterhight]);
 
  
@@ -127,7 +127,7 @@ const AnimationWaterapp = () => {
               // height: 0,
               position: 'absolute',
               left: 132,
-              bottom: 457,
+              bottom: 478,
               borderBottomRightRadius: 20,
               borderBottomLeftRadius: 22,
               zIndex: 0,
@@ -205,13 +205,13 @@ const AnimationWaterapp = () => {
               marginBottom: 10,
             }}>
             <Entypo name="camera" size={25}  />
-            <Text style={{color: 'black',marginBottom:10}}>Live Cemera View</Text>
+            <Text style={{color: 'black',}}>Live Cemera View</Text>
           </View>
           <View
             style={{
               flexDirection: 'row',
               // backgroundColor: 'red',
-              marginTop: 5,
+              // marginTop: 5,
             }}>
             <View
               style={{
@@ -226,6 +226,9 @@ const AnimationWaterapp = () => {
             </Text> */}
               <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
                 Usages{' : '}
+              </Text>
+              <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+                PH Value{' : '}
               </Text>
               <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
                 Quality{' : '}
@@ -250,6 +253,7 @@ const AnimationWaterapp = () => {
                 editable={false}
                 value={'under'}
               />
+              <TextInput style={styles.input} editable={false} value={'5.6'} />
               <TextInput style={styles.input} editable={false} value={'safe'} />
               <TextInput style={styles.input} editable={false} value={'no'} />
               <TextInput style={styles.input} editable={false} value={'no'} />
@@ -261,7 +265,7 @@ const AnimationWaterapp = () => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around',
-              marginTop: 10,
+              // marginTop: 10,
               // backgroundColor:"skyblue"
             }}>
             <TouchableOpacity
