@@ -1,20 +1,20 @@
 
 
-const getWaterdata = async () => {
+// const getWaterdata = async () => {
   
-  try {
-    const res = await fetch('http://192.168.1.99:8000/api/water-level', {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
+//   try {
+//     const res = await fetch('http://192.168.1.99:8000/api/water-level', {
+//       method: 'get',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     const data = await res.json();
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
   const getImage = async () => {
   
     try {
@@ -31,4 +31,4 @@ const getWaterdata = async () => {
     }
 };
 
-export {getWaterdata,getImage};
+export {getImage};
