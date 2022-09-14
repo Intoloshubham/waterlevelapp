@@ -54,7 +54,7 @@ const AnimationWaterapp = () => {
     }
   };
   useEffect(() => {
-    // liveimage();
+    liveimage();
   }, [waterimage, waterhight]);
 
  
@@ -260,7 +260,7 @@ const AnimationWaterapp = () => {
             </View>
           </View>
         </ScrollView>
-        <View>
+        {/* <View>
           <View
             style={{
               flexDirection: 'row',
@@ -317,7 +317,7 @@ const AnimationWaterapp = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
       {/* </View> */}
     </View>
   );
