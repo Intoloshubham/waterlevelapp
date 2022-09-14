@@ -14,8 +14,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { getImage } from '../Controller/Api/api';
 
 const SIZE = Dimensions.get('window').width;
 
@@ -25,22 +25,32 @@ const AnimationWaterapp = () => {
   const [waterhight, setWaterhight] = useState('');
  
   const liveimage = async () => {
-    try {
-      const res = await fetch('http://107.20.37.104:8000/api/water-level', {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await res.json();
-      // console.log(data)
+    // try {
+    //   const res = await fetch('http://107.20.37.104:8000/api/water-level', {
+    //     method: 'get',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   });
+    //   const data = await res.json();
+    //   // console.log(data)
+    //   setwaterimage(data.data);
+    //   data.data.map(e => {
+    //     // water_level = e.water_level;
+    //     setWaterhight(e.water_level);
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    const data = await getImage();
+    if (data.status === 200) {
+      // console.log(data);
       setwaterimage(data.data);
       data.data.map(e => {
-        // water_level = e.water_level;
-        setWaterhight(e.water_level);
+      setWaterhight(e.water_level);
       });
-    } catch (error) {
-      console.log(error);
+    } else {
+      console.log('data not found');
     }
   };
   useEffect(() => {
@@ -82,9 +92,9 @@ const AnimationWaterapp = () => {
 
             <View>
               <Image
-                source={require('./img/4.png')}
+                source={require('../img/4.png')}
                 style={{width: wp(35), height: hp(21), zIndex: 3}}
-                // style={{width: 20, height: 162, zIndex: 3}}
+                // style={{width: 132, height: 162, zIndex: 3}}
               />
             </View>
             {/* animation view  */}
@@ -103,7 +113,7 @@ const AnimationWaterapp = () => {
                   zIndex: 1,
                   backgroundColor: '#3490dc',
                 }}
-                source={require('./img/demo.json')}
+                source={require('../img/demo.json')}
                 autoPlay
                 loop
               /> :null}
@@ -117,13 +127,13 @@ const AnimationWaterapp = () => {
               // height: 0,
               position: 'absolute',
               left: 132,
-              bottom: 452,
+              bottom: 478,
               borderBottomRightRadius: 20,
               borderBottomLeftRadius: 22,
               zIndex: 0,
               overflow: 'hidden',
             }}></View>
-          <Text style={{marginTop: 5, color: 'black', textAlign: 'center'}}>
+          <Text style={{marginTop: 10, color: 'black', textAlign: 'center'}}>
             Live Water Level
           </Text>
 
@@ -134,7 +144,7 @@ const AnimationWaterapp = () => {
                   key={index}
                   style={{
                     alignItems: 'center',
-                    marginTop: 40,
+                    // marginTop: 40,
                   }}>
                   <Image
                     source={{
@@ -146,6 +156,7 @@ const AnimationWaterapp = () => {
                       // width: wp(24),
                       // height: 160,
                       borderRadius: 100,
+                       marginTop: 40,
                       zIndex: 1,
                       bottom:29
                     }}
@@ -179,8 +190,8 @@ const AnimationWaterapp = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 100,
-                borderWidth: 0.3,
-                top: 200,
+                borderWidth: 2,
+                top: 205,
                 left: 112,
                 right: 10,
                 zIndex: 0,
@@ -193,14 +204,14 @@ const AnimationWaterapp = () => {
               justifyContent: 'center',
               marginBottom: 10,
             }}>
-            <Entypo name="camera" size={25} style={{marginTop: 10}} />
-            <Text style={{color: 'black'}}>Live Cemera View</Text>
+            <Entypo name="camera" size={25}  />
+            <Text style={{color: 'black',}}>Live Cemera View</Text>
           </View>
           <View
             style={{
               flexDirection: 'row',
               // backgroundColor: 'red',
-              marginTop: 5,
+              // marginTop: 5,
             }}>
             <View
               style={{
@@ -215,6 +226,9 @@ const AnimationWaterapp = () => {
             </Text> */}
               <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
                 Usages{' : '}
+              </Text>
+              <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+                PH Value{' : '}
               </Text>
               <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
                 Quality{' : '}
@@ -239,18 +253,19 @@ const AnimationWaterapp = () => {
                 editable={false}
                 value={'under'}
               />
+              <TextInput style={styles.input} editable={false} value={'5.6'} />
               <TextInput style={styles.input} editable={false} value={'safe'} />
               <TextInput style={styles.input} editable={false} value={'no'} />
               <TextInput style={styles.input} editable={false} value={'no'} />
             </View>
           </View>
         </ScrollView>
-        <View>
+        {/* <View>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around',
-              marginTop: 10,
+              // marginTop: 10,
               // backgroundColor:"skyblue"
             }}>
             <TouchableOpacity
@@ -302,7 +317,7 @@ const AnimationWaterapp = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
       {/* </View> */}
     </View>
   );
