@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "653885344198",
+    "firebase_url": "https://waterlevelsensor-34ef2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "waterlevelsensor-34ef2",
+    "storage_bucket": "waterlevelsensor-34ef2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653885344198:android:81897c5f76a0beac780ac7",
+        "android_client_info": {
+          "package_name": "com.projectwater"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653885344198-o8loa9u0quoa7vt49c36t8rh4ljramsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAahV9Qh9oddMif9YhMm7Ib5hwhYk4GacY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653885344198-o8loa9u0quoa7vt49c36t8rh4ljramsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653885344198:android:7be807933d13f1d1780ac7",
+        "android_client_info": {
+          "package_name": "com.waterlevelapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653885344198-o8loa9u0quoa7vt49c36t8rh4ljramsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAahV9Qh9oddMif9YhMm7Ib5hwhYk4GacY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653885344198-o8loa9u0quoa7vt49c36t8rh4ljramsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
