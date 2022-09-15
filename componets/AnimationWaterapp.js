@@ -25,23 +25,6 @@ const AnimationWaterapp = () => {
   const [waterhight, setWaterhight] = useState('');
  
   const liveimage = async () => {
-    // try {
-    //   const res = await fetch('http://107.20.37.104:8000/api/water-level', {
-    //     method: 'get',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   });
-    //   const data = await res.json();
-    //   // console.log(data)
-    //   setwaterimage(data.data);
-    //   data.data.map(e => {
-    //     // water_level = e.water_level;
-    //     setWaterhight(e.water_level);
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
     const data = await getImage();
     if (data.status === 200) {
       // console.log(data);
@@ -58,10 +41,7 @@ const AnimationWaterapp = () => {
   }, [waterimage, waterhight]);
 
  
-  const pageRefresh = () => {
-    alert('app');
-  };
-
+ 
   return (
     <View style={{flex: 1}}>
       {/* <View
@@ -151,11 +131,12 @@ const AnimationWaterapp = () => {
                       uri: `${'http://107.20.37.104:8000/'}` + ele.image,
                     }}
                     style={{
-                      width: 160,
-                      height: 160,
-                      // width: wp(24),
+                      // width: 160,
                       // height: 160,
+                       width: wp(40),
+                       height:hp(21.2),
                       borderRadius: 100,
+                      borderWidth:2,
                        marginTop: 40,
                       zIndex: 1,
                       bottom:29
@@ -180,7 +161,7 @@ const AnimationWaterapp = () => {
                 }}></View>
             </View>
           )}
-          <View style={{alignItems: 'center', position: 'absolute'}}>
+          {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
                 width: 170,
@@ -196,7 +177,7 @@ const AnimationWaterapp = () => {
                 right: 10,
                 zIndex: 0,
               }}></View>
-          </View>
+          </View> */}
           <View
             style={{
               // flexDirection: 'row',
