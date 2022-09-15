@@ -1,9 +1,9 @@
 
 
-// const getWaterdata = async () => {
+// const getWaterImage = async () => {
   
 //   try {
-//     const res = await fetch('http://192.168.1.99:8000/api/water-level', {
+//     const res = await fetch('https://username:password@dynupdate.no-ip.com/nic/update?hostname=mytest.example.com&myip=192.0.2.25', {
 //       method: 'get',
 //       headers: {
 //         'Content-Type': 'application/json',
@@ -18,7 +18,8 @@
   const getImage = async () => {
   
     try {
-      const res = await fetch('http://107.20.37.104:8000/api/water-level', {
+      // const res = await fetch('http://107.20.37.104:8000/api/water-level', {
+      const res = await fetch('https://lambaarpit12@gmail.com:bomberman@dynupdate.no-ip.com/nic/update?hostname=mytest.example.com&myip=192.168.1.4', {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
@@ -31,4 +32,4 @@
     }
 };
 
-export {getImage};
+export {getImage,};
