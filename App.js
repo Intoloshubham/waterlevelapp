@@ -13,10 +13,10 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        // screenOptions={{
-        //   headerShown: false,
-        // }}
-        initialRouteName="Response">
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName="Tabs">
         <Stack.Screen name="Water info" component={AnimationWaterapp} />
         <Stack.Screen name="Setting" component={Settings} />
         <Stack.Screen name="History" component={History} />

@@ -14,94 +14,87 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
+import anyimage from '../img/4.png';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {getImage} from '../Controller/Api/api';
 import database from '@react-native-firebase/database';
-import { Title } from 'react-native-paper';
+import {Title} from 'react-native-paper';
 
-const SIZE = Dimensions.get('window').width;
+// const SIZE = Dimensions.get('window').width;
+const {height, width} = Dimensions.get('window');
 
 const AnimationWaterapp = () => {
   const [waterImage, setwaterImage] = useState([]);
   const [waterHight, setWaterHight] = useState('');
   const [level, setLevel] = useState('');
   const [status, setStatus] = useState('');
-  const [phvalue, setPhValue] = useState('')
+  const [phvalue, setPhValue] = useState('');
 
   const liveImage = async () => {
     const data = await getImage();
-      // console.log(data);
-      setwaterImage(data);
-      // data.map(e => {
-      //   setWaterHight(e.water_level);
-      // });
-    }
+    // console.log(data);
+    setwaterImage(data);
+    // data.map(e => {
+    //   setWaterHight(e.water_level);
+    // });
+  };
 
   useEffect(() => {
     liveImage();
     liveWaterData();
   }, []);
 
-
-  const liveWaterData = ()=>{
-  const LEVEL_ref = database().ref('/LEVEL');
-  const LED_STATUS = database().ref('/LED_STATUS')
-  const PH_VALUE = database().ref('/pH')
-  LEVEL_ref.on('value', snapshot => {
-    // console.log('LEVEL data: ', snapshot.val());
-    setLevel(snapshot.val())
-  });
-  LED_STATUS.on('value', snapshot => {
-    // console.log('STATUS : ', snapshot.val());
-    setStatus(snapshot.val());
-  });
-  PH_VALUE.on('value', snapshot => {
-    // console.log('phvalue: ', snapshot.val());
-    setPhValue(snapshot.val())
-  });
-  }
+  const liveWaterData = () => {
+    const LEVEL_ref = database().ref('/LEVEL');
+    const LED_STATUS = database().ref('/LED_STATUS');
+    const PH_VALUE = database().ref('/pH');
+    LEVEL_ref.on('value', snapshot => {
+      // console.log('LEVEL data: ', snapshot.val());
+      setLevel(snapshot.val());
+    });
+    LED_STATUS.on('value', snapshot => {
+      // console.log('STATUS : ', snapshot.val());
+      setStatus(snapshot.val());
+    });
+    PH_VALUE.on('value', snapshot => {
+      // console.log('phvalue: ', snapshot.val());
+      setPhValue(snapshot.val());
+    });
+  };
   // console.log(phvalue)
 
   return (
     <View style={{flex: 1}}>
-      <View
-        style={{
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').height
-        }}>
-      {/* <View style={{width:wp(100),height:hp(50),backgroundColor:"red"}}>
-            <Text>dbfgsdkfjhskldfjklsdfhk</Text>
-          </View> */}
       <ScrollView>
         <View
           style={{
-            marginTop: 10,
+            marginTop: 20,
             alignItems: 'center',
-            position: 'relative',
+            // position: 'relative',
           }}>
           <Text
             style={{
               position: 'absolute',
-              top: 20,
+              top: 10,
               textAlign: 'center',
               color: 'black',
               zIndex: 2,
             }}>
             {level}%
           </Text>
-
-          <View>
+         
+          {/* <View>
             <Image
               source={require('../img/4.png')}
               style={{width: wp(35), height: hp(21), zIndex: 3}}
               // style={{width: 132, height: 162, zIndex: 3}}
             />
-          </View>
+          </View> */}
           {/* animation view  */}
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               bottom: 100,
@@ -123,8 +116,8 @@ const AnimationWaterapp = () => {
               />
              ) : null}
           </View>
-        </View>
-        <View
+        </View> */}
+        {/* <View
           style={{
             backgroundColor: '#3490dc',
             width: wp(33),
@@ -138,13 +131,72 @@ const AnimationWaterapp = () => {
             borderBottomLeftRadius: 22,
             zIndex: 0,
             overflow: 'hidden',
-          }}></View>
-        <Text style={{marginTop: 10, color: 'black', textAlign: 'center'}}>
+          }}></View>  */}
+          
+
+          {/* responsive water tank */}
+
+          <View
+            style={{
+              // backgroundColor: 'yellow',
+              width: width - 40,
+              height: height / 5,
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              zIndex: 1,
+            
+            }}>
+            <Image
+              source={anyimage}
+              style={{zIndex: 2, width: width - 260, height: height / 5,}}
+            />
+            
+            <View
+              style={{
+                //   position: 'absolute',
+                //   bottom: 100,
+                //   left: 132,
+                bottom: level ? level : null,
+                // bottom: 105,
+              }}>
+                {level?
+              <Lottie
+                style={{
+                  //   width: 145,
+                  width: width - 275,
+                  //   position: 'absolute',
+                  zIndex: 1,
+                  backgroundColor: '#3490dc',
+                }}
+                source={require('../img/demo.json')}
+                autoPlay
+                loop
+              />:null}
+            </View>
+            <View
+              style={{
+                backgroundColor: '#3490dc',
+                // width:145,
+                width: width - 270,
+                // height:100,
+                // height:height/6,
+                height: level ? level : null,
+                bottom: 6,
+                position: 'absolute',
+                borderBottomRightRadius: 20,
+                borderBottomLeftRadius: 22,
+                zIndex: 0,
+              }}></View>
+         </View>
+        </View> 
+
+        {/* end of water tank  */}
+        <Text style={{color: 'black', textAlign: 'center'}}>
           Live Water Level
         </Text>
 
-        
-          {waterImage!= undefined ?
+        {waterImage != undefined ? (
           waterImage.map((ele, index) => {
             return (
               <View
@@ -171,9 +223,9 @@ const AnimationWaterapp = () => {
                 />
               </View>
             );
-          }):
-        
-           <View style={{alignItems: 'center', margin: 10}}>
+          })
+        ) : (
+          <View style={{alignItems: 'center', margin: 10}}>
             <View
               style={{
                 width: 160,
@@ -187,7 +239,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 2,
               }}></View>
           </View>
-        }
+        )}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -258,12 +310,24 @@ const AnimationWaterapp = () => {
             {/* <TextInput style={styles.input} editable={false} value={ele.led_status} /> */}
             <TextInput style={styles.input} editable={false} value={'under'} />
 
-               {/* <Text style={{fontSize:16,fontWeight:"bold"}}>{phvalue}</Text> */}
-            <TextInput style={styles.input} editable={false} value={""+phvalue} />
+            {/* <Text style={{fontSize:16,fontWeight:"bold"}}>{phvalue}</Text> */}
+            <TextInput
+              style={styles.input}
+              editable={false}
+              value={'' + phvalue}
+            />
             {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
-            {phvalue >= 5  && phvalue  < 8 ? <TextInput style={styles.input} editable={false} value={'safe'} /> :<TextInput style={styles.input} editable={false} value={'unsafe'} />}
+            {phvalue >= 5 && phvalue < 8 ? (
+              <TextInput style={styles.input} editable={false} value={'safe'} />
+            ) : (
+              <TextInput
+                style={styles.input}
+                editable={false}
+                value={'unsafe'}
+              />
+            )}
 
-              {/* <TextInput style={styles.input} editable={false} value={'safe'} />
+            {/* <TextInput style={styles.input} editable={false} value={'safe'} />
             <TextInput style={styles.input} editable={false} value={'unsafe'} /> */}
 
             <TextInput style={styles.input} editable={false} value={'no'} />
@@ -329,7 +393,6 @@ const AnimationWaterapp = () => {
             </TouchableOpacity>
           </View>
         </View> */}
-       </View> 
     </View>
   );
 };
