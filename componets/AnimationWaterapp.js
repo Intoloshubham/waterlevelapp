@@ -68,7 +68,7 @@ const AnimationWaterapp = () => {
   // console.log(phvalue)
 
   return (
-    <View style={{flex: 1,}}>
+    <View style={{flex: 1}}>
       <ScrollView>
         {/* <View>
             <Image
@@ -181,12 +181,12 @@ const AnimationWaterapp = () => {
           <Text
             style={{
               position: 'absolute',
-              top: heightToDo(number='1%'),
+              top: heightToDo((number = '1%')),
               textAlign: 'center',
               color: 'black',
               zIndex: 2,
             }}>
-            {level}%
+            {Math.floor(level)}%
           </Text>
           <View
             style={{
@@ -198,36 +198,44 @@ const AnimationWaterapp = () => {
               position: 'relative',
               zIndex: 1,
             }}>
-            <Image source={anyimage} style={{zIndex: 2}} />
+            <Image
+              source={anyimage}
+              style={{
+                zIndex: 2,
+                width: widthToDo((number = '12%')),
+                height: heightToDo((number = '7.5%')),
+              }}
+            />
             <View
               style={{
                 // bottom: heightToDo((number = '5.5%')),
-                bottom:level ? level : null,
-                position:"absolute"
+                bottom: level ? level : null,
+                position: 'absolute',
               }}>
-                {level?
-              <Lottie
-                style={{
-                  //   width: 145,
-                  width: widthToDo((number = '13%')),
+              {level ? (
+                <Lottie
+                  style={{
+                    //   width: 145,
+                    width: widthToDo((number = '11.5%')),
                     // position: 'absolute',
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />:null}
+                    zIndex: 1,
+                    backgroundColor: '#3490dc',
+                  }}
+                  source={require('../img/demo.json')}
+                  autoPlay
+                  loop
+                />
+              ) : null}
             </View>
             <View
               style={{
                 backgroundColor: '#3490dc',
                 // width:145,
-                width: widthToDo((number = '13.5%')),
+                width: widthToDo((number = '11.5%')),
                 // height: heightToDo((number = '5%')),
                 // height:height/6,
                 height: level ? level : null,
-                bottom: heightToDo((number = '0.1%')),
+                bottom: heightToDo((number = '0.09%')),
                 position: 'absolute',
                 borderBottomRightRadius: heightToDo((number = '1.2%')),
                 borderBottomLeftRadius: heightToDo((number = '1.2%')),
@@ -359,7 +367,7 @@ const AnimationWaterapp = () => {
             <TextInput
               style={styles.input}
               editable={false}
-              value={'' + phvalue}
+              value={'' +  Math.floor(phvalue)}
             />
             {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
             {phvalue >= 5 && phvalue < 8 ? (
