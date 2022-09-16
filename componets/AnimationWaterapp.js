@@ -33,20 +33,17 @@ const AnimationWaterapp = () => {
 
   const liveImage = async () => {
     const data = await getImage();
-    if (data.status === 200) {
       // console.log(data);
-      setwaterImage(data.data);
-      data.data.map(e => {
-        setWaterHight(e.water_level);
-      });
-    } else {
-      console.log('data not found');
+      setwaterImage(data);
+      // data.map(e => {
+      //   setWaterHight(e.water_level);
+      // });
     }
-  };
+
   useEffect(() => {
     liveImage();
     liveWaterData();
-  }, [waterImage, waterHight,phvalue,level]);
+  }, []);
 
 
   const liveWaterData = ()=>{
@@ -70,11 +67,11 @@ const AnimationWaterapp = () => {
 
   return (
     <View style={{flex: 1}}>
-      {/* <View
+      <View
         style={{
-          width: Dimensions.get('window').width="100%",
-          height: Dimensions.get('window').height=700,
-        }}> */}
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height
+        }}>
       {/* <View style={{width:wp(100),height:hp(50),backgroundColor:"red"}}>
             <Text>dbfgsdkfjhskldfjklsdfhk</Text>
           </View> */}
@@ -110,6 +107,7 @@ const AnimationWaterapp = () => {
               bottom: 100,
               left: 132,
               bottom: level ? level : null,
+              // bottom: 50,
             }}>
             {level ? (
               <Lottie
@@ -123,7 +121,7 @@ const AnimationWaterapp = () => {
                 autoPlay
                 loop
               />
-            ) : null}
+             ) : null}
           </View>
         </View>
         <View
@@ -131,10 +129,11 @@ const AnimationWaterapp = () => {
             backgroundColor: '#3490dc',
             width: wp(33),
             height: level ? level : null,
-            // height: 0,
+            // height: 50,
             position: 'absolute',
             left: 132,
-            bottom: 478,
+            bottom: 458,
+            // bottom: 278,
             borderBottomRightRadius: 20,
             borderBottomLeftRadius: 22,
             zIndex: 0,
@@ -144,7 +143,8 @@ const AnimationWaterapp = () => {
           Live Water Level
         </Text>
 
-        {waterImage.length > 0 ? (
+        
+          {waterImage!= undefined ?
           waterImage.map((ele, index) => {
             return (
               <View
@@ -171,9 +171,9 @@ const AnimationWaterapp = () => {
                 />
               </View>
             );
-          })
-        ) : (
-          <View style={{alignItems: 'center', margin: 10}}>
+          }):
+        
+           <View style={{alignItems: 'center', margin: 10}}>
             <View
               style={{
                 width: 160,
@@ -187,7 +187,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 2,
               }}></View>
           </View>
-        )}
+        }
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -261,7 +261,7 @@ const AnimationWaterapp = () => {
                {/* <Text style={{fontSize:16,fontWeight:"bold"}}>{phvalue}</Text> */}
             <TextInput style={styles.input} editable={false} value={""+phvalue} />
             {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
-            {phvalue >= 5  && phvalue  <= 7 ? <TextInput style={styles.input} editable={false} value={'safe'} /> :<TextInput style={styles.input} editable={false} value={'unsafe'} />}
+            {phvalue >= 5  && phvalue  < 8 ? <TextInput style={styles.input} editable={false} value={'safe'} /> :<TextInput style={styles.input} editable={false} value={'unsafe'} />}
 
               {/* <TextInput style={styles.input} editable={false} value={'safe'} />
             <TextInput style={styles.input} editable={false} value={'unsafe'} /> */}
@@ -329,10 +329,7 @@ const AnimationWaterapp = () => {
             </TouchableOpacity>
           </View>
         </View> */}
-      {/* </View> */}
-      {/* <View>
-        <Title>{phvalue}</Title>
-      </View> */}
+       </View> 
     </View>
   );
 };
