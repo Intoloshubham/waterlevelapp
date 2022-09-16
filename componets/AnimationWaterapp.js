@@ -22,6 +22,7 @@ import {
 import {getImage} from '../Controller/Api/api';
 import database from '@react-native-firebase/database';
 import {Title} from 'react-native-paper';
+import {widthToDo, heightToDo} from '../Controller/Api/ImageResponse';
 
 // const SIZE = Dimensions.get('window').width;
 const {height, width} = Dimensions.get('window');
@@ -67,34 +68,17 @@ const AnimationWaterapp = () => {
   // console.log(phvalue)
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1,}}>
       <ScrollView>
-        <View
-          style={{
-            marginTop: 20,
-            alignItems: 'center',
-            // position: 'relative',
-          }}>
-          <Text
-            style={{
-              position: 'absolute',
-              top: 10,
-              textAlign: 'center',
-              color: 'black',
-              zIndex: 2,
-            }}>
-            {level}%
-          </Text>
-         
-          {/* <View>
+        {/* <View>
             <Image
               source={require('../img/4.png')}
               style={{width: wp(35), height: hp(21), zIndex: 3}}
               // style={{width: 132, height: 162, zIndex: 3}}
             />
           </View> */}
-          {/* animation view  */}
-          {/* <View
+        {/* animation view  */}
+        {/* <View
             style={{
               position: 'absolute',
               bottom: 100,
@@ -132,11 +116,10 @@ const AnimationWaterapp = () => {
             zIndex: 0,
             overflow: 'hidden',
           }}></View>  */}
-          
 
-          {/* responsive water tank */}
+        {/* responsive water tank */}
 
-          <View
+        {/* <View
             style={{
               // backgroundColor: 'yellow',
               width: width - 40,
@@ -188,8 +171,70 @@ const AnimationWaterapp = () => {
                 borderBottomLeftRadius: 22,
                 zIndex: 0,
               }}></View>
-         </View>
-        </View> 
+            </View>  */}
+        <View
+          style={{
+            marginTop: 20,
+            alignItems: 'center',
+            // position: 'relative',
+          }}>
+          <Text
+            style={{
+              position: 'absolute',
+              top: heightToDo(number='1%'),
+              textAlign: 'center',
+              color: 'black',
+              zIndex: 2,
+            }}>
+            {level}%
+          </Text>
+          <View
+            style={{
+              // backgroundColor: 'yellow',
+              // width: widthToDo((number = '30%')),
+              // height: heightToDo((number = '15%')),
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              zIndex: 1,
+            }}>
+            <Image source={anyimage} style={{zIndex: 2}} />
+            <View
+              style={{
+                // bottom: heightToDo((number = '5.5%')),
+                bottom:level ? level : null,
+                position:"absolute"
+              }}>
+                {level?
+              <Lottie
+                style={{
+                  //   width: 145,
+                  width: widthToDo((number = '13%')),
+                    // position: 'absolute',
+                  zIndex: 1,
+                  backgroundColor: '#3490dc',
+                }}
+                source={require('../img/demo.json')}
+                autoPlay
+                loop
+              />:null}
+            </View>
+            <View
+              style={{
+                backgroundColor: '#3490dc',
+                // width:145,
+                width: widthToDo((number = '13.5%')),
+                // height: heightToDo((number = '5%')),
+                // height:height/6,
+                height: level ? level : null,
+                bottom: heightToDo((number = '0.1%')),
+                position: 'absolute',
+                borderBottomRightRadius: heightToDo((number = '1.2%')),
+                borderBottomLeftRadius: heightToDo((number = '1.2%')),
+                zIndex: 0,
+              }}></View>
+          </View>
+        </View>
 
         {/* end of water tank  */}
         <Text style={{color: 'black', textAlign: 'center'}}>
