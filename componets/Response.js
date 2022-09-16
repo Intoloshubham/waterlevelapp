@@ -24,8 +24,8 @@ const Response = () => {
       <View
         style={{
           backgroundColor: '#fff',
-          width: width - 40,
-          height: height / 2,
+          width: width - 600,
+          height: height/2,
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
@@ -42,7 +42,8 @@ const Response = () => {
             }}>
         <Lottie
                 style={{
-                  width: 145,
+                //   width: 145,
+                  width:width-250,
                 //   position: 'absolute',
                   zIndex: 1,
                   backgroundColor: '#3490dc',
@@ -55,8 +56,11 @@ const Response = () => {
         <View
           style={{
             backgroundColor: '#3490dc',
-            width:145,
-            height:120,
+            // width:145,
+            width:width-247,
+            // height:120,
+            height:height/6,
+
             bottom:108,
             position:"absolute",
             borderBottomRightRadius: 20,
