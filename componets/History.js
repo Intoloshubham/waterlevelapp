@@ -72,7 +72,7 @@ const Response = () => {
           }}></View>
            
       </View> */}
-      <View
+      {/* <View
         style={{
           backgroundColor: '#fff',
           width: widthToDo(number='30%'),
@@ -118,7 +118,7 @@ const Response = () => {
       </View>
       <View> 
         <Text style={styles.test}>Response screen</Text>
-      </View>
+      </View> */}
       </ScrollView>
     </View>
   );
@@ -127,7 +127,7 @@ const Response = () => {
 export default Response;
 
 const styles = StyleSheet.create({
-  test:{
-    fontSize:widthToDo(number='2%')
-}
+//   test:{
+//     fontSize:widthToDo(number='2%')
+// }
 });
