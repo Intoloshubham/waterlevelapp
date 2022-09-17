@@ -249,7 +249,7 @@ const AnimationWaterapp = () => {
           Live Water Level
         </Text>
 
-        {waterImage != undefined ? (
+        {/* {waterImage != undefined ? (
           waterImage.map((ele, index) => {
             return (
               <View
@@ -292,6 +292,146 @@ const AnimationWaterapp = () => {
                 borderWidth: 1,
               }}></View>
           </View>
+        )} */}
+        {/* <View style={{alignItems: 'center', position: 'absolute'}}>
+            <View
+              style={{
+                width: 170,
+                height: 170,
+                // backgroundColor: 'skyblue',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 100,
+                borderWidth: 2,
+                top: 205,
+                left: 112,
+                right: 10,
+                zIndex: 0,
+              }}></View>
+          </View> */}
+        {/* <View
+          style={{
+            // flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 10,
+          }}>
+          <Entypo name="camera" size={25} color = {'black'}/>
+          <Text style={{color: 'black'}}>Live Cemera View</Text>
+        </View> */}
+        {/* <View
+          style={{
+            flexDirection: 'row',
+            // backgroundColor: 'red',
+            // marginTop: 5,
+          }}>
+          <View
+            style={{
+              flex: 1,
+              // backgroundColor: 'yellow',
+              alignItems: 'flex-start',
+              padding: 5,
+              marginLeft: 25,
+            }}>
+            {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+              Led_Status{' : '}
+            </Text> */}
+            {/* <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+              Usages{' : '}
+            </Text>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+              PH Value{' : '}
+            </Text>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+              Quality{' : '}
+            </Text>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+              Leakage{' : '}
+            </Text>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+              Need Cleaning{' : '}
+            </Text> */}
+          {/* </View>
+          <View
+            style={{
+              flex: 1,
+              // backgroundColor: 'red',
+              alignItems: 'flex-start',
+              padding: 5,
+            }}>
+            {/* <TextInput style={styles.input} editable={false} value={ele.led_status} /> */}
+            {/* <TextInput style={styles.input} editable={false} value={'under'} /> */}
+
+            {/* <Text style={{fontSize:16,fontWeight:"bold"}}>{phvalue}</Text> */}
+            {/* <TextInput
+              style={styles.input}
+              editable={false}
+              value={'' +  Math.floor(phvalue)}
+            /> */} 
+{/*             
+            {phvalue >= 5 && phvalue < 8 ? (
+              <TextInput style={styles.input} editable={false} value={'safe'} />
+            ) : (
+              <TextInput
+                style={styles.input}
+                editable={false}
+                value={'unsafe'}
+              />
+            )} */}
+
+            {/* <TextInput style={styles.input} editable={false} value={'safe'} />
+            <TextInput style={styles.input} editable={false} value={'unsafe'} /> */}
+
+            {/* <TextInput style={styles.input} editable={false} value={'no'} />
+            <TextInput style={styles.input} editable={false} value={'no'} />
+          </View>
+        </View> */}
+
+      {/* old code   */}
+      {waterImage != undefined ? (
+          waterImage.map((ele, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  alignItems: 'center',
+                  // marginTop: 40,
+                }}>
+                <Image
+                  source={{
+                    uri: `${'http://107.20.37.104:8000/'}` + ele.image,
+                  }}
+                  style={{
+                    // width: 160,
+                    // height: 160,
+                    width: wp(40),
+                    height: hp(21.2),
+                    borderRadius: 100,
+                    borderWidth: 2,
+                    marginTop: 40,
+                    zIndex: 1,
+                    bottom: 29,
+                  }}
+                />
+              </View>
+            );
+          })
+        ) : (
+          <View style={{alignItems: 'center', margin: 10}}>
+            <View
+              style={{
+                width: 160,
+                height: 160,
+                top: 3,
+                // backgroundColor: 'skyblue',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 100,
+                borderWidth: 2,
+              }}></View>
+          </View>
         )}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
@@ -317,7 +457,7 @@ const AnimationWaterapp = () => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <Entypo name="camera" size={25} color = {'black'}/>
+          <Entypo name="camera" size={25} />
           <Text style={{color: 'black'}}>Live Cemera View</Text>
         </View>
         <View
@@ -337,19 +477,19 @@ const AnimationWaterapp = () => {
             {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Led_Status{' : '}
             </Text> */}
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Usages{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               PH Value{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Quality{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Leakage{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Need Cleaning{' : '}
             </Text>
           </View>
@@ -369,7 +509,7 @@ const AnimationWaterapp = () => {
               editable={false}
               value={'' +  Math.floor(phvalue)}
             />
-            
+            {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
@@ -380,13 +520,11 @@ const AnimationWaterapp = () => {
               />
             )}
 
-            {/* <TextInput style={styles.input} editable={false} value={'safe'} />
-            <TextInput style={styles.input} editable={false} value={'unsafe'} /> */}
-
             <TextInput style={styles.input} editable={false} value={'no'} />
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
+
       </ScrollView>
       {/* <View>
           <View
