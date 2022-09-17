@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, TextInput} from 'react-native';
 import Slider from '@react-native-community/slider';
+import { widthToDo } from '../Controller/Api/ImageResponse';
 
 const Settings = () => {
   const [qualityrange, setQualityRange] = useState('10%');
@@ -28,16 +29,16 @@ const Settings = () => {
           {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Led_Status{' : '}
             </Text> */}
-          <Text style={{fontSize: 16, color: 'black', marginBottom: 15,marginTop:10}}>
+          <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: 15,marginTop:10}}>
             Quality{' : '}
           </Text>
-          <Text style={{fontSize: 16, color: 'black', marginBottom: 15,marginTop:10}}>
+          <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: 15,marginTop:10}}>
             Brightness{' : '}
           </Text>
-          <Text style={{fontSize: 16, color: 'black', marginBottom: 15,marginTop:10}}>
+          <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: 15,marginTop:10}}>
             Contrast{' : '}
           </Text>
-          <Text style={{fontSize: 16, color: 'black', marginBottom: 15,marginTop:10}}>
+          <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: 15,marginTop:10}}>
             Saturation{' : '}
           </Text>
         </View>
@@ -53,7 +54,7 @@ const Settings = () => {
             {/* <Text style={{fontWeight:"bold"}}>{silding}</Text> */}
             </View>
           <Slider
-            style={{width: 180,}}
+            style={{width:widthToDo(number='16%'),}}
             minimumValue={0}
             maximumValue={1}
             minimumTrackTintColor="red"
@@ -68,7 +69,7 @@ const Settings = () => {
             {/* <Text style={{fontWeight:"bold"}}>{silding}</Text> */}
             </View>
           <Slider
-            style={{width: 180,}}
+            style={{width:widthToDo(number='16%'),}}
             minimumValue={0}
             maximumValue={1}
             minimumTrackTintColor="red"
@@ -83,7 +84,7 @@ const Settings = () => {
             {/* <Text style={{fontWeight:"bold"}}>{silding}</Text> */}
             </View>
           <Slider
-            style={{width: 180,}}
+            style={{width:widthToDo(number='16%'),}}
             minimumValue={0}
             maximumValue={1}
             minimumTrackTintColor="red"
@@ -98,7 +99,7 @@ const Settings = () => {
             {/* <Text style={{fontWeight:"bold"}}>{silding}</Text> */}
             </View>
           <Slider
-            style={{width: 180,}}
+            style={{width:widthToDo(number='16%'),}}
             minimumValue={0}
             maximumValue={1}
             minimumTrackTintColor="red"
