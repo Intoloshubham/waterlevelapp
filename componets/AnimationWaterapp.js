@@ -38,7 +38,7 @@ const AnimationWaterapp = () => {
     const data = await getImage();
     // console.log(data);
     setwaterImage(data);
-    // data.map(e => {
+    // data.data.map(e => {
     //   setWaterHight(e.water_level);
     // });
   };
@@ -68,7 +68,7 @@ const AnimationWaterapp = () => {
   // console.log(phvalue)
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex:1,backgroundColor:"#fff"}}>
       <ScrollView>
         {/* <View>
             <Image
@@ -212,7 +212,7 @@ const AnimationWaterapp = () => {
                 bottom: level ? level : null,
                 position: 'absolute',
               }}>
-              {level ? (
+              {level > 0  ? (
                 <Lottie
                   style={{
                     //   width: 145,
@@ -265,13 +265,13 @@ const AnimationWaterapp = () => {
                   style={{
                     // width: 160,
                     // height: 160,
-                    width: wp(40),
-                    height: hp(21.2),
+                    width: widthToDo(number='15%'),
+                    height: heightToDo(number='8%'),
                     borderRadius: 100,
                     borderWidth: 2,
-                    marginTop: 40,
+                    marginTop: heightToDo(number='2%'),
                     zIndex: 1,
-                    bottom: 29,
+                    bottom: heightToDo(number='1.5%'),
                   }}
                 />
               </View>
@@ -281,15 +281,15 @@ const AnimationWaterapp = () => {
           <View style={{alignItems: 'center', margin: 10}}>
             <View
               style={{
-                width: 160,
-                height: 160,
-                top: 3,
+                width: widthToDo(number='15%'),
+                height: heightToDo(number='8%'),
+                top:  heightToDo(number='0.1%'),
                 // backgroundColor: 'skyblue',
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 100,
-                borderWidth: 2,
+                borderWidth: 1,
               }}></View>
           </View>
         )}
@@ -317,7 +317,7 @@ const AnimationWaterapp = () => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <Entypo name="camera" size={25} />
+          <Entypo name="camera" size={25} color = {'black'}/>
           <Text style={{color: 'black'}}>Live Cemera View</Text>
         </View>
         <View
@@ -337,19 +337,19 @@ const AnimationWaterapp = () => {
             {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Led_Status{' : '}
             </Text> */}
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
               Usages{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
               PH Value{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
               Quality{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
               Leakage{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
               Need Cleaning{' : '}
             </Text>
           </View>
@@ -369,7 +369,7 @@ const AnimationWaterapp = () => {
               editable={false}
               value={'' +  Math.floor(phvalue)}
             />
-            {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
+            
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
