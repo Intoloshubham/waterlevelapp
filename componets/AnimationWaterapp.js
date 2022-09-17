@@ -591,17 +591,32 @@ const AnimationWaterapp = () => {
 export default AnimationWaterapp;
 
 const styles = StyleSheet.create({
+  // input: {
+  //   height:heightToDo(number='1.2%'),
+  //   width: widthToDo(number='10%'),
+  //   margin: widthToDo(number='0.5%'),
+  //   borderWidth:widthToDo(number='0.1%'),
+  //   padding: widthToDo(number='0.1%'),
+  //   paddingLeft: widthToDo(number='0.8%'),
+  //   borderRadius: widthToDo(number='0.5%'),
+  //   backgroundColor: '#F5EDDC',
+  //   color: 'black',
+  //   fontSize: widthToDo(number='1.8%'),
+  // },
   input: {
-    height:heightToDo(number='1.2%'),
-    width: widthToDo(number='10%'),
-    margin: widthToDo(number='0.5%'),
-    borderWidth:widthToDo(number='0.1%'),
-    padding: widthToDo(number='0.1%'),
-    paddingLeft: widthToDo(number='0.8%'),
-    borderRadius: widthToDo(number='0.5%'),
+    height: 25,
+    width: 100,
+    margin: 5,
+    borderWidth: 1,
+    elevation: 10,
+    padding: -6,
+    paddingLeft: 10,
+    borderRadius: 5,
     backgroundColor: '#F5EDDC',
+    shadowOpacity: 5,
+    shadowRadius: 10,
     color: 'black',
-    fontSize: widthToDo(number='1.8%'),
+    fontSize: 15,
   },
 });
 
