@@ -186,7 +186,7 @@ const AnimationWaterapp = () => {
               color: 'black',
               zIndex: 2,
             }}>
-            {Math.floor(level)}%
+            {Math.floor(level > 0 ? level:null)}%
           </Text>
           <View
             style={{
@@ -234,7 +234,7 @@ const AnimationWaterapp = () => {
                 width: widthToDo((number = '11.5%')),
                 // height: heightToDo((number = '5%')),
                 // height:height/6,
-                height: level ? level : null,
+                height: level > 0 ? level : null,
                 bottom: heightToDo((number = '0.09%')),
                 position: 'absolute',
                 borderBottomRightRadius: heightToDo((number = '1.2%')),
