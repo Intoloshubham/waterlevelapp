@@ -67,6 +67,10 @@ const AnimationWaterapp = () => {
   };
   // console.log(phvalue)
 
+  // const exFloat = 3.14159265359;
+    
+  // console.log(parseFloat(exFloat.toFixed(2)));
+
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
       <ScrollView>
@@ -202,7 +206,7 @@ const AnimationWaterapp = () => {
               source={anyimage}
               style={{
                 zIndex: 2,
-                width: widthToDo((number = '12%')),
+                width: widthToDo((number = '12.5%')),
                 height: heightToDo((number = '7.5%')),
               }}
             />
@@ -211,6 +215,7 @@ const AnimationWaterapp = () => {
                 // bottom: heightToDo((number = '5.5%')),
                 bottom: level ? level : null,
                 position: 'absolute',
+                // bottom:100,
               }}>
               {level > 0  ? (
                 <Lottie
@@ -225,15 +230,15 @@ const AnimationWaterapp = () => {
                   autoPlay
                   loop
                 />
-              ) : null}
+               ) : null} 
             </View>
             <View
               style={{
                 backgroundColor: '#3490dc',
                 // width:145,
-                width: widthToDo((number = '11.5%')),
+                width: widthToDo((number = '11.7%')),
                 // height: heightToDo((number = '5%')),
-                // height:height/6,
+                // height:100,
                 height: level > 0 ? level : null,
                 bottom: heightToDo((number = '0.09%')),
                 position: 'absolute',
@@ -369,7 +374,7 @@ const AnimationWaterapp = () => {
               editable={false}
               value={'' +  Math.floor(phvalue)}
             /> */} 
-{/*             
+         {/*             
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
@@ -465,31 +470,29 @@ const AnimationWaterapp = () => {
             flexDirection: 'row',
             // backgroundColor: 'red',
             // marginTop: 5,
+            
           }}>
           <View
             style={{
               flex: 1,
               // backgroundColor: 'yellow',
-              alignItems: 'flex-start',
+              alignItems: 'flex-end',
               padding: 5,
-              marginLeft: 25,
+              // marginLeft: 25,
             }}>
-            {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
-              Led_Status{' : '}
-            </Text> */}
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
               Usages{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
               PH Value{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
               Quality{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: 16, color: 'black', margin:6,}}>
               Leakage{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
+            <Text style={{fontSize: 16, color: 'black', margin:6,}}>
               Need Cleaning{' : '}
             </Text>
           </View>
@@ -507,9 +510,12 @@ const AnimationWaterapp = () => {
             <TextInput
               style={styles.input}
               editable={false}
-              value={'' +  Math.floor(phvalue)}
+              value={'' +phvalue}
+              // value={parseFloat(exFloat.toFixed(2))}
+
+              
             />
-            {/* {phvalue > 5  && phvalue < 7 ? <Text>{"safe"}</Text> :<Text>{"unsafe"}</Text>} */}
+            
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
@@ -524,66 +530,7 @@ const AnimationWaterapp = () => {
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
-
       </ScrollView>
-      {/* <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              // marginTop: 10,
-              // backgroundColor:"skyblue"
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                alert('setting');
-              }}>
-              <AntDesign size={25} name="setting" />
-              <Text
-                style={{
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginHorizontal: -8,
-                }}>
-                Setting
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                width: 60,
-                height: 60,
-                borderWidth: 0.2,
-                borderRadius: 50,
-              }}>
-              <TouchableOpacity onPress={() => pageRefresh()}>
-                <Ionicons size={20} name="refresh" style={{left: 20}} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    textAlign: 'center',
-                    // marginHorizontal: -,
-                  }}>
-                  Refresh
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                alert('history');
-              }}>
-              <Octicons size={25} name="history" />
-              <Text
-                style={{
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginHorizontal: -10,
-                }}>
-                History
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
     </View>
   );
 };
@@ -606,15 +553,15 @@ const styles = StyleSheet.create({
   input: {
     height: 25,
     width: 100,
-    margin: 5,
+    margin: 4,
     borderWidth: 1,
-    elevation: 10,
+    // elevation: 10,
     padding: -6,
     paddingLeft: 10,
     borderRadius: 5,
     backgroundColor: '#F5EDDC',
-    shadowOpacity: 5,
-    shadowRadius: 10,
+    // shadowOpacity: 5,
+    // shadowRadius: 10,
     color: 'black',
     fontSize: 15,
   },

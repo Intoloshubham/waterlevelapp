@@ -16,10 +16,10 @@ const Response = () => {
   return (
     <View
       style={{
-        flex: 1,
-        backgroundColor: 'yellow',
-        alignItems: 'center',
-        justifyContent: 'center',
+        // flex: 1,
+        // backgroundColor: 'yellow',
+        // alignItems: 'center',
+        // justifyContent: 'center',
       }}>
         <ScrollView>
       {/* <Image source={anyimage}style={{width:width,height:height}}/> */}
