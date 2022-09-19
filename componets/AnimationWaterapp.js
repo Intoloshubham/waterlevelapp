@@ -1,27 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TextInput,
-  TouchableOpacity,
   ScrollView,
   Dimensions,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
 import anyimage from '../img/4.png';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import {getImage} from '../Controller/Api/api';
+import Video from 'react-native-video';
+// import {getImage} from '../Controller/Api/api';
 import database from '@react-native-firebase/database';
-import {Title} from 'react-native-paper';
 import {widthToDo, heightToDo} from '../Controller/Api/ImageResponse';
 
 // const SIZE = Dimensions.get('window').width;
@@ -34,19 +26,22 @@ const AnimationWaterapp = () => {
   const [status, setStatus] = useState('');
   const [phvalue, setPhValue] = useState('');
 
-  const liveImage = async () => {
-    const data = await getImage();
-    // console.log(data);
-    setwaterImage(data);
-    // data.data.map(e => {
-    //   setWaterHight(e.water_level);
-    // });
-  };
+  // const liveImage = async () => {
+  //   const data = await getImage();
+  //   console.log(data);
+  //   // setwaterImage(data);
+  //   // data.data.map(e => {
+  //   //   setWaterHight(e.water_level);
+  //   // });
+  // };
 
-  useEffect(() => {
-    liveImage();
-    liveWaterData();
-  }, []);
+  // useEffect(() => {
+  //   liveImage();
+  //   liveWaterData();
+  // }, []);
+
+  // var image_url = 'http://27.57.152.51/';
+  // console.log(image_url);
 
   const liveWaterData = () => {
     const LEVEL_ref = database().ref('/LEVEL');
@@ -65,117 +60,10 @@ const AnimationWaterapp = () => {
       setPhValue(snapshot.val());
     });
   };
-  // console.log(phvalue)
-
-  // const exFloat = 3.14159265359;
-    
-  // console.log(parseFloat(exFloat.toFixed(2)));
 
   return (
-    <View style={{flex:1,backgroundColor:"#fff"}}>
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView>
-        {/* <View>
-            <Image
-              source={require('../img/4.png')}
-              style={{width: wp(35), height: hp(21), zIndex: 3}}
-              // style={{width: 132, height: 162, zIndex: 3}}
-            />
-          </View> */}
-        {/* animation view  */}
-        {/* <View
-            style={{
-              position: 'absolute',
-              bottom: 100,
-              left: 132,
-              bottom: level ? level : null,
-              // bottom: 50,
-            }}>
-            {level ? (
-              <Lottie
-                style={{
-                  width: wp(33),
-                  // position: 'absolute',
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />
-             ) : null}
-          </View>
-        </View> */}
-        {/* <View
-          style={{
-            backgroundColor: '#3490dc',
-            width: wp(33),
-            height: level ? level : null,
-            // height: 50,
-            position: 'absolute',
-            left: 132,
-            bottom: 458,
-            // bottom: 278,
-            borderBottomRightRadius: 20,
-            borderBottomLeftRadius: 22,
-            zIndex: 0,
-            overflow: 'hidden',
-          }}></View>  */}
-
-        {/* responsive water tank */}
-
-        {/* <View
-            style={{
-              // backgroundColor: 'yellow',
-              width: width - 40,
-              height: height / 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              zIndex: 1,
-            
-            }}>
-            <Image
-              source={anyimage}
-              style={{zIndex: 2, width: width - 260, height: height / 5,}}
-            />
-            
-            <View
-              style={{
-                //   position: 'absolute',
-                //   bottom: 100,
-                //   left: 132,
-                bottom: level ? level : null,
-                // bottom: 105,
-              }}>
-                {level?
-              <Lottie
-                style={{
-                  //   width: 145,
-                  width: width - 275,
-                  //   position: 'absolute',
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />:null}
-            </View>
-            <View
-              style={{
-                backgroundColor: '#3490dc',
-                // width:145,
-                width: width - 270,
-                // height:100,
-                // height:height/6,
-                height: level ? level : null,
-                bottom: 6,
-                position: 'absolute',
-                borderBottomRightRadius: 20,
-                borderBottomLeftRadius: 22,
-                zIndex: 0,
-              }}></View>
-            </View>  */}
         <View
           style={{
             marginTop: 20,
@@ -190,7 +78,7 @@ const AnimationWaterapp = () => {
               color: 'black',
               zIndex: 2,
             }}>
-            {Math.floor(level > 0 ? level:null)}%
+            {Math.floor(level > 0 ? level : null)}%
           </Text>
           <View
             style={{
@@ -217,7 +105,7 @@ const AnimationWaterapp = () => {
                 position: 'absolute',
                 // bottom:100,
               }}>
-              {level > 0  ? (
+              {level > 0 ? (
                 <Lottie
                   style={{
                     //   width: 145,
@@ -230,7 +118,7 @@ const AnimationWaterapp = () => {
                   autoPlay
                   loop
                 />
-               ) : null} 
+              ) : null}
             </View>
             <View
               style={{
@@ -254,7 +142,8 @@ const AnimationWaterapp = () => {
           Live Water Level
         </Text>
 
-        {/* {waterImage != undefined ? (
+        {/* old code   */}
+        {/* {waterImage.length > 0 ? (
           waterImage.map((ele, index) => {
             return (
               <View
@@ -265,147 +154,7 @@ const AnimationWaterapp = () => {
                 }}>
                 <Image
                   source={{
-                    uri: `${'http://107.20.37.104:8000/'}` + ele.image,
-                  }}
-                  style={{
-                    // width: 160,
-                    // height: 160,
-                    width: widthToDo(number='15%'),
-                    height: heightToDo(number='8%'),
-                    borderRadius: 100,
-                    borderWidth: 2,
-                    marginTop: heightToDo(number='2%'),
-                    zIndex: 1,
-                    bottom: heightToDo(number='1.5%'),
-                  }}
-                />
-              </View>
-            );
-          })
-        ) : (
-          <View style={{alignItems: 'center', margin: 10}}>
-            <View
-              style={{
-                width: widthToDo(number='15%'),
-                height: heightToDo(number='8%'),
-                top:  heightToDo(number='0.1%'),
-                // backgroundColor: 'skyblue',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 100,
-                borderWidth: 1,
-              }}></View>
-          </View>
-        )} */}
-        {/* <View style={{alignItems: 'center', position: 'absolute'}}>
-            <View
-              style={{
-                width: 170,
-                height: 170,
-                // backgroundColor: 'skyblue',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 100,
-                borderWidth: 2,
-                top: 205,
-                left: 112,
-                right: 10,
-                zIndex: 0,
-              }}></View>
-          </View> */}
-        {/* <View
-          style={{
-            // flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 10,
-          }}>
-          <Entypo name="camera" size={25} color = {'black'}/>
-          <Text style={{color: 'black'}}>Live Cemera View</Text>
-        </View> */}
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            // backgroundColor: 'red',
-            // marginTop: 5,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              // backgroundColor: 'yellow',
-              alignItems: 'flex-start',
-              padding: 5,
-              marginLeft: 25,
-            }}>
-            {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
-              Led_Status{' : '}
-            </Text> */}
-            {/* <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
-              Usages{' : '}
-            </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
-              PH Value{' : '}
-            </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
-              Quality{' : '}
-            </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
-              Leakage{' : '}
-            </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
-              Need Cleaning{' : '}
-            </Text> */}
-          {/* </View>
-          <View
-            style={{
-              flex: 1,
-              // backgroundColor: 'red',
-              alignItems: 'flex-start',
-              padding: 5,
-            }}>
-            {/* <TextInput style={styles.input} editable={false} value={ele.led_status} /> */}
-            {/* <TextInput style={styles.input} editable={false} value={'under'} /> */}
-
-            {/* <Text style={{fontSize:16,fontWeight:"bold"}}>{phvalue}</Text> */}
-            {/* <TextInput
-              style={styles.input}
-              editable={false}
-              value={'' +  Math.floor(phvalue)}
-            /> */} 
-         {/*             
-            {phvalue >= 5 && phvalue < 8 ? (
-              <TextInput style={styles.input} editable={false} value={'safe'} />
-            ) : (
-              <TextInput
-                style={styles.input}
-                editable={false}
-                value={'unsafe'}
-              />
-            )} */}
-
-            {/* <TextInput style={styles.input} editable={false} value={'safe'} />
-            <TextInput style={styles.input} editable={false} value={'unsafe'} /> */}
-
-            {/* <TextInput style={styles.input} editable={false} value={'no'} />
-            <TextInput style={styles.input} editable={false} value={'no'} />
-          </View>
-        </View> */}
-
-      {/* old code   */}
-      {waterImage != undefined ? (
-          waterImage.map((ele, index) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  alignItems: 'center',
-                  // marginTop: 40,
-                }}>
-                <Image
-                  source={{
-                    uri: `${'http://107.20.37.104:8000/'}` + ele.image,
+                    uri: `${'http://27.57.152.51/'}` + ele.image,
                   }}
                   style={{
                     // width: 160,
@@ -437,7 +186,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 2,
               }}></View>
           </View>
-        )}
+        )} */}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -470,7 +219,6 @@ const AnimationWaterapp = () => {
             flexDirection: 'row',
             // backgroundColor: 'red',
             // marginTop: 5,
-            
           }}>
           <View
             style={{
@@ -480,19 +228,19 @@ const AnimationWaterapp = () => {
               padding: 5,
               // marginLeft: 25,
             }}>
-            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
+            <Text style={{fontSize: 16, color: 'black', margin: 5}}>
               Usages{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
+            <Text style={{fontSize: 16, color: 'black', margin: 5}}>
               PH Value{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', margin:5,}}>
+            <Text style={{fontSize: 16, color: 'black', margin: 5}}>
               Quality{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', margin:6,}}>
+            <Text style={{fontSize: 16, color: 'black', margin: 6}}>
               Leakage{' : '}
             </Text>
-            <Text style={{fontSize: 16, color: 'black', margin:6,}}>
+            <Text style={{fontSize: 16, color: 'black', margin: 6}}>
               Need Cleaning{' : '}
             </Text>
           </View>
@@ -510,12 +258,10 @@ const AnimationWaterapp = () => {
             <TextInput
               style={styles.input}
               editable={false}
-              value={'' +phvalue}
+              value={'' + phvalue}
               // value={parseFloat(exFloat.toFixed(2))}
-
-              
             />
-            
+
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
@@ -529,6 +275,23 @@ const AnimationWaterapp = () => {
             <TextInput style={styles.input} editable={false} value={'no'} />
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
+        </View>
+        <View>
+          {/* <Image
+            style={{width: 100, height: 100,backgroundColor:"yellow"}}
+            source={{
+              uri:"image_url",
+            }}
+          /> */}
+          <Video
+          source={{ uri: 'http://27.57.152.51/' }}
+          rate={1.0}
+          volume={1.0}
+          muted={false}
+          resizeMode="cover"
+          repeat
+          style={{ width: 300, height: 200,backgroundColor:"gray"}}
+        />
         </View>
       </ScrollView>
     </View>
