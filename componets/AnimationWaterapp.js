@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -28,23 +28,28 @@ const AnimationWaterapp = () => {
   const [level, setLevel] = useState('');
   const [status, setStatus] = useState('');
   const [phvalue, setPhValue] = useState('');
+  const [waterimagedata, setwaterimagedata] = useState()
+
+
 
   const liveImage = async () => {
     const data = await getImage();
-    // console.log(data);
-    setwaterImage(data.data);
+    // console.log(data.image);
+    setwaterImage(data);
     // data.data.map(e => {
     //   setWaterHight(e.water_level);
     // });
   };
 
-  useEffect(() => {
-    liveImage();
-    liveWaterData();
-  }, [waterImage]);
+  // const live = async () => {
+  //   const data = await fetch('http://192.168.1.99:1735/uploads/water.png')
+  //   // console.log(data.url)
+  //   setwaterimagedata(data.url)
+  // };
 
-  // var image_url = 'http://27.57.152.51/';
-  // console.log(image_url);
+ 
+
+
 
   const liveWaterData = () => {
     const LEVEL_ref = database().ref('/LEVEL');
@@ -63,6 +68,12 @@ const AnimationWaterapp = () => {
       setPhValue(snapshot.val());
     });
   };
+
+  useEffect(() => {
+    liveImage();
+    liveWaterData();
+  },[waterImage]);
+
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -145,8 +156,15 @@ const AnimationWaterapp = () => {
           Live Water Level
         </Text>
 
+        {/* <Image
+        style={{width:200,height:200,backgroundColor:"yellow"}}
+        source={{
+          uri: waterImage ? waterImage :waterImage,
+        }}
+      /> */}
+
         {/* old code   */}
-        {waterImage.length > 0 ? (
+        {waterImage != undefined ? (
           waterImage.map((ele, index) => {
             // {console.log(ele.image)}
             return (
@@ -158,18 +176,20 @@ const AnimationWaterapp = () => {
                 }}>
                 <Image
                   source={{
-                    uri: `${'http://107.20.37.104:8000/'}` + ele.image,
+                    // uri: `${'http://192.168.1.99:8000/'}` + ele.image,
+                    uri:  ele.image 
                   }}
                   style={{
                     // width: 160,
                     // height: 160,
                     width: wp(40),
                     height: hp(21.2),
-                    borderRadius: 100,
+                    // borderRadius: 100,
                     borderWidth: 2,
                     marginTop: 40,
                     zIndex: 1,
                     bottom: 29,
+                    // backgroundColor:"red"
                   }}
                 />
               </View>
@@ -280,22 +300,11 @@ const AnimationWaterapp = () => {
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
-        {/* <View> */}
-          {/* <Image
-            style={{width: 100, height: 100,backgroundColor:"yellow"}}
-            source={{
-              uri:"image_url",
-            }}
-          /> */}
-          {/* <Video
-          source={{ uri: 'http://27.57.152.51/' }}
-          rate={1.0}
-          volume={1.0}
-          muted={false}
-          resizeMode="cover"
-          repeat
-          style={{ width: 300, height: 200,backgroundColor:"gray"}}
-        />
+        {/* <View>
+          <Image source={{uri:waterimagedata}}
+          style={{width:200,height:200}}
+          />
+
         </View> */}
       </ScrollView>
     </View>
@@ -305,18 +314,6 @@ const AnimationWaterapp = () => {
 export default AnimationWaterapp;
 
 const styles = StyleSheet.create({
-  // input: {
-  //   height:heightToDo(number='1.2%'),
-  //   width: widthToDo(number='10%'),
-  //   margin: widthToDo(number='0.5%'),
-  //   borderWidth:widthToDo(number='0.1%'),
-  //   padding: widthToDo(number='0.1%'),
-  //   paddingLeft: widthToDo(number='0.8%'),
-  //   borderRadius: widthToDo(number='0.5%'),
-  //   backgroundColor: '#F5EDDC',
-  //   color: 'black',
-  //   fontSize: widthToDo(number='1.8%'),
-  // },
   input: {
     height: 25,
     width: 100,
@@ -335,3 +332,5 @@ const styles = StyleSheet.create({
 });
 
 // `${'http://107.20.37.104:8000/'}` +
+
+// data:image/png;base64
