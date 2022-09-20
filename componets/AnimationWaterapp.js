@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,10 +12,13 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
 import anyimage from '../img/4.png';
 import Video from 'react-native-video';
-// import {getImage} from '../Controller/Api/api';
+import {getImage} from '../Controller/Api/api';
 import database from '@react-native-firebase/database';
 import {widthToDo, heightToDo} from '../Controller/Api/ImageResponse';
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 // const SIZE = Dimensions.get('window').width;
 const {height, width} = Dimensions.get('window');
 
@@ -26,19 +29,19 @@ const AnimationWaterapp = () => {
   const [status, setStatus] = useState('');
   const [phvalue, setPhValue] = useState('');
 
-  // const liveImage = async () => {
-  //   const data = await getImage();
-  //   console.log(data);
-  //   // setwaterImage(data);
-  //   // data.data.map(e => {
-  //   //   setWaterHight(e.water_level);
-  //   // });
-  // };
+  const liveImage = async () => {
+    const data = await getImage();
+    // console.log(data);
+    setwaterImage(data.data);
+    // data.data.map(e => {
+    //   setWaterHight(e.water_level);
+    // });
+  };
 
-  // useEffect(() => {
-  //   liveImage();
-  //   liveWaterData();
-  // }, []);
+  useEffect(() => {
+    liveImage();
+    liveWaterData();
+  }, [waterImage]);
 
   // var image_url = 'http://27.57.152.51/';
   // console.log(image_url);
@@ -143,8 +146,9 @@ const AnimationWaterapp = () => {
         </Text>
 
         {/* old code   */}
-        {/* {waterImage.length > 0 ? (
+        {waterImage.length > 0 ? (
           waterImage.map((ele, index) => {
+            // {console.log(ele.image)}
             return (
               <View
                 key={index}
@@ -154,7 +158,7 @@ const AnimationWaterapp = () => {
                 }}>
                 <Image
                   source={{
-                    uri: `${'http://27.57.152.51/'}` + ele.image,
+                    uri: `${'http://107.20.37.104:8000/'}` + ele.image,
                   }}
                   style={{
                     // width: 160,
@@ -186,7 +190,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 2,
               }}></View>
           </View>
-        )} */}
+        )}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -276,14 +280,14 @@ const AnimationWaterapp = () => {
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
-        <View>
+        {/* <View> */}
           {/* <Image
             style={{width: 100, height: 100,backgroundColor:"yellow"}}
             source={{
               uri:"image_url",
             }}
           /> */}
-          <Video
+          {/* <Video
           source={{ uri: 'http://27.57.152.51/' }}
           rate={1.0}
           volume={1.0}
@@ -292,7 +296,7 @@ const AnimationWaterapp = () => {
           repeat
           style={{ width: 300, height: 200,backgroundColor:"gray"}}
         />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
