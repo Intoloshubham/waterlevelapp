@@ -32,7 +32,7 @@ function Tabs() {
         name="water info"
         component={AnimationWaterapp}
         options={{
-          tabBarLabel: 'refresh',
+          tabBarLabel:'Refresh',
           tabBarLabelStyle:{fontSize:15,},
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="refresh" color={color} size={30} />
@@ -44,7 +44,7 @@ function Tabs() {
         name="History"
         component={History}
         options={{
-          tabBarLabel: 'history',
+          tabBarLabel: 'History',
           tabBarLabelStyle:{fontSize:15},
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons  name="history" color={color} size={30} />
