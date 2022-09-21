@@ -64,7 +64,7 @@ const AnimationWaterapp = () => {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView>
-        <View
+        <View   
           style={{
             marginTop: 20,
             alignItems: 'center',
