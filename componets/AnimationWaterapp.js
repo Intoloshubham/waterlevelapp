@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Octicons from 'react-native-vector-icons/Octicons';
+import  Fontisto from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
 import anyimage from '../img/4.png';
@@ -37,22 +37,23 @@ const AnimationWaterapp = () => {
 
 
 
-  const liveImage = async () => {
-    const data = await getImage();
-    // console.log(data.image);
-    setwaterImage(data);
-    // data.data.map(e => {
-    //   setWaterHight(e.water_level);
-    // });
-  };
-
-  // const live = async () => {
-  //   const data = await fetch('http://192.168.1.99:1735/uploads/water.png')
-  //   // console.log(data.url)
-  //   setwaterimagedata(data.url)
+  // const liveImage = async () => {
+  //   const data = await getImage();
+  //   // console.log(data.image);
+  //   setwaterImage(data);
+  //   // data.data.map(e => {
+  //   //   setWaterHight(e.water_level);
+  //   // });
   // };
 
- 
+  const live = async () => {
+    const data = await fetch('http://192.168.1.99:1735/uploads/water.png')
+    console.log(data)
+    setwaterimagedata(data)
+    alert("image")
+  };
+
+ console.log(waterimagedata)
 
 
 
@@ -75,117 +76,16 @@ const AnimationWaterapp = () => {
     });
   };
 
-  useEffect(() => {
-    liveImage();
-    liveWaterData();
-  },[waterImage]);
+  // useEffect(() => {
+  //   liveImage();
+  //   // liveWaterData();
+  // },[waterImage]);
 
 
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
       <ScrollView>
-        {/* <View>
-            <Image
-              source={require('../img/4.png')}
-              style={{width: wp(35), height: hp(21), zIndex: 3}}
-              // style={{width: 132, height: 162, zIndex: 3}}
-            />
-          </View> */}
-        {/* animation view  */}
-        {/* <View
-            style={{
-              position: 'absolute',
-              bottom: 100,
-              left: 132,
-              bottom: level ? level : null,
-              // bottom: 50,
-            }}>
-            {level ? (
-              <Lottie
-                style={{
-                  width: wp(33),
-                  // position: 'absolute',
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />
-             ) : null}
-          </View>
-        </View> */}
-        {/* <View
-          style={{
-            backgroundColor: '#3490dc',
-            width: wp(33),
-            height: level ? level : null,
-            // height: 50,
-            position: 'absolute',
-            left: 132,
-            bottom: 458,
-            // bottom: 278,
-            borderBottomRightRadius: 20,
-            borderBottomLeftRadius: 22,
-            zIndex: 0,
-            overflow: 'hidden',
-          }}></View>  */}
-
-        {/* responsive water tank */}
-
-        {/* <View
-            style={{
-              // backgroundColor: 'yellow',
-              width: width - 40,
-              height: height / 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              zIndex: 1,
-            
-            }}>
-            <Image
-              source={anyimage}
-              style={{zIndex: 2, width: width - 260, height: height / 5,}}
-            />
-            
-            <View
-              style={{
-                //   position: 'absolute',
-                //   bottom: 100,
-                //   left: 132,
-                bottom: level ? level : null,
-                // bottom: 105,
-              }}>
-                {level?
-              <Lottie
-                style={{
-                  //   width: 145,
-                  width: width - 275,
-                  //   position: 'absolute',
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />:null}
-            </View>
-            <View
-              style={{
-                backgroundColor: '#3490dc',
-                // width:145,
-                width: width - 270,
-                // height:100,
-                // height:height/6,
-                height: level ? level : null,
-                bottom: 6,
-                position: 'absolute',
-                borderBottomRightRadius: 20,
-                borderBottomLeftRadius: 22,
-                zIndex: 0,
-              }}></View>
-            </View>  */}
+        
         <View
           style={{
             marginTop: 20,
@@ -263,15 +163,20 @@ const AnimationWaterapp = () => {
           Live Water Level
         </Text>
 
-        {/* <Image
-        style={{width:200,height:200,backgroundColor:"yellow"}}
-        source={{
-          uri: waterImage ? waterImage :waterImage,
-        }}
-      /> */}
-
         {/* old code   */}
-        {waterImage != undefined ? (
+            {waterimagedata != undefined?
+              <Image
+                style={{
+                    width: 150,
+                    height: 150,
+                    backgroundColor:"yellow"
+                }}
+                source={{
+                uri:waterimagedata,
+                }}
+            />:null}
+
+        {/* {waterImage.length > 0 ? (
           waterImage.map((ele, index) => {
             // {console.log(ele.image)}
             return (
@@ -305,15 +210,7 @@ const AnimationWaterapp = () => {
           })
         ) : (
           <View style={{alignItems: 'center', margin: 10}}>
-            {/* <Image
-                style={{
-                    width: 150,
-                    height: 150,
-                }}
-                source={{
-                uri: 'http://192.168.1.99:8000/uploads/1663578294520_816139897.png',
-                }}
-            /> */}
+           
             <View
               style={{
                 width: widthToDo(number='15%'),
@@ -327,7 +224,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 1,
               }}></View>
           </View>
-        )}
+        )} */}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -352,7 +249,12 @@ const AnimationWaterapp = () => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <Entypo name="camera" size={25} color = {'black'}/>
+          <View style={{flexDirection:"row",flexDirection:"row-reverse"}}> 
+          <TouchableOpacity style={{marginLeft:25,}}onPress={()=>live()}>
+          <Fontisto name='spinner-refresh' size={24} color='blue'/>
+          </TouchableOpacity>
+          <Entypo  name="camera" size={25} color = {'black'}/>
+          </View>
           <Text style={{color: 'black'}}>Live Cemera View</Text>
         </View>
         <View
