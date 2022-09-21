@@ -19,6 +19,7 @@
   
     try {
       const res = await fetch('http://107.20.37.104:8000/api/water-level', {
+      // const res = await fetch('http://107.20.37.104:8000/uploads/water.png',{
       // const res = await fetch('http://192.168.1.99:1735/api/water-level', {
 
     //   const res = await fetch('https://lambaarpit12@gmail.com:bomberman@dynupdate.no-ip.com/nic/update?hostname=mytest.example.com&myip=192.168.1.4', {
