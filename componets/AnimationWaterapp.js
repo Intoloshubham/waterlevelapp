@@ -37,23 +37,32 @@ const AnimationWaterapp = () => {
 
 
 
-  // const liveImage = async () => {
-  //   const data = await getImage();
-  //   // console.log(data.image);
-  //   setwaterImage(data);
-  //   // data.data.map(e => {
-  //   //   setWaterHight(e.water_level);
-  //   // });
-  // };
-
-  const live = async () => {
-    const data = await fetch('http://192.168.1.99:1735/uploads/water.png')
-    console.log(data)
-    setwaterimagedata(data)
-    alert("image")
+  const liveImage = async () => {
+    const data = await getImage();
+    // console.log(data);
+    setwaterImage(data);
+    // data.data.map(e => {
+    //   setWaterHight(e.water_level);
+    // });
   };
 
- console.log(waterimagedata)
+  // const live = async () => {
+  //   const data = await fetch('http://107.20.37.104:8000/uploads/water.png')
+  //   console.log(data)
+  //   console.log(data.bodyBlob)
+
+  //   setwaterimagedata(data.url)
+    
+  // };
+
+  useEffect(() => {
+    // live();
+    liveImage();
+    liveWaterData();
+  },[waterImage]);
+
+
+//  console.log(waterimagedata)
 
 
 
@@ -76,11 +85,7 @@ const AnimationWaterapp = () => {
     });
   };
 
-  // useEffect(() => {
-  //   liveImage();
-  //   // liveWaterData();
-  // },[waterImage]);
-
+  
 
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
@@ -164,19 +169,35 @@ const AnimationWaterapp = () => {
         </Text>
 
         {/* old code   */}
+           {/* <View style={{justifyContent:"center",alignItems:"center",position:"relative"}}>
             {waterimagedata != undefined?
               <Image
                 style={{
                     width: 150,
                     height: 150,
-                    backgroundColor:"yellow"
+                    backgroundColor:"yellow",
+                    borderRadius:100,
                 }}
                 source={{
                 uri:waterimagedata,
                 }}
-            />:null}
+            />
+            
+            :<View style={{
+              width: 150,
+              height: 150,
+             borderWidth:2,
+              borderRadius:100,
+            }}>
+              </View>}
+              </View> */}
+            <View style={{position:"absolute",top:250,left:280}}>
+            <TouchableOpacity style={{marginLeft:25,}}onPress={()=>liveImage()}>
+          <Fontisto name='spinner-refresh' size={24} color='blue'/>
+          </TouchableOpacity>
+            </View>
 
-        {/* {waterImage.length > 0 ? (
+        {waterImage.length > 0 ? (
           waterImage.map((ele, index) => {
             // {console.log(ele.image)}
             return (
@@ -197,7 +218,7 @@ const AnimationWaterapp = () => {
                     // height: 160,
                     width: wp(40),
                     height: hp(21.2),
-                    // borderRadius: 100,
+                    borderRadius: 100,
                     borderWidth: 2,
                     marginTop: heightToDo(number='2%'),
                     zIndex: 1,
@@ -224,7 +245,7 @@ const AnimationWaterapp = () => {
                 borderWidth: 1,
               }}></View>
           </View>
-        )} */}
+        )}
         {/* <View style={{alignItems: 'center', position: 'absolute'}}>
             <View
               style={{
@@ -249,12 +270,8 @@ const AnimationWaterapp = () => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <View style={{flexDirection:"row",flexDirection:"row-reverse"}}> 
-          <TouchableOpacity style={{marginLeft:25,}}onPress={()=>live()}>
-          <Fontisto name='spinner-refresh' size={24} color='blue'/>
-          </TouchableOpacity>
+         
           <Entypo  name="camera" size={25} color = {'black'}/>
-          </View>
           <Text style={{color: 'black'}}>Live Cemera View</Text>
         </View>
         <View
