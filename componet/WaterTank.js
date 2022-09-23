@@ -14,8 +14,6 @@ import {
 import {Card, Title} from 'react-native-paper';
 import {getWaterdata, getImage} from '../Controller/Api/api';
 
-
-
 const WaterTank = () => {
   const [count, setCount] = useState(50);
   const [newcount, setNewCount] = useState(count);
@@ -56,17 +54,14 @@ const WaterTank = () => {
   };
   const getshowimage = async () => {
     const data = await getImage();
-    if (data.status === 200) {
-      // console.log(data);
-      setShowImage(data.data);
-    } else {
-      console.log('data not found');
-    }
+    setShowImage(data);
   };
 
   useEffect(() => {
     getshowimage();
   }, [showImage]);
+
+  // console.log(showImage)
 
   useEffect(() => {
     getWater();
@@ -162,7 +157,8 @@ const WaterTank = () => {
               return (
                 <View style={{alignItems: 'center', marginTop: 10}} key={index}>
                   <Image
-                    source={{uri: `${'http://107.20.37.104:8000/'}` + ele.image}}
+                    // source={{uri: `${'http://107.20.37.104:8000/'}` + ele.image}}
+                    source={{uri: ele.image}}
                     style={{width: 200, height: 200}}
                   />
                 </View>
@@ -175,5 +171,4 @@ const WaterTank = () => {
 };
 
 export default WaterTank;
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});
