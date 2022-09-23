@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import  Fontisto from 'react-native-vector-icons/Fontisto';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Lottie from 'lottie-react-native';
 import anyimage from '../img/4.png';
@@ -24,6 +24,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import WaterVideo from './WaterVideo';
+
 // const SIZE = Dimensions.get('window').width;
 const {height, width} = Dimensions.get('window');
 
@@ -33,13 +35,11 @@ const AnimationWaterapp = () => {
   const [level, setLevel] = useState('');
   const [status, setStatus] = useState('');
   const [phvalue, setPhValue] = useState('');
-  const [waterimagedata, setwaterimagedata] = useState()
-
-
+  const [waterimagedata, setwaterimagedata] = useState();
 
   const liveImage = async () => {
     const data = await getImage();
-    // console.log(data);
+    console.log(data);
     setwaterImage(data);
     // data.data.map(e => {
     //   setWaterHight(e.water_level);
@@ -52,22 +52,20 @@ const AnimationWaterapp = () => {
   //   console.log(data.bodyBlob)
 
   //   setwaterimagedata(data.url)
-    
+
   // };
 
-  useEffect(() => {
-    // live();
-    liveImage();
-    liveWaterData();
-  },[waterImage]);
+  // useEffect(() => {
+  //   liveWaterData();
+  // }, []);
 
+  // setTimeout(() => {
+  //   liveImage();
+  // }, 1000);
 
-//  console.log(waterimagedata)
-
-
+  //  console.log(waterimagedata)
 
   const liveWaterData = () => {
-    
     const LEVEL_ref = database().ref('/LEVEL');
     const LED_STATUS = database().ref('/LED_STATUS');
     const PH_VALUE = database().ref('/pH');
@@ -85,12 +83,9 @@ const AnimationWaterapp = () => {
     });
   };
 
-  
-
   return (
-    <View style={{flex:1,backgroundColor:"#fff"}}>
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView>
-        
         <View
           style={{
             marginTop: 20,
@@ -131,7 +126,7 @@ const AnimationWaterapp = () => {
                 bottom: level ? level : null,
                 position: 'absolute',
               }}>
-              {level > 0  ? (
+              {level > 0 ? (
                 <Lottie
                   style={{
                     //   width: 145,
@@ -169,7 +164,7 @@ const AnimationWaterapp = () => {
         </Text>
 
         {/* old code   */}
-           {/* <View style={{justifyContent:"center",alignItems:"center",position:"relative"}}>
+        {/* <View style={{justifyContent:"center",alignItems:"center",position:"relative"}}>
             {waterimagedata != undefined?
               <Image
                 style={{
@@ -191,11 +186,13 @@ const AnimationWaterapp = () => {
             }}>
               </View>}
               </View> */}
-            <View style={{position:"absolute",top:250,left:280}}>
-            <TouchableOpacity style={{marginLeft:25,}}onPress={()=>liveImage()}>
-          <Fontisto name='spinner-refresh' size={24} color='blue'/>
+        <View style={{position: 'absolute', top: 250, left: 280}}>
+          <TouchableOpacity
+            style={{marginLeft: 25}}
+            onPress={() => liveImage()}>
+            <Fontisto name="spinner-refresh" size={24} color="blue" />
           </TouchableOpacity>
-            </View>
+        </View>
 
         {waterImage.length > 0 ? (
           waterImage.map((ele, index) => {
@@ -207,11 +204,10 @@ const AnimationWaterapp = () => {
                   alignItems: 'center',
                   // marginTop: 40,
                 }}>
-
                 <Image
                   source={{
                     // uri: `${'http://192.168.1.99:8000/'}` + ele.image,
-                    uri:  ele.image 
+                    uri: ele.image,
                   }}
                   style={{
                     // width: 160,
@@ -220,7 +216,7 @@ const AnimationWaterapp = () => {
                     height: hp(21.2),
                     borderRadius: 100,
                     borderWidth: 2,
-                    marginTop: heightToDo(number='2%'),
+                    marginTop: heightToDo((number = '2%')),
                     zIndex: 1,
                     bottom: 29,
                     // backgroundColor:"red"
@@ -231,12 +227,11 @@ const AnimationWaterapp = () => {
           })
         ) : (
           <View style={{alignItems: 'center', margin: 10}}>
-           
             <View
               style={{
-                width: widthToDo(number='15%'),
-                height: heightToDo(number='8%'),
-                top:  heightToDo(number='0.1%'),
+                width: widthToDo((number = '15%')),
+                height: heightToDo((number = '8%')),
+                top: heightToDo((number = '0.1%')),
                 // backgroundColor: 'skyblue',
                 flexDirection: 'row',
                 justifyContent: 'center',
@@ -270,8 +265,7 @@ const AnimationWaterapp = () => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-         
-          <Entypo  name="camera" size={25} color = {'black'}/>
+          <Entypo name="camera" size={25} color={'black'} />
           <Text style={{color: 'black'}}>Live Cemera View</Text>
         </View>
         <View
@@ -291,19 +285,44 @@ const AnimationWaterapp = () => {
             {/* <Text style={{fontSize: 16, color: 'black', marginBottom: 15}}>
               Led_Status{' : '}
             </Text> */}
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text
+              style={{
+                fontSize: widthToDo((number = '1.5%')),
+                color: 'black',
+                marginBottom: heightToDo((number = '0.7%')),
+              }}>
               Usages{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text
+              style={{
+                fontSize: widthToDo((number = '1.5%')),
+                color: 'black',
+                marginBottom: heightToDo((number = '0.7%')),
+              }}>
               PH Value{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text
+              style={{
+                fontSize: widthToDo((number = '1.5%')),
+                color: 'black',
+                marginBottom: heightToDo((number = '0.7%')),
+              }}>
               Quality{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text
+              style={{
+                fontSize: widthToDo((number = '1.5%')),
+                color: 'black',
+                marginBottom: heightToDo((number = '0.7%')),
+              }}>
               Leakage{' : '}
             </Text>
-            <Text style={{fontSize: widthToDo(number='1.5%'), color: 'black', marginBottom: heightToDo(number='0.7%')}}>
+            <Text
+              style={{
+                fontSize: widthToDo((number = '1.5%')),
+                color: 'black',
+                marginBottom: heightToDo((number = '0.7%')),
+              }}>
               Need Cleaning{' : '}
             </Text>
           </View>
@@ -321,9 +340,9 @@ const AnimationWaterapp = () => {
             <TextInput
               style={styles.input}
               editable={false}
-              value={'' +  Math.floor(phvalue)}
+              value={'' + Math.floor(phvalue)}
             />
-            
+
             {phvalue >= 5 && phvalue < 8 ? (
               <TextInput style={styles.input} editable={false} value={'safe'} />
             ) : (
@@ -341,71 +360,9 @@ const AnimationWaterapp = () => {
             <TextInput style={styles.input} editable={false} value={'no'} />
           </View>
         </View>
-        {/* <View>
-          <Image source={{uri:waterimagedata}}
-          style={{width:200,height:200}}
-          />
-
-        </View> */}
+        <WaterVideo />
+        
       </ScrollView>
-      {/* <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              // marginTop: 10,
-              // backgroundColor:"skyblue"
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                alert('setting');
-              }}>
-              <AntDesign size={25} name="setting" />
-              <Text
-                style={{
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginHorizontal: -8,
-                }}>
-                Setting
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                width: 60,
-                height: 60,
-                borderWidth: 0.2,
-                borderRadius: 50,
-              }}>
-              <TouchableOpacity onPress={() => pageRefresh()}>
-                <Ionicons size={20} name="refresh" style={{left: 20}} />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    textAlign: 'center',
-                    // marginHorizontal: -,
-                  }}>
-                  Refresh
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                alert('history');
-              }}>
-              <Octicons size={25} name="history" />
-              <Text
-                style={{
-                  fontSize: 16,
-                  textAlign: 'center',
-                  marginHorizontal: -10,
-                }}>
-                History
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
     </View>
   );
 };

@@ -9,8 +9,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Response from './componets/Response';
 const Stack = createNativeStackNavigator();
 
-
-
 const App = () => {
   return (
     <NavigationContainer>
@@ -23,7 +21,7 @@ const App = () => {
         <Stack.Screen name="Setting" component={Settings} />
         <Stack.Screen name="History" component={History} />
         <Stack.Screen name="Response" component={Response} />
-        <Stack.Screen name="Tabs" component={Tabs}/>
+        <Stack.Screen name="Tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );
