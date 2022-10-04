@@ -1,12 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import AnimationWaterapp from './componets/AnimationWaterapp';
-import Settings from './componets/Settings';
-import Tabs from './navigation/Taps';
-import History from './componets/History';
+import Tabs from './navigation/Tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Response from './componets/Response';
+import {Login, Register} from './screens/userCredentials';
+import {Home} from './screens';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -16,26 +14,14 @@ const App = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Tabs">
-        <Stack.Screen name="Water info" component={AnimationWaterapp} />
-        <Stack.Screen name="Setting" component={Settings} />
-        <Stack.Screen name="History" component={History} />
-        <Stack.Screen name="Response" component={Response} />
+        initialRouteName="Login">
         <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({});
-
-{
-  /* <NavigationContainer>
-<Stack.Navigator initialRouteName="Home">
-  <Stack.Screen name="Home" component={HomeScreen} />
-  <Stack.Screen name="Details" component={DetailsScreen} />
-</Stack.Navigator>
-</NavigationContainer> */
-}
