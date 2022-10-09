@@ -3,7 +3,7 @@ import {Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
 import {FONTS, COLORS, icons} from '../constants';
-import {getImage, getWaterLevel} from '../controllers/getImageController';
+import {getImage, getWaterLevel} from '../controllers/GetImageController';
 
 const Home = () => {
   const [streamImage, setStreamImage] = React.useState();
