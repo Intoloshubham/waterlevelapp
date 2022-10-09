@@ -38,7 +38,7 @@ const Register = ({navigation}) => {
                 textAlign: 'center',
                 ...FONTS.h2,
                 color: COLORS.white,
-                backgroundColor: COLORS.lightblue_700,
+                backgroundColor: COLORS.blue_600,
                 marginBottom: 40,
                 marginHorizontal: 40,
                 borderRadius: 5,
@@ -81,7 +81,7 @@ const Register = ({navigation}) => {
                 <TouchableOpacity
                   style={{
                     marginLeft: 10,
-                    backgroundColor: COLORS.lightblue_700,
+                    backgroundColor: COLORS.blue_700,
                     paddingVertical: 2,
                     paddingHorizontal: 6,
                   }}
