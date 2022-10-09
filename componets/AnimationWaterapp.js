@@ -27,6 +27,9 @@ import {
 // const SIZE = Dimensions.get('window').width;
 const {height, width} = Dimensions.get('window');
 
+// import { VLCPlayer, VlCPlayerView } from 'react-native-vlc-media-player';
+// import Orientation from 'react-native-orientation';
+
 const AnimationWaterapp = () => {
   const [waterImage, setwaterImage] = useState([]);
   const [waterHight, setWaterHight] = useState('');
@@ -34,6 +37,7 @@ const AnimationWaterapp = () => {
   const [status, setStatus] = useState('');
   const [phvalue, setPhValue] = useState('');
   const [waterimagedata, setwaterimagedata] = useState()
+
 
 
 
@@ -55,11 +59,11 @@ const AnimationWaterapp = () => {
     
   // };
 
-  useEffect(() => {
-    // live();
-    liveImage();
-    liveWaterData();
-  },[waterImage]);
+  // useEffect(() => {
+  //   // live();
+  //   liveImage();
+  //   liveWaterData();
+  // },[waterImage]);
 
 
 //  console.log(waterimagedata)
@@ -406,6 +410,19 @@ const AnimationWaterapp = () => {
             </TouchableOpacity>
           </View>
         </View> */}
+
+{/* <VlCPlayerView
+          autoplay={false}
+          url="http://192.168.0.131/"
+          Orientation={Orientation}
+          ggUrl=""
+          showGG={true}
+          showTitle={true}
+          title="Big Buck Bunny"
+          showBack={true}
+          onLeftPress={()=>{}}
+       /> */}
+
     </View>
   );
 };
