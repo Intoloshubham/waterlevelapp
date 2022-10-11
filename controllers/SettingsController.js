@@ -35,4 +35,23 @@ const getWaterLevelSettings = async () => {
   }
 };
 
-export {postWaterLevelSettings, getWaterLevelSettings};
+const postTankHeightSettings = async formData => {
+  try {
+    const res = await fetch(
+      `http://192.168.0.99:8000/api/tank-height-setting/1`,
+      {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      },
+    );
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {postWaterLevelSettings, getWaterLevelSettings, postTankHeightSettings};

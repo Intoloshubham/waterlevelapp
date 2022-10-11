@@ -1,21 +1,44 @@
 import React from 'react';
-import {Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Switch,
+} from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
 import {FONTS, COLORS, icons} from '../constants';
-import {getImage, getWaterLevel} from '../controllers/GetImageController';
+import {
+  getImage,
+  getWaterLevel,
+  getLEDStatus,
+} from '../controllers/GetImageController';
 
 const Home = () => {
   const [streamImage, setStreamImage] = React.useState();
+  const [date, setDate] = React.useState();
+  const [time, setTime] = React.useState();
   const [level, setLevel] = React.useState('');
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
-
   var NewLevel = parseInt(level);
+
+  //toggle
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const getStreamImage = async () => {
     const res = await getImage();
     setStreamImage(res.image);
+    setDate(res.date);
+    setTime(res.time);
+  };
+
+  const fetchLedStatus = async () => {
+    const res = await getLEDStatus();
+    setIsEnabled(res.data.led_status == 1 ? true : false);
   };
 
   const WaterLevel = async () => {
@@ -28,6 +51,7 @@ const Home = () => {
     setInterval(() => {
       getStreamImage();
       WaterLevel();
+      fetchLedStatus();
     }, 4000);
   }, []);
 
@@ -95,6 +119,31 @@ const Home = () => {
         <Text style={{...FONTS.h3, color: COLORS.darkGray, marginVertical: 6}}>
           Live Water Level
         </Text>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+            Pump Status{' '}
+          </Text>
+          <Switch
+            trackColor={{false: COLORS.darkGray, true: COLORS.green}}
+            thumbColor={isEnabled ? COLORS.white : COLORS.white}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+            disabled={true}
+          />
+          {isEnabled === true ? (
+            <Text
+              style={{...FONTS.h4, color: COLORS.darkGray, fontWeight: 'bold'}}>
+              ON
+            </Text>
+          ) : (
+            <Text
+              style={{...FONTS.h4, color: COLORS.darkGray, fontWeight: 'bold'}}>
+              OFF
+            </Text>
+          )}
+        </View>
       </View>
     );
   }
@@ -103,7 +152,7 @@ const Home = () => {
     return (
       <View
         style={{
-          marginVertical: 15,
+          marginVertical: 20,
           backgroundColor: COLORS.white,
           elevation: 5,
           padding: 15,
@@ -117,10 +166,20 @@ const Home = () => {
             borderRadius: square == true ? 10 : 100,
           }}
         />
-
+        <Text
+          style={{
+            fontSize: 10,
+            color: COLORS.white,
+            textAlign: square == true ? 'right' : 'center',
+            right: square == true ? 30 : null,
+            marginTop: square == true ? -25 : -35,
+          }}>
+          {time}
+          {square == true ? ',' : '\n'} {date}
+        </Text>
         <View
           style={{
-            marginTop: 15,
+            marginTop: 25,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -215,7 +274,7 @@ const Home = () => {
               borderColor: COLORS.gray3,
             }}></View>
           <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-            Quality{' - '} {phValue >= 6 && phValue < 8 ? 'Safe' : 'Unsafe'}
+            Quality{' - '} {phValue >= 6 && phValue < 9 ? 'Safe' : 'Unsafe'}
           </Text>
           <View
             style={{
@@ -244,7 +303,6 @@ const Home = () => {
     <View style={{flex: 1, margin: 12}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {renderWaterTank()}
-
         {renderWaterLiveView()}
         {renderOthers()}
       </ScrollView>

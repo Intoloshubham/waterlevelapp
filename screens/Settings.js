@@ -7,15 +7,19 @@ import {
   ScrollView,
   RefreshControl,
   Image,
+  Switch,
+  TextInput,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
-import {FONTS, COLORS, icons} from '../constants';
+import {FONTS, COLORS, icons, SIZES} from '../constants';
 import {Fumi} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {
   getWaterLevelSettings,
   postWaterLevelSettings,
+  postTankHeightSettings,
 } from '../controllers/SettingsController';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -29,17 +33,37 @@ const Settings = () => {
 
   //Modal
   const [persentModal, setPersentModal] = useState(false);
+  const [tankHeightModal, setTankHeightModal] = useState(false);
   const [minimumPersent, SetMinimumPersent] = useState('');
   const [maximumPersent, SetMaximumPersent] = useState('');
 
   //
   const [waterLevelData, setWaterLevelData] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
+  const [tankHeight, setTankHeight] = React.useState('');
 
   const onRefresh = React.useCallback(() => {
     fetchWaterLevelHeightSettings();
     wait(1000).then(() => setRefreshing(false));
   }, []);
+
+  //toggle
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  //toggle
+  const [isEnabledManually, setIsEnabledManually] = useState(false);
+  const toggleSwitchManually = () => {
+    setIsEnabledManually(previousState => !previousState);
+  };
+
+  //dropdown
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'CM', value: '1'},
+    {label: 'Meter', value: '2'},
+  ]);
 
   const postWaterLevelHeightSettings = async () => {
     const formData = {start_level: minimumPersent, stop_level: maximumPersent};
@@ -60,6 +84,22 @@ const Settings = () => {
     }
   };
 
+  const postWaterTankHeightSettings = async () => {
+    const formData = {
+      tank_height_type: isEnabledManually,
+      tank_height: isEnabledManually === false ? 0 : tankHeight,
+      tank_height_unit: isEnabledManually === false ? 0 : value,
+    };
+
+    const response = await postTankHeightSettings(formData);
+    if (response.status === 200) {
+      setTankHeightModal(false);
+      setValue('');
+      setTankHeight('');
+      setIsEnabledManually('');
+    }
+  };
+
   React.useEffect(() => {
     fetchWaterLevelHeightSettings();
   }, []);
@@ -71,6 +111,7 @@ const Settings = () => {
           backgroundColor: COLORS.blue_600,
           padding: 20,
           borderRadius: 10,
+          elevation: 5,
         }}>
         <View style={{}}>
           <Text style={{...FONTS.h2, color: COLORS.white}}>
@@ -212,6 +253,7 @@ const Settings = () => {
           padding: 20,
           marginTop: 30,
           borderRadius: 10,
+          elevation: 5,
         }}>
         <Text style={{...FONTS.h2, color: COLORS.white}}>Other Settings</Text>
         <View style={{flexDirection: 'row', marginTop: 15}}>
@@ -313,6 +355,29 @@ const Settings = () => {
             <Text style={{...FONTS.h3, color: COLORS.white}}>{saturation}</Text>
           </View>
         </View>
+        <View
+          style={{
+            borderBottomWidth: 0.5,
+            borderColor: COLORS.gray3,
+            marginVertical: SIZES.padding,
+          }}></View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Text style={{...FONTS.h3, color: COLORS.white}}>
+            Notification Turn ON / OFF
+          </Text>
+          <Switch
+            trackColor={{false: COLORS.darkGray, true: COLORS.rose_600}}
+            thumbColor={isEnabled ? COLORS.white : COLORS.white}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
       </View>
     );
   }
@@ -337,16 +402,185 @@ const Settings = () => {
     );
   }
 
+  function renderTankHeight() {
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding,
+          backgroundColor: COLORS.amber_500,
+          padding: 20,
+          borderRadius: 10,
+          elevation: 5,
+        }}>
+        <View>
+          <Text style={{...FONTS.h2, color: COLORS.white}}>Tank Height</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 15,
+              justifyContent: 'space-between',
+            }}>
+            <View>
+              <Text style={{...FONTS.h3, color: COLORS.white, marginBottom: 3}}>
+                Default
+              </Text>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>Manually</Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: COLORS.white,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+              }}
+              onPress={() => setTankHeightModal(true)}>
+              <Text
+                style={{
+                  ...FONTS.h3,
+                  color: COLORS.amber_500,
+                  fontWeight: 'bold',
+                }}>
+                Set
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  function renderTankHeightModal() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={tankHeightModal}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.transparentBlack7,
+          }}>
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+            }}
+            onPress={() => setTankHeightModal(false)}>
+            <Image
+              source={icons.cross}
+              style={{height: 35, width: 35, tintColor: COLORS.amber_300}}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              width: '90%',
+              padding: 30,
+              borderRadius: 10,
+              backgroundColor: COLORS.white,
+            }}>
+            <View
+              style={{
+                marginTop: 15,
+              }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Default
+                </Text>
+                <Switch
+                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                  thumbColor={isEnabledManually ? COLORS.white : COLORS.white}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitchManually}
+                  value={isEnabledManually}
+                />
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Manually
+                </Text>
+              </View>
+              {isEnabledManually ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                    marginBottom: 20,
+                  }}>
+                  <TextInput
+                    style={{
+                      borderBottomColor: COLORS.darkGray,
+                      borderBottomWidth: 2,
+                      color: COLORS.darkGray,
+                      ...FONTS.h4,
+                      width: '50%',
+                    }}
+                    placeholder="Tank height %"
+                    placeholderTextColor={COLORS.darkGray}
+                    selectionColor={COLORS.darkGray}
+                    keyboardType="number-pad"
+                    onChangeText={value => {
+                      setTankHeight(value);
+                    }}
+                  />
+                  <View style={{width: '40%'}}>
+                    <DropDownPicker
+                      style={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray1,
+                        minHeight: 20,
+                      }}
+                      dropDownContainerStyle={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray2,
+                      }}
+                      placeholder="Unit"
+                      open={open}
+                      value={value}
+                      items={items}
+                      setOpen={setOpen}
+                      setValue={setValue}
+                      setItems={setItems}
+                      zIndex={1000}
+                      listMode="SCROLLVIEW"
+                    />
+                  </View>
+                </View>
+              ) : null}
+            </View>
+            <TouchableOpacity
+              style={{
+                marginTop: 30,
+                backgroundColor: COLORS.blue_600,
+                alignItems: 'center',
+                padding: 10,
+              }}
+              onPress={() => postWaterTankHeightSettings()}>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  function renderWaterSource() {
+    return <View></View>;
+  }
+
   return (
     <ScrollView
       style={{margin: 20}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      }
+      showsVerticalScrollIndicator={false}>
       {renderSwitchOnOffSettings()}
+      {renderTankHeight()}
+      {renderWaterSource()}
       {renderOtherSettings()}
       {renderPersentModal()}
       {renderVersion()}
+      {renderTankHeightModal()}
     </ScrollView>
   );
 };
