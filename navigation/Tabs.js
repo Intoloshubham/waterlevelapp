@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Home, Settings} from '../screens';
+import {Home, Settings, RemoteControl} from '../screens';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +22,22 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
+        name="Remote Control"
+        component={RemoteControl}
+        options={{
+          tabBarLabel: 'Remote Control',
+          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons
+              name="gamepad-circle-down"
+              color={color}
+              size={20}
+            />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
         name="Settings"
         component={Settings}
         options={{
@@ -34,6 +50,7 @@ const Tabs = () => {
               size={20}
             />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

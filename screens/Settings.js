@@ -18,6 +18,8 @@ import {
   getWaterLevelSettings,
   postWaterLevelSettings,
   postTankHeightSettings,
+  postWaterSourceSettings,
+  postMotorNotification,
 } from '../controllers/SettingsController';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -48,13 +50,30 @@ const Settings = () => {
   }, []);
 
   //toggle
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [isEnabledNotification, setIsEnabledNotification] = useState(false);
+  const toggleNotificationSwitch = () => {
+    setIsEnabledNotification(previousState => !previousState);
+  };
 
   //toggle
   const [isEnabledManually, setIsEnabledManually] = useState(false);
   const toggleSwitchManually = () => {
     setIsEnabledManually(previousState => !previousState);
+  };
+
+  //toggle water source
+  const [isEnabledSource1, setIsEnabledSource1] = useState(false);
+  const [isEnabledSource2, setIsEnabledSource2] = useState(false);
+
+  const toggleSwitchSource1 = () => {
+    setIsEnabledSource1(previousState => !previousState);
+    setIsEnabledSource2(false);
+  };
+
+  //toggle
+  const toggleSwitchSource2 = () => {
+    setIsEnabledSource2(previousState => !previousState);
+    setIsEnabledSource1(false);
   };
 
   //dropdown
@@ -79,8 +98,12 @@ const Settings = () => {
 
   const fetchWaterLevelHeightSettings = async () => {
     const response = await getWaterLevelSettings();
+    console.log(response);
     if (response.status === 200) {
       setWaterLevelData(response.data);
+      setIsEnabledSource1(response.data.water_source_1);
+      setIsEnabledSource2(response.data.water_source_2);
+      setIsEnabledNotification(response.data.motor_notification);
     }
   };
 
@@ -97,11 +120,38 @@ const Settings = () => {
       setValue('');
       setTankHeight('');
       setIsEnabledManually('');
+      fetchWaterLevelHeightSettings();
     }
   };
 
+  const postWaterSourceSetting = async () => {
+    const formData = {
+      water_source_1: isEnabledSource1,
+      water_source_2: isEnabledSource2,
+    };
+    const response = await postWaterSourceSettings(formData);
+  };
+
+  {
+    isEnabledSource1 == true || isEnabledSource2 == true
+      ? postWaterSourceSetting()
+      : null;
+  }
+
+  const postMotorNotificationSetting = async () => {
+    const formData = {
+      motor_notification: isEnabledNotification,
+    };
+    const response = await postMotorNotification(formData);
+  };
+
+  {
+    isEnabledNotification == true ? postMotorNotificationSetting() : null;
+  }
+
   React.useEffect(() => {
     fetchWaterLevelHeightSettings();
+    // postWaterSourceSetting();
   }, []);
 
   function renderSwitchOnOffSettings() {
@@ -372,10 +422,10 @@ const Settings = () => {
           </Text>
           <Switch
             trackColor={{false: COLORS.darkGray, true: COLORS.rose_600}}
-            thumbColor={isEnabled ? COLORS.white : COLORS.white}
+            thumbColor={isEnabledNotification ? COLORS.white : COLORS.white}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
+            onValueChange={toggleNotificationSwitch}
+            value={isEnabledNotification}
           />
         </View>
       </View>
@@ -422,10 +472,17 @@ const Settings = () => {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{...FONTS.h3, color: COLORS.white, marginBottom: 3}}>
-                Default
-              </Text>
-              <Text style={{...FONTS.h3, color: COLORS.white}}>Manually</Text>
+              {!waterLevelData.tank_height ? (
+                <Text
+                  style={{...FONTS.h3, color: COLORS.white, marginBottom: 3}}>
+                  Default
+                </Text>
+              ) : null}
+              {waterLevelData.tank_height ? (
+                <Text style={{...FONTS.h3, color: COLORS.white}}>
+                  Manually - {waterLevelData.tank_height}%
+                </Text>
+              ) : null}
             </View>
             <TouchableOpacity
               style={{
@@ -564,7 +621,52 @@ const Settings = () => {
   }
 
   function renderWaterSource() {
-    return <View></View>;
+    return (
+      <View
+        style={{
+          marginTop: SIZES.padding,
+          backgroundColor: COLORS.amber_500,
+          padding: 20,
+          borderRadius: 10,
+          elevation: 5,
+        }}>
+        <View>
+          <Text style={{...FONTS.h2, color: COLORS.white}}>Water Source</Text>
+          <View
+            style={{
+              marginTop: 15,
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Source-1
+                </Text>
+                <Switch
+                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                  thumbColor={isEnabledSource1 ? COLORS.white : COLORS.white}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitchSource1}
+                  value={isEnabledSource1}
+                />
+              </View>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', left: 10}}>
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Source-2
+                </Text>
+                <Switch
+                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                  thumbColor={isEnabledSource2 ? COLORS.white : COLORS.white}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitchSource2}
+                  value={isEnabledSource2}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
   }
 
   return (
@@ -579,8 +681,8 @@ const Settings = () => {
       {renderWaterSource()}
       {renderOtherSettings()}
       {renderPersentModal()}
-      {renderVersion()}
       {renderTankHeightModal()}
+      {renderVersion()}
     </ScrollView>
   );
 };

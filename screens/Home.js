@@ -15,6 +15,7 @@ import {
   getWaterLevel,
   getLEDStatus,
 } from '../controllers/GetImageController';
+import {getWaterLevelSettings} from '../controllers/SettingsController';
 
 const Home = () => {
   const [streamImage, setStreamImage] = React.useState();
@@ -24,6 +25,7 @@ const Home = () => {
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
   var NewLevel = parseInt(level);
+  const [waterLevelData, setWaterLevelData] = React.useState('');
 
   //toggle
   const [isEnabled, setIsEnabled] = React.useState(false);
@@ -39,6 +41,10 @@ const Home = () => {
   const fetchLedStatus = async () => {
     const res = await getLEDStatus();
     setIsEnabled(res.data.led_status == 1 ? true : false);
+
+    if (waterLevelData.motor_notification == true) {
+      alert('gi');
+    }
   };
 
   const WaterLevel = async () => {
@@ -47,12 +53,18 @@ const Home = () => {
     setPhValue(res.data.ph_level);
   };
 
+  const fetchWaterLevelHeightSettings = async () => {
+    const response = await getWaterLevelSettings();
+    setWaterLevelData(response.data);
+  };
+
   React.useEffect(() => {
     setInterval(() => {
       getStreamImage();
       WaterLevel();
       fetchLedStatus();
     }, 4000);
+    // fetchWaterLevelHeightSettings();
   }, []);
 
   function renderWaterTank() {
