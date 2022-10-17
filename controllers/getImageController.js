@@ -1,7 +1,7 @@
 const getImage = async () => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/water-level-image/1`,
+      `http://107.20.37.104:8000/api/water-level-image/2`,
       {
         method: 'get',
         headers: {
@@ -18,7 +18,7 @@ const getImage = async () => {
 
 const getWaterLevel = async () => {
   try {
-    const res = await fetch(`http://107.20.37.104:8000/api/water-level/1`, {
+    const res = await fetch(`http://107.20.37.104:8000/api/water-level/2`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const getWaterLevel = async () => {
 
 const getLEDStatus = async () => {
   try {
-    const res = await fetch(`http://107.20.37.104:8000/api/led-status/1`, {
+    const res = await fetch(`http://107.20.37.104:8000/api/led-status/2`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
