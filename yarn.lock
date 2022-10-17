@@ -1620,10 +1620,10 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/slider/-/slider-4.3.1.tgz"
   "version" "4.3.1"
 
-"@react-native-firebase/app@^15.4.0", "@react-native-firebase/app@15.4.0":
-  "integrity" "sha512-1Xf1Q0x6x6dZamRjIpDLCvj4CUwozr1mvH3sc3A4J1avjGUwgqD0RR58DGd7r9akU+JmEXLHB84EZ9Aa68AHDg=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-15.4.0.tgz"
-  "version" "15.4.0"
+"@react-native-firebase/app@^15.7.0", "@react-native-firebase/app@15.4.0":
+  "integrity" "sha512-ZyrvewIkQC0UHDuHxXyc25/V8xYOa4xlukIHIbtJeBzVCCyVgZxF4Svyqs+CosqbHOuwWnmg+AW0rMvjrRcdmw=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-15.7.0.tgz"
+  "version" "15.7.0"
   dependencies:
     "@expo/config-plugins" "^5.0.1"
     "opencollective-postinstall" "^2.0.1"
@@ -6291,6 +6291,11 @@
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
 
+"react-native-dropdown-picker@^5.4.2":
+  "integrity" "sha512-cZBPyN+k52jA9XguFnKoF5tLf31z6gjZ8GijO/pfVNSSEtPwZ14UTUrr87JiiOnMh5K/O2kRzZ/jZN8D0MmUMA=="
+  "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.2.tgz"
+  "version" "5.4.2"
+
 "react-native-fast-image@^8.6.1":
   "integrity" "sha512-ILuP7EuakqHNzTr8ZbumhuxG4tE/wGQ66z4nEEuzc0FlqY6rYaPsnq/UD2ahoyFj6QP1WvA2RIK3odib+VcqWg=="
   "resolved" "https://registry.npmjs.org/react-native-fast-image/-/react-native-fast-image-8.6.1.tgz"
@@ -6357,6 +6362,11 @@
   dependencies:
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
+
+"react-native-simple-radio-button@^2.7.4":
+  "integrity" "sha512-QOZNmJUn0ViBGU+at7wAG/uGzd5PfXi0kMHr9lfTCLXknW/f9f2fOVjxjdHvOCdf/zA/eMJBjGjtusSDzQf1+w=="
+  "resolved" "https://registry.npmjs.org/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.4.tgz"
+  "version" "2.7.4"
 
 "react-native-svg@^13.1.0":
   "integrity" "sha512-drYa+0piaQ27xFEp1MxRBSu6eHbR37qQITKTHNOmPv1NhPUyZ5tH4ICWe7aTLlB2u6KEhpSHl63HJi3jpZFtvw=="
