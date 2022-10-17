@@ -43,7 +43,6 @@ const Home = () => {
     setIsEnabled(res.data.led_status == 1 ? true : false);
 
     if (waterLevelData.motor_notification == true) {
-      alert('gi');
     }
   };
 
@@ -53,18 +52,20 @@ const Home = () => {
     setPhValue(res.data.ph_level);
   };
 
-  const fetchWaterLevelHeightSettings = async () => {
-    const response = await getWaterLevelSettings();
-    setWaterLevelData(response.data);
-  };
+  // const fetchWaterLevelHeightSettings = async () => {
+  //   const response = await getWaterLevelSettings();
+  //   setWaterLevelData(response.data);
+  // };
 
   React.useEffect(() => {
+    getStreamImage();
+    WaterLevel();
+    fetchLedStatus();
     setInterval(() => {
       getStreamImage();
       WaterLevel();
       fetchLedStatus();
     }, 4000);
-    // fetchWaterLevelHeightSettings();
   }, []);
 
   function renderWaterTank() {
@@ -129,7 +130,8 @@ const Home = () => {
             }}></View>
         </View>
         <Text style={{...FONTS.h3, color: COLORS.darkGray, marginVertical: 6}}>
-          Live Water Level
+          Live Water Level{'\n'}
+          (Overhead tank)
         </Text>
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>

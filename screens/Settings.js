@@ -9,9 +9,10 @@ import {
   Image,
   Switch,
   TextInput,
+  ImageBackground,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
-import {FONTS, COLORS, icons, SIZES} from '../constants';
+import {FONTS, COLORS, icons, SIZES, images} from '../constants';
 import {Fumi} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -51,9 +52,6 @@ const Settings = () => {
 
   //toggle
   const [isEnabledNotification, setIsEnabledNotification] = useState(false);
-  const toggleNotificationSwitch = () => {
-    setIsEnabledNotification(previousState => !previousState);
-  };
 
   //toggle
   const [isEnabledManually, setIsEnabledManually] = useState(false);
@@ -98,12 +96,13 @@ const Settings = () => {
 
   const fetchWaterLevelHeightSettings = async () => {
     const response = await getWaterLevelSettings();
-    console.log(response);
     if (response.status === 200) {
       setWaterLevelData(response.data);
       setIsEnabledSource1(response.data.water_source_1);
       setIsEnabledSource2(response.data.water_source_2);
       setIsEnabledNotification(response.data.motor_notification);
+    }
+    if (response.data.motor_notification == true) {
     }
   };
 
@@ -113,7 +112,6 @@ const Settings = () => {
       tank_height: isEnabledManually === false ? 0 : tankHeight,
       tank_height_unit: isEnabledManually === false ? 0 : value,
     };
-
     const response = await postTankHeightSettings(formData);
     if (response.status === 200) {
       setTankHeightModal(false);
@@ -138,20 +136,15 @@ const Settings = () => {
       : null;
   }
 
-  const postMotorNotificationSetting = async () => {
+  const postMotorNotificationSetting = async value => {
     const formData = {
-      motor_notification: isEnabledNotification,
+      motor_notification: value,
     };
     const response = await postMotorNotification(formData);
   };
 
-  {
-    isEnabledNotification == true ? postMotorNotificationSetting() : null;
-  }
-
   React.useEffect(() => {
     fetchWaterLevelHeightSettings();
-    // postWaterSourceSetting();
   }, []);
 
   function renderSwitchOnOffSettings() {
@@ -313,7 +306,7 @@ const Settings = () => {
                 ...FONTS.h3,
                 color: COLORS.white,
               }}>
-              Quality{' - '}
+              Quality
             </Text>
             <View style={{marginVertical: 10}}></View>
             <Text
@@ -321,7 +314,7 @@ const Settings = () => {
                 ...FONTS.h3,
                 color: COLORS.white,
               }}>
-              Brightness{' : '}
+              Brightness
             </Text>
             <View style={{marginVertical: 10}}></View>
             <Text
@@ -329,7 +322,7 @@ const Settings = () => {
                 ...FONTS.h3,
                 color: COLORS.white,
               }}>
-              Contrast{' - '}
+              Contrast
             </Text>
             <View style={{marginVertical: 10}}></View>
             <Text
@@ -337,7 +330,7 @@ const Settings = () => {
                 ...FONTS.h3,
                 color: COLORS.white,
               }}>
-              Saturation{' - '}
+              Saturation
             </Text>
           </View>
           <View style={{flex: 1.5}}>
@@ -421,33 +414,17 @@ const Settings = () => {
             Notification Turn ON / OFF
           </Text>
           <Switch
+            style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
             trackColor={{false: COLORS.darkGray, true: COLORS.rose_600}}
             thumbColor={isEnabledNotification ? COLORS.white : COLORS.white}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleNotificationSwitch}
+            onValueChange={value => {
+              setIsEnabledNotification(value);
+              postMotorNotificationSetting(value);
+            }}
             value={isEnabledNotification}
           />
         </View>
-      </View>
-    );
-  }
-
-  function renderVersion() {
-    return (
-      <View style={{alignItems: 'center', marginTop: 20}}>
-        <Text
-          style={{
-            ...FONTS.h2,
-            color: COLORS.gray,
-            fontWeight: 'bold',
-            borderBottomWidth: 0.5,
-            borderBottomColor: COLORS.darkGray2,
-          }}>
-          Intolo India
-        </Text>
-        <Text style={{...FONTS.h6, color: COLORS.darkGray}}>
-          Version - 1.0.0
-        </Text>
       </View>
     );
   }
@@ -457,7 +434,7 @@ const Settings = () => {
       <View
         style={{
           marginTop: SIZES.padding,
-          backgroundColor: COLORS.amber_500,
+          backgroundColor: COLORS.darkGray,
           padding: 20,
           borderRadius: 10,
           elevation: 5,
@@ -637,31 +614,35 @@ const Settings = () => {
               marginTop: 15,
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-                  Source-1
-                </Text>
-                <Switch
-                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
-                  thumbColor={isEnabledSource1 ? COLORS.white : COLORS.white}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitchSource1}
-                  value={isEnabledSource1}
-                />
-              </View>
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', left: 10}}>
-                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-                  Source-2
-                </Text>
-                <Switch
-                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
-                  thumbColor={isEnabledSource2 ? COLORS.white : COLORS.white}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitchSource2}
-                  value={isEnabledSource2}
-                />
-              </View>
+              <Switch
+                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
+                trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                thumbColor={isEnabledSource1 ? COLORS.white : COLORS.white}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitchSource1}
+                value={isEnabledSource1}
+              />
+              <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
+                Source-1
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <Switch
+                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
+                trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                thumbColor={isEnabledSource2 ? COLORS.white : COLORS.white}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitchSource2}
+                value={isEnabledSource2}
+              />
+              <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
+                Source-2
+              </Text>
             </View>
           </View>
         </View>
@@ -669,6 +650,26 @@ const Settings = () => {
     );
   }
 
+  function renderVersion() {
+    return (
+      <View style={{alignItems: 'center', marginTop: 20}}>
+        <Text
+          style={{
+            ...FONTS.h2,
+            color: COLORS.gray,
+            fontWeight: 'bold',
+            borderBottomWidth: 0.5,
+            borderBottomColor: COLORS.darkGray2,
+          }}>
+          intenics.in
+        </Text>
+        <Text style={{...FONTS.h6, color: COLORS.darkGray}}>
+          Version - 1.0.0
+        </Text>
+      </View>
+    );
+  }
+  
   return (
     <ScrollView
       style={{margin: 20}}
