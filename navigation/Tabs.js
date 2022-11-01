@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Home, History, Settings} from '../screens';
+import {Home, Settings, RemoteControl} from '../screens';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,8 +17,24 @@ const Tabs = () => {
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
-          headerTitle: 'Water Level',
+          headerTitle: 'Smart Water Info',
           headerTitleAlign: 'center',
+        }}
+      />
+      <Tab.Screen
+        name="Remote Control"
+        component={RemoteControl}
+        options={{
+          tabBarLabel: 'Remote Control',
+          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons
+              name="gamepad-circle-down"
+              color={color}
+              size={20}
+            />
+          ),
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -34,19 +50,9 @@ const Tabs = () => {
               size={20}
             />
           ),
+          headerShown: false,
         }}
       />
-      {/* <Tab.Screen
-        name="History"
-        component={History}
-        options={{
-          tabBarLabel: 'History',
-          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
-          tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="history" color={color} size={size} />
-          ),
-        }}
-      /> */}
     </Tab.Navigator>
   );
 };
