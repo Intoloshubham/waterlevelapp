@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Switch,
-  ImageBackground,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Switch, ImageBackground, ScrollView} from 'react-native';
 import {FONTS, COLORS, images} from '../constants';
 
 const RemoteControl = () => {

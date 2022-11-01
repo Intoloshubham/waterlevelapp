@@ -1,7 +1,7 @@
 const postWaterLevelSettings = async formData => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/water-level-setting/2`,
+      `http://107.20.37.104:8000/api/water-level-setting/1`,
       {
         method: 'put',
         headers: {
@@ -20,7 +20,7 @@ const postWaterLevelSettings = async formData => {
 const getWaterLevelSettings = async () => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/water-level-setting/2`,
+      `http://107.20.37.104:8000/api/water-level-setting/1`,
       {
         method: 'get',
         headers: {
@@ -38,7 +38,7 @@ const getWaterLevelSettings = async () => {
 const postTankHeightSettings = async formData => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/tank-height-setting/2`,
+      `http://107.20.37.104:8000/api/tank-height-setting/1`,
       {
         method: 'put',
         headers: {
@@ -57,7 +57,7 @@ const postTankHeightSettings = async formData => {
 const postWaterSourceSettings = async formData => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/water-source-setting/2`,
+      `http://107.20.37.104:8000/api/water-source-setting/1`,
       {
         method: 'put',
         headers: {
@@ -76,7 +76,7 @@ const postWaterSourceSettings = async formData => {
 const postMotorNotification = async formData => {
   try {
     const res = await fetch(
-      `http://107.20.37.104:8000/api/motor-notification-setting/2`,
+      `http://107.20.37.104:8000/api/motor-notification-setting/1`,
       {
         method: 'put',
         headers: {

@@ -9,10 +9,9 @@ import {
   Image,
   Switch,
   TextInput,
-  ImageBackground,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
-import {FONTS, COLORS, icons, SIZES, images} from '../constants';
+import {FONTS, COLORS, icons, SIZES} from '../constants';
 import {Fumi} from 'react-native-textinput-effects';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -51,7 +50,9 @@ const Settings = () => {
   }, []);
 
   //toggle
-  const [isEnabledNotification, setIsEnabledNotification] = useState(false);
+  const [isEnabledNotification, setIsEnabledNotification] = useState(
+    waterLevelData.tank_height ? true : false,
+  );
 
   //toggle
   const [isEnabledManually, setIsEnabledManually] = useState(false);
@@ -299,7 +300,7 @@ const Settings = () => {
           elevation: 5,
         }}>
         <Text style={{...FONTS.h2, color: COLORS.white}}>Other Settings</Text>
-        <View style={{flexDirection: 'row', marginTop: 15}}>
+        {/* <View style={{flexDirection: 'row', marginTop: 15}}>
           <View style={{flex: 1}}>
             <Text
               style={{
@@ -403,7 +404,7 @@ const Settings = () => {
             borderBottomWidth: 0.5,
             borderColor: COLORS.gray3,
             marginVertical: SIZES.padding,
-          }}></View>
+          }}></View> */}
         <View
           style={{
             flexDirection: 'row',
@@ -623,7 +624,7 @@ const Settings = () => {
                 value={isEnabledSource1}
               />
               <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
-                Source-1
+                Source-1 (Bore Pump)
               </Text>
             </View>
             <View
@@ -641,7 +642,7 @@ const Settings = () => {
                 value={isEnabledSource2}
               />
               <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
-                Source-2
+                Source-2 (Sump Pump)
               </Text>
             </View>
           </View>
@@ -669,7 +670,7 @@ const Settings = () => {
       </View>
     );
   }
-  
+
   return (
     <ScrollView
       style={{margin: 20}}
