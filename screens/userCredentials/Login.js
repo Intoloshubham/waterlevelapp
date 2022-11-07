@@ -18,84 +18,112 @@ const Login = ({navigation}) => {
   const [mobile, SetMobile] = React.useState('');
   const [password, SetPassword] = React.useState('');
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.inner}>
-          {/* <Text style={{marginBottom:20,...FONTS.h2,textAlign:'center'}}>Water Level</Text> */}
-          <View
-            style={{
-              padding: 25,
-              backgroundColor: COLORS.white,
-              borderRadius: 20,
-              elevation: 10,
-            }}>
-            <Image source={icons.user} style={styles.header} />
-            <Text
+  function renderLogin() {
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            {/* <Text style={{marginBottom:20,...FONTS.h2,textAlign:'center'}}>Water Level</Text> */}
+            <View
               style={{
-                textAlign: 'center',
-                ...FONTS.h2,
-                color: COLORS.white,
-                backgroundColor: COLORS.blue_600,
-                marginBottom: 40,
-                marginHorizontal: 40,
-                borderRadius: 5,
-                padding: 5,
+                padding: 25,
+                backgroundColor: COLORS.white,
+                borderRadius: 20,
+                elevation: 10,
               }}>
-              Live Water Level
-            </Text>
-            <TextInput
-              placeholder="Mobile No."
-              style={styles.textInput}
-              onChangeText={text => SetMobile(text)}
-            />
-            <TextInput
-              placeholder="Password"
-              style={styles.textInput}
-              secureTextEntry={true}
-              onChangeText={text => SetPassword(text)}
-            />
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                backgroundColor: COLORS.darkGray,
-                padding: 8,
-                marginTop: 40,
-                borderRadius: 5,
-              }}
-              onPress={() => navigation.navigate('Tabs')}>
-              <Text style={{...FONTS.h3, color: COLORS.white}}>Login</Text>
-            </TouchableOpacity>
-            <View style={{marginTop: 15}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
-                  If you don't have an account?
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    marginLeft: 10,
-                    backgroundColor: COLORS.blue_700,
-                    paddingVertical: 2,
-                    paddingHorizontal: 6,
-                  }}
-                  onPress={() => navigation.navigate('Register')}>
-                  <Text style={{...FONTS.h3, color: COLORS.white}}>
-                    Register
+              <Image source={icons.user} style={styles.header} />
+              <Text
+                style={{
+                  textAlign: 'center',
+                  ...FONTS.h2,
+                  color: COLORS.white,
+                  backgroundColor: COLORS.blue_600,
+                  marginBottom: 40,
+                  marginHorizontal: 40,
+                  borderRadius: 5,
+                  padding: 5,
+                }}>
+                Smart Water Info
+              </Text>
+              <TextInput
+                placeholder="Mobile No."
+                style={styles.textInput}
+                onChangeText={text => SetMobile(text)}
+              />
+              <TextInput
+                placeholder="Password"
+                style={styles.textInput}
+                secureTextEntry={true}
+                onChangeText={text => SetPassword(text)}
+              />
+              <TouchableOpacity
+                style={{
+                  alignItems: 'center',
+                  backgroundColor: COLORS.darkGray,
+                  padding: 8,
+                  marginTop: 40,
+                  borderRadius: 5,
+                }}
+                onPress={() => navigation.navigate('Tabs')}>
+                <Text style={{...FONTS.h3, color: COLORS.white}}>Login</Text>
+              </TouchableOpacity>
+              <View style={{marginTop: 15}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
+                    If you don't have an account?
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      marginLeft: 10,
+                      backgroundColor: COLORS.blue_700,
+                      paddingVertical: 2,
+                      paddingHorizontal: 6,
+                    }}
+                    onPress={() => navigation.navigate('Register')}>
+                    <Text style={{...FONTS.h3, color: COLORS.white}}>
+                      Register
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={() => alert('Forgot password')}>
+                  <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
+                    Forgot Password?
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity onPress={() => alert('Forgot password')}>
-                <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
-                  Forgot Password?
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    );
+  }
+
+  function renderBrandingVersion() {
+    return (
+      <View style={{alignItems: 'center', marginBottom: 10}}>
+        <Text
+          style={{
+            ...FONTS.h3,
+            color: COLORS.true_gray_700,
+            borderBottomWidth: 0.5,
+            borderColor: COLORS.true_gray_600,
+          }}>
+          Powered By Intenics
+        </Text>
+        <Text style={{...FONTS.h4, color: COLORS.true_gray_600}}>
+          Version 1.0.0{' '}
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{flex: 1}}>
+      {renderLogin()}
+      {renderBrandingVersion()}
+    </View>
   );
 };
 

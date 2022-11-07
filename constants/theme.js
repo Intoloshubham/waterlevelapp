@@ -59,6 +59,17 @@ export const COLORS = {
   amber_300: '#fcd34d',
   amber_400: '#fbbf24',
   amber_500: '#f59e0b',
+
+  true_gray_50: '#fafafa',
+  true_gray_100: '#f5f5f5',
+  true_gray_200: '#e5e5e5',
+  true_gray_300: '#d4d4d4',
+  true_gray_400: '#a3a3a3',
+  true_gray_500: '#737373',
+  true_gray_600: '#525252',
+  true_gray_700: '#404040',
+  true_gray_800: '#262626',
+  true_gray_900: '#171717',
 };
 export const SIZES = {
   // global sizes

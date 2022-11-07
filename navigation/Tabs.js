@@ -2,6 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Home, Settings, RemoteControl} from '../screens';
+import {COLORS} from '../constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +20,9 @@ const Tabs = () => {
           ),
           headerTitle: 'Smart Water Info',
           headerTitleAlign: 'center',
+          headerTitleStyle: {
+            color: COLORS.blue_600,
+          },
         }}
       />
       <Tab.Screen
