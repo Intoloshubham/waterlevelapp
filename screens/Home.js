@@ -5,7 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Switch,
+  RefreshControl,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
@@ -15,7 +15,10 @@ import {
   getWaterLevel,
   getLEDStatus,
 } from '../controllers/GetImageController';
-import {getWaterLevelSettings} from '../controllers/SettingsController';
+
+const wait = timeout => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+};
 
 const Home = () => {
   const [streamImage, setStreamImage] = React.useState();
@@ -28,7 +31,8 @@ const Home = () => {
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
   //toggle
-  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [isEnabled, setIsEnabled] = React.useState('');
+
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const getStreamImage = async () => {
@@ -41,7 +45,6 @@ const Home = () => {
   const fetchLedStatus = async () => {
     const res = await getLEDStatus();
     setIsEnabled(res.data.led_status == 1 ? true : false);
-
     if (waterLevelData.motor_notification == true) {
     }
   };
@@ -56,6 +59,15 @@ const Home = () => {
   //   const response = await getWaterLevelSettings();
   //   setWaterLevelData(response.data);
   // };
+  //
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getStreamImage();
+    WaterLevel();
+    fetchLedStatus();
+    wait(1000).then(() => setRefreshing(false));
+  }, []);
 
   React.useEffect(() => {
     getStreamImage();
@@ -70,71 +82,118 @@ const Home = () => {
 
   function renderWaterTank() {
     return (
-      <View
-        style={{
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            fontSize: 12,
-            color: COLORS.rose_600,
-            zIndex: 2,
-            top: heightToDo((number = 1)),
-            position: 'absolute',
-          }}>
-          {Math.floor(level)}%
-        </Text>
+      <View>
         <View
           style={{
             alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            zIndex: 1,
           }}>
-          <Image
-            source={icons.tank}
+          <Text
             style={{
+              fontSize: 12,
+              color: COLORS.rose_600,
               zIndex: 2,
-              width: widthToDo((number = '12%')),
-              height: heightToDo((number = '7.5%')),
-            }}
-          />
-          <View
-            style={{
-              bottom: !NewLevel ? 0.5 : NewLevel,
+              top: heightToDo((number = 1)),
               position: 'absolute',
             }}>
-            {level > 0 ? (
-              <Lottie
-                style={{
-                  width: widthToDo((number = '11.5%')),
-                  zIndex: 1,
-                  backgroundColor: '#3490dc',
-                }}
-                source={require('../img/demo.json')}
-                autoPlay
-                loop
-              />
-            ) : null}
-          </View>
+            {Math.floor(level)}%
+          </Text>
           <View
             style={{
-              backgroundColor: '#3490dc',
-              width: widthToDo((number = '11.5%')),
-              height: !NewLevel ? 0.5 : NewLevel,
-              bottom: heightToDo((number = '0.09%')),
-              position: 'absolute',
-              borderBottomRightRadius: heightToDo((number = '1.2%')),
-              borderBottomLeftRadius: heightToDo((number = '1.2%')),
-              zIndex: 0,
-            }}></View>
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              zIndex: 1,
+            }}>
+            <Image
+              source={icons.tank}
+              style={{
+                zIndex: 2,
+                width: widthToDo((number = '12%')),
+                height: heightToDo((number = '7.5%')),
+              }}
+            />
+            <View
+              style={{
+                bottom: !NewLevel ? 0.5 : NewLevel,
+                position: 'absolute',
+              }}>
+              {level > 0 ? (
+                <Lottie
+                  style={{
+                    width: widthToDo((number = '11.5%')),
+                    zIndex: 1,
+                    backgroundColor: '#3490dc',
+                  }}
+                  source={require('../img/demo.json')}
+                  autoPlay
+                  loop
+                />
+              ) : null}
+            </View>
+            <View
+              style={{
+                backgroundColor: '#3490dc',
+                width: widthToDo((number = '11.5%')),
+                height: !NewLevel ? 0.5 : NewLevel,
+                bottom: heightToDo((number = '0.09%')),
+                position: 'absolute',
+                borderBottomRightRadius: heightToDo((number = '1.2%')),
+                borderBottomLeftRadius: heightToDo((number = '1.2%')),
+                zIndex: 0,
+              }}></View>
+          </View>
+          <Text
+            style={{...FONTS.h3, color: COLORS.darkGray, marginVertical: 6}}>
+            Live Water Level{'\n'}
+            (OverHead Tank)
+          </Text>
         </View>
-        <Text style={{...FONTS.h3, color: COLORS.darkGray, marginVertical: 6}}>
-          Live Water Level{'\n'}
-          (Overhead tank)
-        </Text>
-
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: COLORS.white,
+            elevation: 5,
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+          }}>
+          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+            Pump Status -
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              backgroundColor: COLORS.white,
+              left: 10,
+              padding: 1,
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isEnabled == false ? COLORS.white : COLORS.black,
+                backgroundColor: isEnabled == false ? COLORS.red : COLORS.white,
+                // paddingHorizontal: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 3,
+                borderWidth: 0.5,
+              }}>
+              OFF
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isEnabled == true ? COLORS.white : COLORS.black,
+                paddingHorizontal: 10,
+                paddingVertical: 3,
+                backgroundColor: isEnabled == true ? 'green' : COLORS.white,
+                borderWidth: 0.5,
+              }}>
+              ON
+            </Text>
+          </View>
+        </View>
+        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
             Pump Status{' '}
           </Text>
@@ -157,7 +216,7 @@ const Home = () => {
               OFF
             </Text>
           )}
-        </View>
+        </View> */}
       </View>
     );
   }
@@ -228,7 +287,7 @@ const Home = () => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
               onPress={() => setSquare(false)}
-              style={{right: 25, backgroundColor: COLORS.green, padding: 5}}>
+              style={{right: 25, backgroundColor: 'green', padding: 5}}>
               <Image
                 source={icons.circle}
                 style={{height: 12, width: 12, tintColor: 'white'}}
@@ -236,7 +295,7 @@ const Home = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setSquare(true)}
-              style={{right: 15, backgroundColor: COLORS.green, padding: 5}}>
+              style={{right: 15, backgroundColor: 'green', padding: 5}}>
               <Image
                 source={icons.square}
                 style={{height: 12, width: 12, tintColor: 'white'}}
@@ -247,7 +306,7 @@ const Home = () => {
               style={{alignItems: 'flex-end'}}>
               <Image
                 source={icons.refresh}
-                style={{height: 28, width: 28, tintColor: COLORS.rose_600}}
+                style={{height: 28, width: 28, tintColor: COLORS.red}}
               />
             </TouchableOpacity>
           </View>
@@ -315,7 +374,11 @@ const Home = () => {
 
   return (
     <View style={{flex: 1, margin: 12}}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {renderWaterTank()}
         {renderWaterLiveView()}
         {renderOthers()}
