@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
@@ -55,11 +56,6 @@ const Home = () => {
     setPhValue(res.data.ph_level);
   };
 
-  // const fetchWaterLevelHeightSettings = async () => {
-  //   const response = await getWaterLevelSettings();
-  //   setWaterLevelData(response.data);
-  // };
-  //
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -143,7 +139,7 @@ const Home = () => {
               }}></View>
           </View>
           <Text
-            style={{...FONTS.h3, color: COLORS.darkGray, marginVertical: 6}}>
+            style={{fontSize: 15, color: COLORS.darkGray, marginVertical: 5}}>
             Live Water Level{'\n'}
             (OverHead Tank)
           </Text>
@@ -154,11 +150,12 @@ const Home = () => {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: COLORS.white,
-            elevation: 5,
             paddingHorizontal: 15,
             paddingVertical: 5,
+            elevation: 2,
+            borderRadius: 5,
           }}>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             Pump Status -
           </Text>
           <View
@@ -170,7 +167,7 @@ const Home = () => {
             }}>
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 color: isEnabled == false ? COLORS.white : COLORS.black,
                 backgroundColor: isEnabled == false ? COLORS.red : COLORS.white,
                 // paddingHorizontal: 5,
@@ -182,7 +179,7 @@ const Home = () => {
             </Text>
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 14,
                 color: isEnabled == true ? COLORS.white : COLORS.black,
                 paddingHorizontal: 10,
                 paddingVertical: 3,
@@ -225,10 +222,12 @@ const Home = () => {
     return (
       <View
         style={{
-          marginVertical: 20,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
           backgroundColor: COLORS.white,
-          elevation: 5,
-          padding: 15,
+          borderRadius: 10,
+          marginTop: 15,
+          ...styles.shadow,
         }}>
         <Image
           source={{uri: streamImage}}
@@ -237,15 +236,18 @@ const Home = () => {
             width: square == true ? 300 : 200,
             alignSelf: 'center',
             borderRadius: square == true ? 10 : 100,
+            borderWidth: 1,
+            borderColor: COLORS.black,
           }}
         />
         <Text
           style={{
-            fontSize: 10,
+            fontSize: 12,
+            fontWeight: 'bold',
             color: COLORS.white,
             textAlign: square == true ? 'right' : 'center',
             right: square == true ? 30 : null,
-            marginTop: square == true ? -25 : -35,
+            marginTop: square == true ? -25 : -40,
           }}>
           {time}
           {square == true ? ',' : '\n'} {date}
@@ -264,7 +266,7 @@ const Home = () => {
             }}>
             <Text
               style={{
-                ...FONTS.h3,
+                fontSize: 15,
                 textAlign: 'center',
                 color: COLORS.darkGray,
               }}>
@@ -276,7 +278,7 @@ const Home = () => {
             />
             <Text
               style={{
-                ...FONTS.h3,
+                fontSize: 15,
                 textAlign: 'center',
                 left: 10,
                 color: COLORS.darkGray,
@@ -319,15 +321,18 @@ const Home = () => {
     return (
       <View
         style={{
-          padding: 15,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
           backgroundColor: COLORS.white,
-          elevation: 5,
-          marginTop: 15,
-          marginBottom: 50,
+          marginVertical: 15,
+          borderRadius: 10,
+          ...styles.shadow,
         }}>
-        {/* <Text style={{...FONTS.h2, color: COLORS.darkGray}}>Details</Text> */}
-        <View style={{}}>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.darkGray}}>
+          Water & Tank Climate
+        </Text>
+        <View style={{marginTop: 10}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             Usage{' - '}Under
           </Text>
           <View
@@ -336,7 +341,7 @@ const Home = () => {
               marginVertical: 10,
               borderColor: COLORS.gray3,
             }}></View>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             PH Value{' - '}
             {phValue}
           </Text>
@@ -346,7 +351,7 @@ const Home = () => {
               marginVertical: 10,
               borderColor: COLORS.gray3,
             }}></View>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             Quality{' - '} {phValue >= 6 && phValue < 9 ? 'Safe' : 'Unsafe'}
           </Text>
           <View
@@ -355,7 +360,7 @@ const Home = () => {
               marginVertical: 10,
               borderColor: COLORS.gray3,
             }}></View>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             Leakage{' - '}No
           </Text>
           <View
@@ -364,7 +369,7 @@ const Home = () => {
               marginVertical: 10,
               borderColor: COLORS.gray3,
             }}></View>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             Need Cleaning{' - '}No
           </Text>
         </View>
@@ -373,7 +378,7 @@ const Home = () => {
   }
 
   return (
-    <View style={{flex: 1, margin: 12}}>
+    <View style={{flex: 1, margin: 10}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -387,4 +392,16 @@ const Home = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.65,
+    elevation: 3,
+  },
+});
 export default Home;

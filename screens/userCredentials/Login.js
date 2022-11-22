@@ -2,17 +2,17 @@ import React from 'react';
 import {
   View,
   KeyboardAvoidingView,
-  TextInput,
   StyleSheet,
   Text,
   Platform,
   TouchableWithoutFeedback,
-  Button,
   Keyboard,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import {SIZES, COLORS, icons, images, FONTS} from '../../constants';
+import {TextInput} from 'react-native-paper';
+import {TextButton} from '../../componets';
 
 const Login = ({navigation}) => {
   const [mobile, SetMobile] = React.useState('');
@@ -21,78 +21,171 @@ const Login = ({navigation}) => {
   function renderLogin() {
     return (
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.inner}>
-            {/* <Text style={{marginBottom:20,...FONTS.h2,textAlign:'center'}}>Water Level</Text> */}
+          <View style={{padding: 20, flex: 1, justifyContent: 'space-around'}}>
             <View
               style={{
-                padding: 25,
-                backgroundColor: COLORS.white,
-                borderRadius: 20,
-                elevation: 10,
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginBottom: 70,
               }}>
-              <Image source={icons.user} style={styles.header} />
-              <Text
+              <Image
+                source={images.waterinfo}
                 style={{
-                  textAlign: 'center',
-                  ...FONTS.h2,
-                  color: COLORS.white,
-                  backgroundColor: COLORS.blue_600,
-                  marginBottom: 40,
-                  marginHorizontal: 40,
-                  borderRadius: 5,
-                  padding: 5,
-                }}>
-                Smart Water Info
-              </Text>
-              <TextInput
-                placeholder="Mobile No."
-                style={styles.textInput}
-                onChangeText={text => SetMobile(text)}
+                  height: 120,
+                  width: 170,
+                  borderRadius: 10,
+                  marginTop: 15,
+                }}
               />
-              <TextInput
-                placeholder="Password"
-                style={styles.textInput}
-                secureTextEntry={true}
-                onChangeText={text => SetPassword(text)}
-              />
+            </View>
+            <View
+              style={{
+                marginBottom: 50,
+                backgroundColor: COLORS.white,
+                elevation: 5,
+                borderRadius: 10,
+                paddingHorizontal: 20,
+                paddingVertical: 20,
+              }}>
               <TouchableOpacity
                 style={{
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  backgroundColor: COLORS.darkGray,
-                  padding: 8,
-                  marginTop: 40,
-                  borderRadius: 5,
+                  justifyContent: 'center',
                 }}
-                onPress={() => navigation.navigate('Tabs')}>
-                <Text style={{...FONTS.h3, color: COLORS.white}}>Login</Text>
+                onPress={() => {
+                  console.log('object');
+                }}>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    color: COLORS.true_gray_700,
+                    fontWeight: '400',
+                  }}>
+                  Login to Continue
+                </Text>
+                <Image
+                  source={icons.right}
+                  style={{
+                    left: 10,
+                    height: 22,
+                    width: 22,
+                    tintColor: COLORS.amber_500,
+                  }}
+                />
               </TouchableOpacity>
-              <View style={{marginTop: 15}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
-                    If you don't have an account?
-                  </Text>
-                  <TouchableOpacity
+
+              <View style={{marginTop: 40}}>
+                <TextInput
+                  mode="outlined"
+                  label="Mobile No."
+                  left={<TextInput.Icon icon="dialpad" />}
+                  keyboardType="phone-pad"
+                  onChangeText={value => {
+                    SetMobile(value);
+                  }}
+                />
+                <TextInput
+                  style={{marginTop: 10}}
+                  mode="outlined"
+                  label="Password"
+                  left={<TextInput.Icon icon="security" />}
+                  secureTextEntry
+                  right={<TextInput.Icon icon="eye" />}
+                  onChangeText={value => {
+                    SetPassword(value);
+                  }}
+                />
+                <TextButton
+                  label="Login"
+                  buttonContainerStyle={{
+                    marginTop: 25,
+                    height: 45,
+                    alignItems: 'center',
+                    borderRadius: 5,
+                  }}
+                  onPress={() => navigation.navigate('Tabs')}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flex: 1,
+                marginTop: 30,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
+                  Don't have an account ?
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Register')}
+                  style={{
+                    backgroundColor: COLORS.cyan_600,
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    left: 10,
+                  }}>
+                  <Text
                     style={{
-                      marginLeft: 10,
-                      backgroundColor: COLORS.blue_700,
-                      paddingVertical: 2,
-                      paddingHorizontal: 6,
-                    }}
-                    onPress={() => navigation.navigate('Register')}>
-                    <Text style={{...FONTS.h3, color: COLORS.white}}>
-                      Register
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={() => alert('Forgot password')}>
-                  <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
-                    Forgot Password?
+                      ...FONTS.h4,
+                      color: COLORS.white,
+                    }}>
+                    Register
                   </Text>
                 </TouchableOpacity>
               </View>
+              {/* <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                  marginHorizontal: 115,
+                }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: COLORS.white,
+                    padding: 6,
+                    elevation: 10,
+                  }}>
+                  <Image
+                    source={icons.email_circle}
+                    style={{height: 20, width: 20}}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: COLORS.white,
+                    padding: 6,
+                    elevation: 10,
+                  }}>
+                  <Image
+                    source={icons.linkedin}
+                    style={{height: 20, width: 20}}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: COLORS.white,
+                    padding: 6,
+                    elevation: 10,
+                  }}>
+                  <Image
+                    source={icons.website}
+                    style={{height: 20, width: 20}}
+                  />
+                </TouchableOpacity>
+              </View> */}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -105,15 +198,13 @@ const Login = ({navigation}) => {
       <View style={{alignItems: 'center', marginBottom: 10}}>
         <Text
           style={{
-            ...FONTS.h3,
+            fontSize: 16,
             color: COLORS.true_gray_700,
-            borderBottomWidth: 0.5,
-            borderColor: COLORS.true_gray_600,
           }}>
-          Powered By Intenics
+          Intenics
         </Text>
-        <Text style={{...FONTS.h4, color: COLORS.true_gray_600}}>
-          Version 1.0.0{' '}
+        <Text style={{fontSize: 12, color: COLORS.true_gray_600}}>
+          Version 1.0.0
         </Text>
       </View>
     );
@@ -122,7 +213,7 @@ const Login = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       {renderLogin()}
-      {renderBrandingVersion()}
+      {/* {renderBrandingVersion()} */}
     </View>
   );
 };
@@ -143,6 +234,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     elevation: 10,
+    borderRadius: 60,
   },
   textInput: {
     height: 40,
