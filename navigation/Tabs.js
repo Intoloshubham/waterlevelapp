@@ -14,14 +14,22 @@ const Tabs = () => {
         component={Home}
         options={{
           tabBarLabel: 'Home',
-          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
+          tabBarLabelStyle: {
+            marginBottom: 5,
+            fontSize: 12,
+            color: COLORS.true_gray_800,
+          },
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="home"
+              color={COLORS.cyan_600}
+              size={size}
+            />
           ),
           headerTitle: 'Smart Water Info',
           headerTitleAlign: 'center',
           headerTitleStyle: {
-            color: COLORS.blue_600,
+            color: COLORS.cyan_700,
           },
         }}
       />
@@ -30,11 +38,15 @@ const Tabs = () => {
         component={RemoteControl}
         options={{
           tabBarLabel: 'Remote Control',
-          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
+          tabBarLabelStyle: {
+            marginBottom: 5,
+            fontSize: 12,
+            color: COLORS.true_gray_800,
+          },
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="gamepad-circle-down"
-              color={color}
+              color={COLORS.cyan_600}
               size={20}
             />
           ),
@@ -46,11 +58,15 @@ const Tabs = () => {
         component={Settings}
         options={{
           tabBarLabel: 'Settings',
-          tabBarLabelStyle: {marginBottom: 5, fontSize: 12},
+          tabBarLabelStyle: {
+            marginBottom: 5,
+            fontSize: 12,
+            color: COLORS.true_gray_800,
+          },
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="application-settings"
-              color={color}
+              color={COLORS.cyan_600}
               size={20}
             />
           ),

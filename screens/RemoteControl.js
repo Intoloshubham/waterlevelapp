@@ -32,18 +32,17 @@ const RemoteControl = () => {
     return (
       <View
         style={{
-          marginTop: 20,
-          backgroundColor: COLORS.darkGray,
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
           borderRadius: 10,
           elevation: 5,
+          backgroundColor: COLORS.darkGray,
         }}>
         <View>
-          <Text style={{...FONTS.h2, color: COLORS.white}}>
+          <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
             Manually Motor On/Off
           </Text>
           <DuoToggleSwitch
-            style={{}}
             primaryText="OFF"
             secondaryText="ON"
             onPrimaryPress={() => {
@@ -64,7 +63,7 @@ const RemoteControl = () => {
     );
   }
 
-  return <View style={{margin: 20}}>{renderManuallyOnOffMotor()}</View>;
+  return <View style={{margin: 10}}>{renderManuallyOnOffMotor()}</View>;
 };
 
 export default RemoteControl;
