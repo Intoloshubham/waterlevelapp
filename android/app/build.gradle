@@ -239,7 +239,7 @@ packagingOptions {
         //     storePassword 'water@123'
         //     keyAlias 'your_key_alias'
         //     keyPassword 'water@123'
-        //}
+        // }
     }
     buildTypes {
         debug {

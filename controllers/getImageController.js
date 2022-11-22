@@ -1,14 +1,13 @@
+import {API_URL} from '@env';
+
 const getImage = async () => {
   try {
-    const res = await fetch(
-      `http://107.20.37.104:8000/api/water-level-image/1`,
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const res = await fetch(API_URL + 'water-level-image/1', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     const data = await res.json();
     return data;
   } catch (error) {
@@ -18,7 +17,7 @@ const getImage = async () => {
 
 const getWaterLevel = async () => {
   try {
-    const res = await fetch(`http://107.20.37.104:8000/api/water-level/1`, {
+    const res = await fetch(API_URL + 'water-level/1', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +32,7 @@ const getWaterLevel = async () => {
 
 const getLEDStatus = async () => {
   try {
-    const res = await fetch(`http://107.20.37.104:8000/api/led-status/1`, {
+    const res = await fetch(API_URL + 'led-status/1', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',

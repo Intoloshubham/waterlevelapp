@@ -8,12 +8,9 @@ import {
   RefreshControl,
   Image,
   Switch,
-  TextInput,
   ImageBackground,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
-import {Fumi} from 'react-native-textinput-effects';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {
   getWaterLevelSettings,
   postWaterLevelSettings,
@@ -22,17 +19,13 @@ import {
   postMotorNotification,
 } from '../controllers/SettingsController';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {TextInput} from 'react-native-paper';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Settings = () => {
-  const [qualityrange, setQualityRange] = useState('10%');
-  const [brightness, setBrightness] = useState('20%');
-  const [contrast, setContrast] = useState('30%');
-  const [saturation, setSaturation] = useState('45%');
-
   //Modal
   const [persentModal, setPersentModal] = useState(false);
   const [tankHeightModal, setTankHeightModal] = useState(false);
@@ -150,35 +143,38 @@ const Settings = () => {
     fetchWaterLevelHeightSettings();
   }, []);
 
+  //===========================
+
   function renderSwitchOnOffSettings() {
     return (
       <View
         style={{
-          backgroundColor: COLORS.blue_600,
-          padding: 20,
+          backgroundColor: COLORS.cyan_600,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
           borderRadius: 10,
-          elevation: 5,
+          elevation: 3,
         }}>
-        <View style={{}}>
-          <Text style={{...FONTS.h2, color: COLORS.white}}>
+        <View>
+          <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
             Water Level Height
           </Text>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: 15,
               justifyContent: 'space-between',
+              marginTop: 5,
             }}>
             <View>
-              <Text style={{...FONTS.h3, color: COLORS.white, marginBottom: 3}}>
+              <Text style={{fontSize: 15, color: COLORS.white}}>
                 Minimum level{' - '}
                 {waterLevelData.start_level == ''
                   ? '0'
                   : waterLevelData.start_level}
                 %
               </Text>
-              <Text style={{...FONTS.h3, color: COLORS.white}}>
+              <Text style={{fontSize: 15, color: COLORS.white}}>
                 Maximum level{' - '}
                 {waterLevelData.stop_level == ''
                   ? '0'
@@ -189,14 +185,14 @@ const Settings = () => {
             <TouchableOpacity
               style={{
                 backgroundColor: COLORS.white,
-                paddingHorizontal: 10,
-                paddingVertical: 4,
+                paddingHorizontal: 15,
+                paddingVertical: 5,
               }}
               onPress={() => setPersentModal(true)}>
               <Text
                 style={{
-                  ...FONTS.h3,
-                  color: COLORS.blue_600,
+                  fontSize: 15,
+                  color: COLORS.blue_900,
                   fontWeight: 'bold',
                 }}>
                 Set
@@ -235,40 +231,22 @@ const Settings = () => {
               borderRadius: 10,
               backgroundColor: COLORS.white,
             }}>
-            <Fumi
-              style={{
-                backgroundColor: COLORS.darkGray,
-                marginBottom: 15,
-                borderRadius: 5,
-              }}
-              label={'Minimum %'}
-              iconClass={FontAwesomeIcon}
-              iconName={'percent'}
-              iconColor={COLORS.white}
-              iconSize={15}
-              iconWidth={30}
-              inputPadding={15}
-              labelStyle={{color: COLORS.white}}
-              inputStyle={{color: COLORS.success_300}}
+            <TextInput
+              mode="outlined"
+              label="Minimum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
               onChangeText={value => {
                 SetMinimumPersent(value);
               }}
               value={minimumPersent}
             />
-            <Fumi
-              style={{
-                backgroundColor: COLORS.darkGray,
-                borderRadius: 5,
-              }}
-              label={'Maximum %'}
-              iconClass={FontAwesomeIcon}
-              iconName={'percent'}
-              iconColor={COLORS.white}
-              iconSize={15}
-              iconWidth={30}
-              inputPadding={15}
-              labelStyle={{color: COLORS.white}}
-              inputStyle={{color: COLORS.success_300}}
+            <TextInput
+              style={{marginTop: 10}}
+              mode="outlined"
+              label="Maximum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
               onChangeText={value => {
                 SetMaximumPersent(value);
               }}
@@ -291,17 +269,235 @@ const Settings = () => {
     );
   }
 
+  function renderTankHeight() {
+    return (
+      <View
+        style={{
+          backgroundColor: COLORS.cyan_600,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          marginTop: 10,
+          borderRadius: 10,
+          elevation: 5,
+        }}>
+        <View>
+          <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+            Tank Height
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              // marginTop: 5,
+            }}>
+            <View>
+              {!waterLevelData.tank_height ? (
+                <Text style={{fontSize: 15, color: COLORS.white}}>Default</Text>
+              ) : null}
+              {waterLevelData.tank_height ? (
+                <Text style={{fontSize: 15, color: COLORS.white}}>
+                  Manually - {waterLevelData.tank_height}%
+                </Text>
+              ) : null}
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: COLORS.white,
+                paddingHorizontal: 15,
+                paddingVertical: 5,
+              }}
+              onPress={() => setTankHeightModal(true)}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.blue_900,
+                  fontWeight: 'bold',
+                }}>
+                Set
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  function renderTankHeightModal() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={tankHeightModal}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.transparentBlack7,
+          }}>
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+            }}
+            onPress={() => setTankHeightModal(false)}>
+            <Image
+              source={icons.cross}
+              style={{height: 35, width: 35, tintColor: COLORS.amber_300}}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              width: '90%',
+              padding: 30,
+              borderRadius: 10,
+              backgroundColor: COLORS.white,
+            }}>
+            <View
+              style={{
+                marginTop: 15,
+              }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Default
+                </Text>
+                <Switch
+                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
+                  thumbColor={isEnabledManually ? COLORS.white : COLORS.white}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitchManually}
+                  value={isEnabledManually}
+                />
+                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
+                  Manually
+                </Text>
+              </View>
+              {isEnabledManually ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                    marginBottom: 20,
+                  }}>
+                  <TextInput
+                    style={{
+                      width: '60%',
+                      height: 35,
+                    }}
+                    mode="outlined"
+                    label="Tank height"
+                    onChangeText={value => {
+                      setTankHeight(value);
+                    }}
+                  />
+                  <View style={{width: '30%'}}>
+                    <DropDownPicker
+                      style={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray1,
+                        minHeight: 35,
+                      }}
+                      dropDownContainerStyle={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray2,
+                      }}
+                      placeholder="Unit"
+                      open={open}
+                      value={value}
+                      items={items}
+                      setOpen={setOpen}
+                      setValue={setValue}
+                      setItems={setItems}
+                      zIndex={1000}
+                      listMode="SCROLLVIEW"
+                    />
+                  </View>
+                </View>
+              ) : null}
+            </View>
+            <TouchableOpacity
+              style={{
+                marginTop: 30,
+                backgroundColor: COLORS.blue_600,
+                alignItems: 'center',
+                padding: 10,
+              }}
+              onPress={() => postWaterTankHeightSettings()}>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  function renderWaterSource() {
+    return (
+      <View
+        style={{
+          backgroundColor: COLORS.cyan_600,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          marginTop: 10,
+          borderRadius: 10,
+          elevation: 5,
+        }}>
+        <View>
+          <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+            Water Source
+          </Text>
+          <View style={{marginTop: 5}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Switch
+                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
+                trackColor={{false: COLORS.gray, true: COLORS.success_400}}
+                thumbColor={isEnabledSource1 ? COLORS.white : COLORS.white}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitchSource1}
+                value={isEnabledSource1}
+              />
+              <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+                Source-1 (Bore Pump)
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Switch
+                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
+                trackColor={{false: COLORS.gray, true: COLORS.success_400}}
+                thumbColor={isEnabledSource2 ? COLORS.white : COLORS.white}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitchSource2}
+                value={isEnabledSource2}
+              />
+              <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+                Source-2 (Sump Pump)
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   function renderOtherSettings() {
     return (
       <View
         style={{
-          backgroundColor: COLORS.success_600,
-          padding: 20,
-          marginTop: 20,
+          backgroundColor: COLORS.cyan_600,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          marginTop: 10,
           borderRadius: 10,
           elevation: 5,
         }}>
-        <Text style={{...FONTS.h2, color: COLORS.white}}>Other Settings</Text>
+        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+          Other Settings
+        </Text>
         {/* <View style={{flexDirection: 'row', marginTop: 15}}>
           <View style={{flex: 1}}>
             <Text
@@ -409,16 +605,17 @@ const Settings = () => {
           }}></View> */}
         <View
           style={{
+            // marginTop: 5,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <Text style={{...FONTS.h3, color: COLORS.white}}>
-            Notification Turn ON / OFF
+          <Text style={{fontSize: 15, color: COLORS.white}}>
+            Notification Turn On / Off
           </Text>
           <Switch
             style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
-            trackColor={{false: COLORS.darkGray, true: COLORS.rose_600}}
+            trackColor={{false: COLORS.gray, true: COLORS.success_400}}
             thumbColor={isEnabledNotification ? COLORS.white : COLORS.white}
             ios_backgroundColor="#3e3e3e"
             onValueChange={value => {
@@ -477,242 +674,19 @@ const Settings = () => {
     );
   }
 
-  function renderTankHeight() {
-    return (
-      <View
-        style={{
-          marginTop: 20,
-          backgroundColor: COLORS.darkGray,
-          padding: 20,
-          borderRadius: 10,
-          elevation: 5,
-        }}>
-        <View>
-          <Text style={{...FONTS.h2, color: COLORS.white}}>Tank Height</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 15,
-              justifyContent: 'space-between',
-            }}>
-            <View>
-              {!waterLevelData.tank_height ? (
-                <Text
-                  style={{...FONTS.h3, color: COLORS.white, marginBottom: 3}}>
-                  Default
-                </Text>
-              ) : null}
-              {waterLevelData.tank_height ? (
-                <Text style={{...FONTS.h3, color: COLORS.white}}>
-                  Manually - {waterLevelData.tank_height}%
-                </Text>
-              ) : null}
-            </View>
-            <TouchableOpacity
-              style={{
-                backgroundColor: COLORS.white,
-                paddingHorizontal: 10,
-                paddingVertical: 4,
-              }}
-              onPress={() => setTankHeightModal(true)}>
-              <Text
-                style={{
-                  ...FONTS.h3,
-                  color: COLORS.amber_500,
-                  fontWeight: 'bold',
-                }}>
-                Set
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  function renderTankHeightModal() {
-    return (
-      <Modal animationType="fade" transparent={true} visible={tankHeightModal}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: COLORS.transparentBlack7,
-          }}>
-          <TouchableOpacity
-            style={{
-              alignItems: 'center',
-            }}
-            onPress={() => setTankHeightModal(false)}>
-            <Image
-              source={icons.cross}
-              style={{height: 35, width: 35, tintColor: COLORS.amber_300}}
-            />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: '90%',
-              padding: 30,
-              borderRadius: 10,
-              backgroundColor: COLORS.white,
-            }}>
-            <View
-              style={{
-                marginTop: 15,
-              }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-                  Default
-                </Text>
-                <Switch
-                  trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
-                  thumbColor={isEnabledManually ? COLORS.white : COLORS.white}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitchManually}
-                  value={isEnabledManually}
-                />
-                <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-                  Manually
-                </Text>
-              </View>
-              {isEnabledManually ? (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: 10,
-                    marginBottom: 20,
-                  }}>
-                  <TextInput
-                    style={{
-                      borderBottomColor: COLORS.darkGray,
-                      borderBottomWidth: 2,
-                      color: COLORS.darkGray,
-                      ...FONTS.h4,
-                      width: '50%',
-                    }}
-                    placeholder="Tank height %"
-                    placeholderTextColor={COLORS.darkGray}
-                    selectionColor={COLORS.darkGray}
-                    keyboardType="number-pad"
-                    onChangeText={value => {
-                      setTankHeight(value);
-                    }}
-                  />
-                  <View style={{width: '40%'}}>
-                    <DropDownPicker
-                      style={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray1,
-                        minHeight: 20,
-                      }}
-                      dropDownContainerStyle={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray2,
-                      }}
-                      placeholder="Unit"
-                      open={open}
-                      value={value}
-                      items={items}
-                      setOpen={setOpen}
-                      setValue={setValue}
-                      setItems={setItems}
-                      zIndex={1000}
-                      listMode="SCROLLVIEW"
-                    />
-                  </View>
-                </View>
-              ) : null}
-            </View>
-            <TouchableOpacity
-              style={{
-                marginTop: 30,
-                backgroundColor: COLORS.blue_600,
-                alignItems: 'center',
-                padding: 10,
-              }}
-              onPress={() => postWaterTankHeightSettings()}>
-              <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  }
-
-  function renderWaterSource() {
-    return (
-      <View
-        style={{
-          marginTop: 20,
-          backgroundColor: COLORS.amber_500,
-          padding: 20,
-          borderRadius: 10,
-          elevation: 5,
-        }}>
-        <View>
-          <Text style={{...FONTS.h2, color: COLORS.white}}>Water Source</Text>
-          <View
-            style={{
-              marginTop: 15,
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Switch
-                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
-                trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
-                thumbColor={isEnabledSource1 ? COLORS.white : COLORS.white}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitchSource1}
-                value={isEnabledSource1}
-              />
-              <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
-                Source-1 (Bore Pump)
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <Switch
-                style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
-                trackColor={{false: COLORS.darkGray, true: COLORS.blue_700}}
-                thumbColor={isEnabledSource2 ? COLORS.white : COLORS.white}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitchSource2}
-                value={isEnabledSource2}
-              />
-              <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
-                Source-2 (Sump Pump)
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
   function renderVersion() {
     return (
-      <View style={{alignItems: 'center', marginTop: 20}}>
+      <View style={{alignItems: 'center', marginTop: 120}}>
         <Text
           style={{
-            ...FONTS.h2,
+            fontSize: 22,
             color: COLORS.gray,
             fontWeight: 'bold',
-            borderBottomWidth: 0.5,
-            borderBottomColor: COLORS.darkGray2,
           }}>
-          Powered by Intenics
+          Intenics
         </Text>
-        <Text style={{...FONTS.h6, color: COLORS.darkGray}}>
-          Version 1.0.0 | Copyright @intenics.in
+        <Text style={{fontSize: 12, color: COLORS.darkGray}}>
+          Version 1.0.0
         </Text>
       </View>
     );
@@ -722,20 +696,21 @@ const Settings = () => {
     return (
       <View
         style={{
-          marginTop: 20,
-          padding: 20,
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          marginTop: 10,
           borderRadius: 10,
           elevation: 5,
-          backgroundColor: COLORS.darkGray,
+          backgroundColor: COLORS.cyan_600,
         }}>
-        <Text style={{...FONTS.h2, color: COLORS.white}}>
+        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
           Oprational Layout
         </Text>
-        <View style={{marginTop: 15}}>
+        <View style={{marginTop: 5}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Switch
               style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
-              trackColor={{false: COLORS.lightGray1, true: COLORS.success_400}}
+              trackColor={{false: COLORS.gray, true: COLORS.success_400}}
               thumbColor={isSourceOne ? COLORS.white : COLORS.white}
               onValueChange={value => {
                 setIsSourceOne(value);
@@ -743,15 +718,14 @@ const Settings = () => {
               }}
               value={isSourceOne}
             />
-            <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
+            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
               OHT + Source 1
             </Text>
           </View>
-          <View
-            style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Switch
               style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
-              trackColor={{false: COLORS.lightGray1, true: COLORS.success_400}}
+              trackColor={{false: COLORS.gray, true: COLORS.success_400}}
               thumbColor={isSourceTwo ? COLORS.white : COLORS.white}
               onValueChange={value => {
                 setIsSourceTwo(value);
@@ -759,7 +733,7 @@ const Settings = () => {
               }}
               value={isSourceTwo}
             />
-            <Text style={{...FONTS.h3, color: COLORS.white, left: 10}}>
+            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
               OHT + Source 1 + Source 2
             </Text>
           </View>
@@ -839,7 +813,7 @@ const Settings = () => {
 
   return (
     <ScrollView
-      style={{margin: 20}}
+      style={{margin: 10}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
