@@ -30,6 +30,21 @@ const getWaterLevel = async () => {
   }
 };
 
+const getPrevLevel = async () => {
+  try {
+    const res = await fetch(API_URL + 'prev-water-level/2', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getLEDStatus = async () => {
   try {
     const res = await fetch(API_URL + 'led-status/2', {
@@ -45,4 +60,4 @@ const getLEDStatus = async () => {
   }
 };
 
-export {getLEDStatus, getImage, getWaterLevel};
+export {getLEDStatus, getImage, getWaterLevel,getPrevLevel};

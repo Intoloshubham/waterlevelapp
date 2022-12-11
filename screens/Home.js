@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {API_URL} from '@env';
 import {
   Text,
   View,
@@ -16,6 +17,7 @@ import {
   getImage,
   getWaterLevel,
   getLEDStatus,
+  getPrevLevel,
 } from '../controllers/getImageController';
 import {postRemoteControl} from '../controllers/RemoteControlController';
 
@@ -31,6 +33,7 @@ const Home = () => {
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
   const [warningModal, setWarningModal] = useState(false);
+  const [prevLevel, setPrevLevel] = useState('');
 
   // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
   let overflowLevelStatus = true;
@@ -58,18 +61,36 @@ const Home = () => {
     }
   };
 
+  const getPrevWaterLevel = async () => {
+    try {
+      const res = await getPrevLevel();
+      console.log('🚀 ~ file: Home.js:66 ~ getPrevWaterLevel ~ res', res);
+      if (res.status == 200) {
+        setPrevLevel(res.prevLevel);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const WaterLevel = async () => {
-    
     const res = await getWaterLevel();
+    console.log(parseFloat(res.data.water_level))
+    console.log(prevLevel == parseFloat(res.data.water_level));
+    if (
+      res.data.led_status == 1 &&
+      prevLevel == parseFloat(res.data.water_level)
+    ) {
+      setWarningModal(true);
+      alert('check');
+    }
+
     if (parseFloat(res.data.water_level) >= 90) {
       if (overflowLevelStatus) {
         setWarningModal(true);
         overflowLevelStatus = false;
         const formData = {led_status: 0};
         const response = await postRemoteControl(formData);
-        // if (res.data.led_status == 1 && prevLevel == res.data.water_level) {
-        //   setWarningModal(true);
-        // }
       }
     }
 
@@ -88,20 +109,21 @@ const Home = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    getStreamImage();
+    // getStreamImage();
     WaterLevel();
     fetchLedStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
   React.useEffect(() => {
-    getStreamImage();
+    // getStreamImage();
     WaterLevel();
     fetchLedStatus();
     setInterval(() => {
-      getStreamImage();
+      // getStreamImage();
       WaterLevel();
       fetchLedStatus();
+      getPrevWaterLevel();
     }, 4000);
   }, []);
   // React.useEffect(() => {
@@ -435,7 +457,8 @@ const Home = () => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => getStreamImage()}
+              // onPress={() => getStreamImage()
+              // }
               style={{alignItems: 'flex-end'}}>
               <Image
                 source={icons.refresh}
