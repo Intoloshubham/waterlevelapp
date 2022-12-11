@@ -2,8 +2,8 @@ const OHT_Source1 = require('../assets/images/OHT_Source1.png');
 const OHT_Source1_Source2 = require('../assets/images/OHT_Source1_Source2.png');
 const sump_tank = require('../assets/images/water_tank.png');
 const submersible_pump = require('../assets/images/submersible_pump.jpg');
-const logo = require('../assets/images/logo.png');
-const logo1 = require('../assets/images/logo.jpg');
+const logo1 = require('../assets/images/logo1.png');
+const logo = require('../assets/images/logo.jpg');
 const waterinfo = require('../assets/images/waterinfo.png');
 
 //background
