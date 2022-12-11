@@ -15,7 +15,7 @@ import {
   getImage,
   getWaterLevel,
   getLEDStatus,
-} from '../controllers/GetImageController';
+} from '../controllers/getImageController';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));

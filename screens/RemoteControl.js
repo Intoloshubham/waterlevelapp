@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import {FONTS, COLORS} from '../constants';
 import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {postRemoteControl} from '../controllers/RemoteControlController';
-import {getLEDStatus} from '../controllers/GetImageController';
+import {getLEDStatus} from '../controllers/getImageController';
 
 const RemoteControl = () => {
   const [ck, sCK] = React.useState('');
