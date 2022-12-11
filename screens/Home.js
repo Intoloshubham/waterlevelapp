@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -7,15 +7,17 @@ import {
   ScrollView,
   RefreshControl,
   StyleSheet,
+  Modal,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
-import {FONTS, COLORS, icons} from '../constants';
+import {FONTS, COLORS, icons, SIZES} from '../constants';
 import {
   getImage,
   getWaterLevel,
   getLEDStatus,
 } from '../controllers/getImageController';
+import {postRemoteControl} from '../controllers/RemoteControlController';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -28,6 +30,12 @@ const Home = () => {
   const [level, setLevel] = React.useState('');
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
+  const [warningModal, setWarningModal] = useState(false);
+
+  // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
+  let overflowLevelStatus = true;
+  let underFlowLevelStatus = true;
+
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
@@ -51,7 +59,28 @@ const Home = () => {
   };
 
   const WaterLevel = async () => {
+    
     const res = await getWaterLevel();
+    if (parseFloat(res.data.water_level) >= 90) {
+      if (overflowLevelStatus) {
+        setWarningModal(true);
+        overflowLevelStatus = false;
+        const formData = {led_status: 0};
+        const response = await postRemoteControl(formData);
+        // if (res.data.led_status == 1 && prevLevel == res.data.water_level) {
+        //   setWarningModal(true);
+        // }
+      }
+    }
+
+    if (parseFloat(res.data.water_level) <= 20) {
+      if (underFlowLevelStatus) {
+        underFlowLevelStatus = false;
+        const formData = {led_status: 1};
+        const response = await postRemoteControl(formData);
+      }
+    }
+
     setLevel(res.data.water_level);
     setPhValue(res.data.ph_level);
   };
@@ -75,6 +104,108 @@ const Home = () => {
       fetchLedStatus();
     }, 4000);
   }, []);
+  // React.useEffect(() => {
+  //   getStreamImage();
+  //   // WaterLevel();
+  //   fetchLedStatus();
+  //   setInterval(() => {
+  //     getStreamImage();
+  //     WaterLevel();
+  //     fetchLedStatus();
+  //   }, 4000);
+  // }, []);
+
+  function renderWarningModal() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={warningModal}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.transparentBlack7,
+          }}>
+          <View
+            style={{
+              width: '90%',
+              padding: 25,
+              borderRadius: 10,
+              backgroundColor: COLORS.white,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                marginBottom: 5,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Image
+                source={icons.cross}
+                style={{height: 25, width: 25, tintColor: COLORS.black}}
+              />
+            </TouchableOpacity>
+            <View style={{marginTop: SIZES.base}}>
+              <Text
+                style={{textAlign: 'center', lineHeight: 30, ...FONTS.body3}}>
+                {overflowLevelStatus ? (
+                  <>
+                    <Text
+                      style={{
+                        ...FONTS.body3,
+                        textAlign: 'center',
+                        color: 'red',
+                      }}>
+                      Warning: Error code 04 {'\n'}
+                    </Text>
+                    <Text
+                      style={{...FONTS.body3, textAlign: 'center', top: 15}}>
+                      Please reset device {'\n'}or{'\n'} Contact to Toll Free
+                      no:{'\n'} 000 000 000
+                    </Text>
+                  </>
+                ) : null}
+              </Text>
+            </View>
+            {/* <TextInput
+              mode="outlined"
+              label="Minimum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMinimumPersent(value);
+              }}
+              value={minimumPersent}
+            />
+            <TextInput
+              style={{marginTop: 10}}
+              mode="outlined"
+              label="Maximum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMaximumPersent(value);
+              }}
+              value={maximumPersent}
+            /> */}
+
+            <TouchableOpacity
+              style={{
+                marginTop: 30,
+                backgroundColor: COLORS.blue_600,
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 12,
+                width: '20%',
+                padding: 7,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
   function renderWaterTank() {
     return (
@@ -387,6 +518,7 @@ const Home = () => {
         {renderWaterTank()}
         {renderWaterLiveView()}
         {renderOthers()}
+        {renderWarningModal()}
       </ScrollView>
     </View>
   );
