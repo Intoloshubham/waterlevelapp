@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {API_URL} from '@env';
 import {
   Text,
@@ -17,6 +17,7 @@ import {
   getImage,
   getWaterLevel,
   getLEDStatus,
+  getSUMPStatus,
   getPrevLevel,
 } from '../controllers/getImageController';
 import {postRemoteControl} from '../controllers/RemoteControlController';
@@ -33,11 +34,13 @@ const Home = () => {
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
   const [warningModal, setWarningModal] = useState(false);
-  const [prevLevel, setPrevLevel] = useState('');
+  const [sumpStatus, setSumpStatus] = useState(0);
 
+  let prevalue = 0;
   // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
   let overflowLevelStatus = true;
   let underFlowLevelStatus = true;
+  let resetStatus = true;
 
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
@@ -61,12 +64,16 @@ const Home = () => {
     }
   };
 
+  const fetchSumpStatus = async () => {
+    const res = await getSUMPStatus();
+    setSumpStatus(res.data.sump_status);
+  };
+
   const getPrevWaterLevel = async () => {
     try {
       const res = await getPrevLevel();
-      console.log('🚀 ~ file: Home.js:66 ~ getPrevWaterLevel ~ res', res);
-      if (res.status == 200) {
-        setPrevLevel(res.prevLevel);
+      if (res) {
+        prevalue = res.prevLevel;        
       }
     } catch (error) {
       console.log(error);
@@ -75,16 +82,18 @@ const Home = () => {
 
   const WaterLevel = async () => {
     const res = await getWaterLevel();
-    console.log(parseFloat(res.data.water_level))
-    console.log(prevLevel == parseFloat(res.data.water_level));
+
     if (
       res.data.led_status == 1 &&
-      prevLevel == parseFloat(res.data.water_level)
+      prevalue == res.data.water_level &&
+      resetStatus == true
     ) {
+      resetStatus = false;
       setWarningModal(true);
-      alert('check');
     }
 
+    setLevel(res.data.water_level);
+    setPhValue(res.data.ph_level);
     if (parseFloat(res.data.water_level) >= 90) {
       if (overflowLevelStatus) {
         setWarningModal(true);
@@ -101,9 +110,6 @@ const Home = () => {
         const response = await postRemoteControl(formData);
       }
     }
-
-    setLevel(res.data.water_level);
-    setPhValue(res.data.ph_level);
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -112,30 +118,22 @@ const Home = () => {
     // getStreamImage();
     WaterLevel();
     fetchLedStatus();
+    fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
   React.useEffect(() => {
     // getStreamImage();
-    WaterLevel();
-    fetchLedStatus();
+    // WaterLevel();
+    fetchSumpStatus();
+    // fetchLedStatus();
     setInterval(() => {
       // getStreamImage();
       WaterLevel();
-      fetchLedStatus();
       getPrevWaterLevel();
+      fetchLedStatus();
     }, 4000);
   }, []);
-  // React.useEffect(() => {
-  //   getStreamImage();
-  //   // WaterLevel();
-  //   fetchLedStatus();
-  //   setInterval(() => {
-  //     getStreamImage();
-  //     WaterLevel();
-  //     fetchLedStatus();
-  //   }, 4000);
-  // }, []);
 
   function renderWarningModal() {
     return (
@@ -299,48 +297,103 @@ const Home = () => {
         </View>
         <View
           style={{
+            flex: 1,
             flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: COLORS.white,
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            elevation: 2,
-            borderRadius: 5,
+            justifyContent: 'space-between',
           }}>
-          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
-            Pump Status -
-          </Text>
           <View
             style={{
               flexDirection: 'row',
+              // justifyContent: 'space-between',
+              alignItems: 'center',
               backgroundColor: COLORS.white,
-              left: 10,
-              padding: 1,
+              paddingHorizontal: 8,
+              paddingVertical: 5,
+              elevation: 2,
+              borderRadius: 5,
             }}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: isEnabled == false ? COLORS.white : COLORS.black,
-                backgroundColor: isEnabled == false ? COLORS.red : COLORS.white,
-                // paddingHorizontal: 5,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                borderWidth: 0.5,
-              }}>
-              OFF
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Sump Status -
             </Text>
-            <Text
+            <View
               style={{
-                fontSize: 14,
-                color: isEnabled == true ? COLORS.white : COLORS.black,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                backgroundColor: isEnabled == true ? 'green' : COLORS.white,
-                borderWidth: 0.5,
+                flexDirection: 'row',
+                backgroundColor: COLORS.white,
+                left: 5,
+                padding: 1,
               }}>
-              ON
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: sumpStatus == 0 ? COLORS.white : COLORS.black,
+                  backgroundColor: sumpStatus == 0 ? COLORS.red : COLORS.white,
+                  // paddingHorizontal: 5,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  borderWidth: 0.5,
+                }}>
+                OFF
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: sumpStatus == 1 ? COLORS.white : COLORS.black,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  backgroundColor: sumpStatus == 1 ? 'green' : COLORS.white,
+                  borderWidth: 0.5,
+                }}>
+                ON
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: COLORS.white,
+              paddingHorizontal: 10,
+
+              paddingVertical: 5,
+              elevation: 2,
+              borderRadius: 5,
+            }}>
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Pump Status -
             </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: COLORS.white,
+                left: 5,
+                padding: 1,
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: isEnabled == false ? COLORS.white : COLORS.black,
+                  backgroundColor:
+                    isEnabled == false ? COLORS.red : COLORS.white,
+                  // paddingHorizontal: 5,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  borderWidth: 0.5,
+                }}>
+                OFF
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: isEnabled == true ? COLORS.white : COLORS.black,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  backgroundColor: isEnabled == true ? 'green' : COLORS.white,
+                  borderWidth: 0.5,
+                }}>
+                ON
+              </Text>
+            </View>
           </View>
         </View>
         {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>

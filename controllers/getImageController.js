@@ -59,5 +59,19 @@ const getLEDStatus = async () => {
     console.log(error);
   }
 };
+const getSUMPStatus = async () => {
+  try {
+    const res = await fetch(API_URL + 'sump-status/2', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export {getLEDStatus, getImage, getWaterLevel,getPrevLevel};
+export {getLEDStatus, getImage, getWaterLevel,getPrevLevel,getSUMPStatus};

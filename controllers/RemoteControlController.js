@@ -3,7 +3,7 @@ import {API_URL} from '@env';
 const postRemoteControl = async formData => {
   try {
     const res = await fetch(API_URL + 'led-status/2', {
-      method: 'put',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

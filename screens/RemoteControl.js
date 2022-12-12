@@ -1,15 +1,15 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {FONTS, COLORS} from '../constants';
 import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {postRemoteControl} from '../controllers/RemoteControlController';
 import {getLEDStatus} from '../controllers/getImageController';
-
+import {API_URL} from '@env';
 const RemoteControl = () => {
   const [ck, sCK] = React.useState('');
 
   const postRemoteControlData = async status => {
-    const formData = {led_status: status};
+    const formData = {led_status: status};    
     const response = await postRemoteControl(formData);
     if (response.status === 200) {
       alert(response.message);
@@ -18,6 +18,7 @@ const RemoteControl = () => {
   };
 
   const fetchLedStatus = async () => {
+    
     const res = await getLEDStatus();
     if (res.status === 200) {
       sCK(res.data.led_status);
@@ -41,7 +42,7 @@ const RemoteControl = () => {
         <View>
           <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
             Manually Motor On/Off
-          </Text>
+          </Text>   
           <DuoToggleSwitch
             primaryText="OFF"
             secondaryText="ON"
