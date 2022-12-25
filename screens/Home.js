@@ -40,8 +40,8 @@ const Home = () => {
   // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
   let overflowLevelStatus = true;
   let underFlowLevelStatus = true;
-  let resetStatus = true;
-
+  // let resetStatus = true;
+  const [resetStatus, setResetStatus] = useState(true)
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
@@ -73,7 +73,7 @@ const Home = () => {
     try {
       const res = await getPrevLevel();
       if (res) {
-        prevalue = res.prevLevel;        
+        prevalue = res.prevLevel;
       }
     } catch (error) {
       console.log(error);
@@ -82,13 +82,17 @@ const Home = () => {
 
   const WaterLevel = async () => {
     const res = await getWaterLevel();
-
+    console.log('🚀 ~ file: Home.js:85 ~ WaterLevel ~ res', res);
+    console.log("pre==",prevalue == res.data.water_level);
+    console.log( res.data.led_status == 1 )
     if (
       res.data.led_status == 1 &&
       prevalue == res.data.water_level &&
       resetStatus == true
     ) {
-      resetStatus = false;
+      // console.log('object--')
+      // resetStatus = false;
+      setResetStatus(false);
       setWarningModal(true);
     }
 
@@ -111,7 +115,7 @@ const Home = () => {
       }
     }
   };
-
+  const ref = React.useRef(null);
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -127,13 +131,29 @@ const Home = () => {
     // WaterLevel();
     fetchSumpStatus();
     // fetchLedStatus();
-    setInterval(() => {
-      // getStreamImage();
-      WaterLevel();
-      getPrevWaterLevel();
-      fetchLedStatus();
-    }, 4000);
+    // setInterval(() => {
+    //   // getStreamImage();
+    //   WaterLevel();
+    //   getPrevWaterLevel();
+    //   fetchLedStatus();
+    // }, 4000);
+
+    // ref.current = setInterval(()=>{
+    //   WaterLevel();
+    //   getPrevWaterLevel();
+    // }, 5 * 80 * 10);
+
+    // return () => {
+    //   if(ref.current){
+    //     clearInterval(ref.current)
+    //   }
+    // }
   }, []);
+
+  let display = setInterval(() => {
+    WaterLevel();
+    getPrevWaterLevel();
+  }, 4000);
 
   function renderWarningModal() {
     return (

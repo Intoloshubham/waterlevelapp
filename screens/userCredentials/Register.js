@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {API_URL} from '@env';
 import {
   View,
   KeyboardAvoidingView,
@@ -11,12 +12,61 @@ import {
 } from 'react-native';
 import {COLORS, icons, FONTS, SIZES} from '../../constants';
 import {TextInput} from 'react-native-paper';
-import {HeaderBar, TextButton} from '../../componets';
+import {HeaderBar, TextButton, CustomToast} from '../../componets';
+import {registerUser,loginUser} from '../../controllers/LoginController';
 
 const Register = ({navigation}) => {
   const [name, SetName] = React.useState('');
   const [mobile, SetMobile] = React.useState('');
   const [email, SetEmail] = React.useState('');
+
+  const [submitToast, setSubmitToast] = React.useState(false);
+  const [updateToast, setUpdateToast] = React.useState(false);
+  const [deleteToast, setDeleteToast] = React.useState(false);
+
+  const [errorCode, setErrorCode] = useState('');
+  const [mssg, setMssg] = useState('');
+
+  const _registerUser = async () => {
+    try {
+      const body = {
+        name,
+        mobile,
+        email
+      };
+      const temp = await registerUser(body);
+
+      if (temp.status === 200) {
+        setErrorCode(200);
+        setMssg(temp.data);
+        setSubmitToast(true);
+        setTimeout(() => {
+          navigation.navigate('Login')
+        }, 700);
+      } else if (temp.message.status === 101) {
+        setErrorCode(101);
+        setMssg(temp.message.msg);
+        setSubmitToast(true);
+      } else if (temp.message.status === 102) {
+        setErrorCode(102);
+        setMssg(temp.message.msg);
+        setSubmitToast(true);
+      } else {
+        setMssg('Enter All required Fields');
+        setSubmitToast(true);
+      }
+
+      setTimeout(() => {
+        setSubmitToast(false);
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+
+   
 
   function renderRegister() {
     return (
@@ -93,7 +143,9 @@ const Register = ({navigation}) => {
                   alignItems: 'center',
                   borderRadius: 5,
                 }}
-                onPress={() => console.log('reg')}
+                onPress={() => {
+                  _registerUser();
+                }}
               />
             </View>
             <View
@@ -108,13 +160,17 @@ const Register = ({navigation}) => {
                 Already have an account ?
               </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SignIn')}
+                onPress={() => {
+                  navigation.navigate('Login')
+                 }}
                 style={{
                   backgroundColor: COLORS.cyan_600,
                   paddingHorizontal: 5,
                   paddingVertical: 2,
                   left: 10,
-                }}>
+                }}
+       
+                >
                 <Text
                   style={{
                     ...FONTS.h4,
@@ -134,6 +190,15 @@ const Register = ({navigation}) => {
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <HeaderBar title="Register" />
       {renderRegister()}
+      <CustomToast
+        isVisible={submitToast}
+        onClose={() => setSubmitToast(false)}
+        color={errorCode == 200 ? COLORS.green : COLORS.red}
+        title={
+          errorCode == 200 ? 'Registered Successfully' : 'Something Went Wrong'
+        }
+        message={mssg}
+      />
     </View>
   );
 };

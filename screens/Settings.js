@@ -12,6 +12,7 @@ import {
   Pressable,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
+
 import {
   getWaterLevelSettings,
   postWaterLevelSettings,
@@ -21,6 +22,7 @@ import {
 } from '../controllers/SettingsController';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput} from 'react-native-paper';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -33,7 +35,7 @@ const Settings = () => {
   const [minimumPersent, SetMinimumPersent] = useState('');
   const [maximumPersent, SetMaximumPersent] = useState('');
 
-  //
+  
   const [waterLevelData, setWaterLevelData] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const [tankHeight, setTankHeight] = React.useState('');
@@ -802,6 +804,28 @@ const Settings = () => {
       </View>
     );
   }
+  function logoutLayout() {
+    return (
+      <View
+        style={{
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          marginTop: 10,
+          borderRadius: 10,
+          elevation: 5,
+          backgroundColor: COLORS.cyan_600
+        }}>     
+        <TouchableOpacity style={{marginTop: 5}}>
+          <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'space-between',marginRight:SIZES.height*0.32}}>     
+              <AntDesign name="logout" size={20} color={COLORS.white} />
+            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+              Logout
+            </Text>
+          </View>   
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   function renderSourceOne() {
     return (
@@ -879,14 +903,18 @@ const Settings = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       showsVerticalScrollIndicator={false}>
+
       {renderSwitchOnOffSettings()}
       {renderTankHeight()}
+
       {renderWaterSource()}
       {renderOtherSettings()}
+
       {renderPersentModal()}
       {renderTankHeightModal()}
 
       {renderOprationalLayout()}
+      {logoutLayout()}
       {isSourceOne && renderSourceOne()}
       {isSourceTwo && renderSourceTwo()}
       {renderVersion()}
