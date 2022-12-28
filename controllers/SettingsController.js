@@ -1,8 +1,8 @@
 import {API_URL} from '@env';
 
-const postWaterLevelSettings = async formData => {
+const postWaterLevelSettings = async (formData,registeredId) => {
   try {
-    const res = await fetch(API_URL + 'water-level-setting/2', {
+    const res = await fetch(API_URL + `water-level-setting/${registeredId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -16,9 +16,9 @@ const postWaterLevelSettings = async formData => {
   }
 };
 
-const getWaterLevelSettings = async () => {
+const getWaterLevelSettings = async (registeredId) => {
   try {
-    const res = await fetch(API_URL + 'water-level-setting/2', {
+    const res = await fetch(API_URL + `water-level-setting/${registeredId}`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -31,9 +31,9 @@ const getWaterLevelSettings = async () => {
   }
 };
 
-const postTankHeightSettings = async formData => {
+const postTankHeightSettings = async (formData,registeredId) => {
   try {
-    const res = await fetch(API_URL + 'tank-height-setting/2', {
+    const res = await fetch(API_URL + `tank-height-setting/${registeredId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -47,9 +47,9 @@ const postTankHeightSettings = async formData => {
   }
 };
 
-const postWaterSourceSettings = async formData => {
+const postWaterSourceSettings = async (formData,registeredId) => {
   try {
-    const res = await fetch(API_URL + 'water-source-setting/2', {
+    const res = await fetch(API_URL + `water-source-setting/${registeredId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -63,9 +63,9 @@ const postWaterSourceSettings = async formData => {
   }
 };
 
-const postMotorNotification = async formData => {
+const postMotorNotification = async (formData,registeredId) => {
   try {
-    const res = await fetch(API_URL + 'motor-notification-setting/2', {
+    const res = await fetch(API_URL + `motor-notification-setting/${registeredId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -78,6 +78,20 @@ const postMotorNotification = async formData => {
     console.log(error);
   }
 };
+
+const UserlogOut = async inputs =>{
+  try {
+    const resp=await fetch(`${API_URL}logout-user`,{
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(inputs)
+    });
+    const temp=await resp.json();
+    return temp;    
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export {
   postWaterLevelSettings,
@@ -85,4 +99,5 @@ export {
   postTankHeightSettings,
   postWaterSourceSettings,
   postMotorNotification,
+  UserlogOut
 };

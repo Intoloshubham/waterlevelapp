@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {API_URL} from '@env';
 import {
   Text,
   View,
@@ -7,27 +8,43 @@ import {
   ScrollView,
   RefreshControl,
   StyleSheet,
+  Modal,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
 import {widthToDo, heightToDo} from './setImagePixels';
-import {FONTS, COLORS, icons} from '../constants';
+import {FONTS, COLORS, icons, SIZES} from '../constants';
 import {
   getImage,
   getWaterLevel,
   getLEDStatus,
+  getSUMPStatus,
+  getPrevLevel,
 } from '../controllers/getImageController';
+import {postRemoteControl} from '../controllers/RemoteControlController';
+import {useSelector} from 'react-redux';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Home = () => {
+  const registeredId = useSelector(state => state.product);
+
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
   const [level, setLevel] = React.useState('');
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
+  const [warningModal, setWarningModal] = useState(false);
+  const [sumpStatus, setSumpStatus] = useState(0);
+
+  let prevalue = 0;
+  // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
+  let overflowLevelStatus = true;
+  let underFlowLevelStatus = true;
+  // let resetStatus = true;
+  const [resetStatus, setResetStatus] = useState(true);
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
@@ -36,45 +53,244 @@ const Home = () => {
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const [timeInterval, setTimeInterval] = useState(0);
+
   const getStreamImage = async () => {
-    const res = await getImage();
-    setStreamImage(res.image);
-    setDate(res.date);
-    setTime(res.time);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getImage(registeredId.product_id);
+          setStreamImage(res.image);
+          setDate(res.date);
+          setTime(res.time);          
+        }        
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
   };
 
   const fetchLedStatus = async () => {
-    const res = await getLEDStatus();
-    setIsEnabled(res.data.led_status == 1 ? true : false);
-    if (waterLevelData.motor_notification == true) {
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getLEDStatus(registeredId.product_id);
+          if (res.data!=null) {
+            setIsEnabled(res.data.led_status == 1 ? true : false);
+            if (waterLevelData.motor_notification == true) {
+            }            
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  };
+
+  const fetchSumpStatus = async () => {
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getSUMPStatus(registeredId.product_id);
+          if (res.data!=null) {
+            setSumpStatus(res.data.sump_status);            
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  };
+
+  const getPrevWaterLevel = async () => {
+    try {
+      if (registeredId.hasOwnProperty('product_id')) {
+        const res = await getPrevLevel(registeredId.product_id);
+        if (res) {
+          prevalue = res.prevLevel;
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const WaterLevel = async () => {
-    const res = await getWaterLevel();
-    setLevel(res.data.water_level);
-    setPhValue(res.data.ph_level);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getWaterLevel(registeredId.product_id);
+          if (res.data!=null) {
+            if (
+              res.data.led_status == 1 &&
+              prevalue == res.data.water_level &&
+              resetStatus == true
+            ) {
+              // resetStatus = false;
+              setResetStatus(false);
+              setWarningModal(true);
+            }
+      
+            setLevel(res.data.water_level);
+            setPhValue(res.data.ph_level);
+            
+            if (parseFloat(res.data.water_level) >= 90) {
+              if (overflowLevelStatus) {
+                setWarningModal(true);
+                overflowLevelStatus = false;
+                const formData = {led_status: 0};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }
+      
+            if (parseFloat(res.data.water_level) <= 20) {
+              if (underFlowLevelStatus) {
+                underFlowLevelStatus = false;
+                const formData = {led_status: 1};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }            
+          }
+          // console.log("🚀 ~ file: Home.js:123 ~ WaterLevel ~ res", res)
+    
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getStreamImage();
     WaterLevel();
     fetchLedStatus();
+    fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
+  setTimeout(() => {
+    setTimeInterval(timeInterval + 1);
+  }, 4000);
+
   React.useEffect(() => {
+    console.log('object--', timeInterval);
     getStreamImage();
+    // WaterLevel();
+    fetchSumpStatus();
+    // const interval = setInterval(() => {
     WaterLevel();
+    // getPrevWaterLevel();
     fetchLedStatus();
-    setInterval(() => {
-      getStreamImage();
-      WaterLevel();
-      fetchLedStatus();
-    }, 4000);
-  }, []);
+    // }, 4000);
+
+    // return () => clearInterval(interval);
+  }, [timeInterval]);
+
+  // useEffect(() => {
+  //   await updateData(id, state, setState); // API call
+  // }, []);
+
+  function renderWarningModal() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={warningModal}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.transparentBlack7,
+          }}>
+          <View
+            style={{
+              width: '90%',
+              padding: 25,
+              borderRadius: 10,
+              backgroundColor: COLORS.white,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                marginBottom: 5,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Image
+                source={icons.cross}
+                style={{height: 25, width: 25, tintColor: COLORS.black}}
+              />
+            </TouchableOpacity>
+            <View style={{marginTop: SIZES.base}}>
+              <Text
+                style={{textAlign: 'center', lineHeight: 30, ...FONTS.body3}}>
+                {overflowLevelStatus ? (
+                  <>
+                    <Text
+                      style={{
+                        ...FONTS.body3,
+                        textAlign: 'center',
+                        color: 'red',
+                      }}>
+                      Warning: Error code 04 {'\n'}
+                    </Text>
+                    <Text
+                      style={{...FONTS.body3, textAlign: 'center', top: 15}}>
+                      Please reset device {'\n'}or{'\n'} Contact to Toll Free
+                      no:{'\n'} 000 000 000
+                    </Text>
+                  </>
+                ) : null}
+              </Text>
+            </View>
+            {/* <TextInput
+              mode="outlined"
+              label="Minimum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMinimumPersent(value);
+              }}
+              value={minimumPersent}
+            />
+            <TextInput
+              style={{marginTop: 10}}
+              mode="outlined"
+              label="Maximum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMaximumPersent(value);
+              }}
+              value={maximumPersent}
+            /> */}
+
+            <TouchableOpacity
+              style={{
+                marginTop: 30,
+                backgroundColor: COLORS.blue_600,
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 12,
+                width: '20%',
+                padding: 7,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 
   function renderWaterTank() {
     return (
@@ -146,48 +362,103 @@ const Home = () => {
         </View>
         <View
           style={{
+            flex: 1,
             flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: COLORS.white,
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            elevation: 2,
-            borderRadius: 5,
+            justifyContent: 'space-between',
           }}>
-          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
-            Pump Status -
-          </Text>
           <View
             style={{
               flexDirection: 'row',
+              // justifyContent: 'space-between',
+              alignItems: 'center',
               backgroundColor: COLORS.white,
-              left: 10,
-              padding: 1,
+              paddingHorizontal: 8,
+              paddingVertical: 5,
+              elevation: 2,
+              borderRadius: 5,
             }}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: isEnabled == false ? COLORS.white : COLORS.black,
-                backgroundColor: isEnabled == false ? COLORS.red : COLORS.white,
-                // paddingHorizontal: 5,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                borderWidth: 0.5,
-              }}>
-              OFF
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Sump Status -
             </Text>
-            <Text
+            <View
               style={{
-                fontSize: 14,
-                color: isEnabled == true ? COLORS.white : COLORS.black,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                backgroundColor: isEnabled == true ? 'green' : COLORS.white,
-                borderWidth: 0.5,
+                flexDirection: 'row',
+                backgroundColor: COLORS.white,
+                left: 5,
+                padding: 1,
               }}>
-              ON
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: sumpStatus == 0 ? COLORS.white : COLORS.black,
+                  backgroundColor: sumpStatus == 0 ? COLORS.red : COLORS.white,
+                  // paddingHorizontal: 5,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  borderWidth: 0.5,
+                }}>
+                OFF
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: sumpStatus == 1 ? COLORS.white : COLORS.black,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  backgroundColor: sumpStatus == 1 ? 'green' : COLORS.white,
+                  borderWidth: 0.5,
+                }}>
+                ON
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: COLORS.white,
+              paddingHorizontal: 10,
+
+              paddingVertical: 5,
+              elevation: 2,
+              borderRadius: 5,
+            }}>
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Pump Status -
             </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: COLORS.white,
+                left: 5,
+                padding: 1,
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: isEnabled == false ? COLORS.white : COLORS.black,
+                  backgroundColor:
+                    isEnabled == false ? COLORS.red : COLORS.white,
+                  // paddingHorizontal: 5,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  borderWidth: 0.5,
+                }}>
+                OFF
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: isEnabled == true ? COLORS.white : COLORS.black,
+                  paddingHorizontal: 5,
+                  paddingVertical: 3,
+                  backgroundColor: isEnabled == true ? 'green' : COLORS.white,
+                  borderWidth: 0.5,
+                }}>
+                ON
+              </Text>
+            </View>
           </View>
         </View>
         {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -304,7 +575,8 @@ const Home = () => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => getStreamImage()}
+              // onPress={() => getStreamImage()
+              // }
               style={{alignItems: 'flex-end'}}>
               <Image
                 source={icons.refresh}
@@ -387,6 +659,7 @@ const Home = () => {
         {renderWaterTank()}
         {renderWaterLiveView()}
         {renderOthers()}
+        {renderWarningModal()}
       </ScrollView>
     </View>
   );

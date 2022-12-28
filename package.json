@@ -15,7 +15,10 @@
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
+    "@reduxjs/toolkit": "^1.9.1",
+    "axios": "^1.2.1",
     "dotenv": "^16.0.3",
+    "lodash.remove": "^4.7.0",
     "lottie-react-native": "^5.1.4",
     "react": "18.0.0",
     "react-native": "0.69.4",
@@ -28,7 +31,9 @@
     "react-native-svg": "^13.1.0",
     "react-native-switch": "^1.5.1",
     "react-native-textinput-effects": "^0.6.3",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
