@@ -95,7 +95,7 @@ const Register = ({navigation}) => {
                   textAlign: 'center',
                   marginTop: 5,
                 }}>
-                Register to get Water Info
+                Register to Water Info
               </Text>
               <Text
                 style={{

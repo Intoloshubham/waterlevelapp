@@ -19,26 +19,42 @@ import {
   postTankHeightSettings,
   postWaterSourceSettings,
   postMotorNotification,
+  UserlogOut
 } from '../controllers/SettingsController';
+import {getWaterLevel} from '../controllers/getImageController.js';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useSelector } from 'react-redux';
+import { CustomToast } from '../componets';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const Settings = () => {
+const Settings = ({navigation}) => {
+
+  const registeredId = useSelector(state => state.product);  
+  const creds=useSelector(state=>state.userCreds);
+
   //Modal
   const [persentModal, setPersentModal] = useState(false);
   const [tankHeightModal, setTankHeightModal] = useState(false);
   const [minimumPersent, SetMinimumPersent] = useState('');
   const [maximumPersent, SetMaximumPersent] = useState('');
 
-  
+  //toast
+  const [submitToast, setSubmitToast] = React.useState(false);
+  const [mssg, setMssg] = useState('');
+  const [statusCode, setStatusCode] = useState('');
+
   const [waterLevelData, setWaterLevelData] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const [tankHeight, setTankHeight] = React.useState('');
+
+  const [autoHeight, setAutoHeight] = useState(0);
+
+  const [unit, setUnit] = useState("CM");
 
   // oprational
   const [isSourceOne, setIsSourceOne] = React.useState(false);
@@ -58,6 +74,11 @@ const Settings = () => {
     setIsEnabledManually(previousState => !previousState);
   };
 
+  const [waterLevel, setWaterLevel] = useState(0);
+  const [timeInt, setTimeInt] = useState(0);
+  //original tank height
+  const [tempTankHeight, setTempTankHeight] = useState(100);
+
   //toggle water source
   const [isEnabledSource1, setIsEnabledSource1] = useState(false);
   const [isEnabledSource2, setIsEnabledSource2] = useState(false);
@@ -76,57 +97,83 @@ const Settings = () => {
   //dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  
   const [items, setItems] = useState([
     {label: 'CM', value: '1'},
     {label: 'Meter', value: '2'},
   ]);
 
+  const __getWaterLevel = async () =>{
+    if (registeredId.hasOwnProperty('product_id')) {
+      if (registeredId.product_id) {
+        const res = await getWaterLevel(registeredId.product_id);
+        if (res.data!=null) {          
+          // console.log("🚀 ~ file: Settings.js:107 ~ const__getWaterLevel= ~ res", res.data.water_level)
+          setWaterLevel(res.data.water_level)
+        }
+      }
+    }
+  }
+
   const postWaterLevelHeightSettings = async () => {
-    const formData = {start_level: minimumPersent, stop_level: maximumPersent};
-    const response = await postWaterLevelSettings(formData);
-    if (response.status == 200) {
-      alert(response.message);
-      setPersentModal(false);
-      fetchWaterLevelHeightSettings();
-    } else {
-      alert(response.message);
+    if (registeredId.hasOwnProperty('product_id')) {
+      const formData = {
+        start_level: minimumPersent,
+        stop_level: maximumPersent
+      };
+      const response = await postWaterLevelSettings(formData,registeredId.product_id);
+      if (response.status == 200) {
+        alert(response.message);
+        setPersentModal(false);
+        fetchWaterLevelHeightSettings();
+      } else {
+        alert(response.message);
+      }
     }
   };
 
   const fetchWaterLevelHeightSettings = async () => {
-    const response = await getWaterLevelSettings();
-    if (response.status === 200) {
-      setWaterLevelData(response.data);
-      setIsEnabledSource1(response.data.water_source_1);
-      setIsEnabledSource2(response.data.water_source_2);
-      setIsEnabledNotification(response.data.motor_notification);
-    }
-    if (response.data.motor_notification == true) {
+    if (registeredId.hasOwnProperty('product_id')) {
+      const response = await getWaterLevelSettings(registeredId.product_id);
+      if (response.status === 200) {
+        // console.log("🚀 ~ file: Settings.js:135 ~ fetchWaterLevelHeightSettings ~ response", response)
+        setTempTankHeight(response.data.tank_height); 
+        setWaterLevelData(response.data);
+        setIsEnabledSource1(response.data.water_source_1);
+        setIsEnabledSource2(response.data.water_source_2);
+        setIsEnabledNotification(response.data.motor_notification);
+      }
+      // if (response.data.motor_notification == true) {
+      // }
     }
   };
 
   const postWaterTankHeightSettings = async () => {
-    const formData = {
-      tank_height_type: isEnabledManually,
-      tank_height: isEnabledManually === false ? 0 : tankHeight,
-      tank_height_unit: isEnabledManually === false ? 0 : value,
-    };
-    const response = await postTankHeightSettings(formData);
-    if (response.status === 200) {
-      setTankHeightModal(false);
-      setValue('');
-      setTankHeight('');
-      setIsEnabledManually('');
-      fetchWaterLevelHeightSettings();
+    if (registeredId.hasOwnProperty('product_id')) {
+      const formData = {
+        tank_height_type: isEnabledManually,
+        tank_height: isEnabledManually === false ? 0 : tankHeight,
+        tank_height_unit: isEnabledManually === false ? 0 : value,
+      };
+      const response = await postTankHeightSettings(formData,registeredId.product_id);
+      if (response.status === 200) {
+        setTankHeightModal(false);
+        setValue('');
+        setTankHeight('');
+        setIsEnabledManually('');
+        fetchWaterLevelHeightSettings();
+      }
     }
   };
 
   const postWaterSourceSetting = async () => {
-    const formData = {
-      water_source_1: isEnabledSource1,
-      water_source_2: isEnabledSource2,
-    };
-    const response = await postWaterSourceSettings(formData);
+    if (registeredId.hasOwnProperty('product_id')) {
+      const formData = {
+        water_source_1: isEnabledSource1,
+        water_source_2: isEnabledSource2,
+      };
+      const response = await postWaterSourceSettings(formData,registeredId.product_id);
+    }
   };
 
   {
@@ -136,15 +183,48 @@ const Settings = () => {
   }
 
   const postMotorNotificationSetting = async value => {
-    const formData = {
-      motor_notification: value,
-    };
-    const response = await postMotorNotification(formData);
+    if (registeredId.hasOwnProperty('product_id')) {
+      const formData = {
+        motor_notification: value,
+      };
+      const response = await postMotorNotification(formData,registeredId.product_id);
+    }
   };
+
+  const logout =async ()=>{
+    try {
+      // console.log(creds.refresh_token)
+      const body={refresh_token:creds.refresh_token}
+      const temp=await UserlogOut(body);
+      if (temp.status==200) {
+        setStatusCode(temp.status);
+        setMssg(temp.data);
+        setSubmitToast(true);
+        setTimeout(() => {
+          setSubmitToast(false);
+        }, 700);
+        setTimeout(() => {
+          navigation.navigate('Login')
+        }, 400);
+
+      }
+      // console.log("🚀 ~ file: Settings.js:165 ~ logout ~ temp", temp)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   React.useEffect(() => {
     fetchWaterLevelHeightSettings();
   }, []);
+
+  setTimeout(() => {
+    setTimeInt(timeInt + 1);
+  }, 4000);
+
+  React.useEffect(() => {
+    __getWaterLevel()
+  }, [timeInt]);
 
   //===========================
 
@@ -362,7 +442,7 @@ const Settings = () => {
               <Pressable
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-evenly',
+                  justifyContent: 'space-evenly'
                 }}
                 onPress={() => {
                   setIsEnabledManually(true);
@@ -387,7 +467,15 @@ const Settings = () => {
                   flexDirection: 'row',
                   justifyContent: 'space-evenly',
                 }}
-                onPress={() => setIsEnabledManually(false)}>
+                onPress={() => {
+                  setIsEnabledManually(false)
+                  __getWaterLevel();
+                  // console.log('waterLevel=-',waterLevel)
+                  // console.log('tempTankHeight--',tempTankHeight)
+                  let tcs=tempTankHeight*(1-waterLevel);
+                  setAutoHeight(tcs)
+                  // console.log("🚀 ~ file: Settings.js:468 ~ renderTankHeightModal ~ tcs", tcs)
+                  }}>
                 <TouchableOpacity
                   style={{
                     backgroundColor: isEnabledManually
@@ -400,89 +488,103 @@ const Settings = () => {
                   }}
                   onPress={() => {
                     setIsEnabledManually(false);
+                    __getWaterLevel();
+                    // console.log('waterLevel=-',waterLevel)
+                    // console.log('tempTankHeight--',tempTankHeight)
+                    let tc=tempTankHeight*(1-waterLevel)
+                    setAutoHeight(tc);
+                    // console.log("🚀 ~ file: Settings.js:480 ~ renderTankHeightModal ~ tc", tc)
+
                   }}></TouchableOpacity>
                 <Text>Automatic </Text>
               </Pressable>
             </View>
             <View>
-            {isEnabledManually ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                  marginTop: 10,
-                  marginBottom: 20,
-                }}>
-                <TextInput
+              {isEnabledManually ? (
+                <View
                   style={{
-                    width: '60%',
-                    height: 35,
-                  }}
-                  mode="outlined"
-                  label="Tank height"
-                  onChangeText={value => {
-                    setTankHeight(value);
-                  }}
-                />
-                <View style={{width: '30%', marginTop: 5}}>
-                  <DropDownPicker
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    marginTop: 10,
+                    marginBottom: 20,
+                  }}>
+                  <TextInput
                     style={{
-                      borderWidth: null,
-                      borderRadius: null,
-                      backgroundColor: COLORS.lightGray1,
-                      minHeight: 35,
+                      width: '60%',
+                      height: 35,
                     }}
-                    dropDownContainerStyle={{
-                      borderWidth: null,
-                      borderRadius: null,
-                      backgroundColor: COLORS.lightGray2,
+                    mode="outlined"
+                    label="Tank height"
+                    onChangeText={value => {
+                      unit=='CM'?
+                      setTankHeight(value):
+                      setTankHeight(value*100);
                     }}
-                    placeholder="Unit"
-                    open={open}
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    zIndex={1000}
-                    listMode="SCROLLVIEW"
+                  />
+                  <View style={{width: '30%', marginTop: 5}}>
+                    <DropDownPicker
+                      style={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray1,
+                        minHeight: 35,
+                      }}
+                      dropDownContainerStyle={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray2,
+                      }}
+                      placeholder="Unit"
+                      open={open}
+                      value={value}
+                      items={items}
+                      setOpen={setOpen}
+                      setValue={setValue}
+                      setItems={setItems}
+                      zIndex={1000}
+                      listMode="SCROLLVIEW"
+                      onSelectItem={value => {
+                        // console.log(value)
+                        setUnit(value.label);
+                      }}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    // marginTop: 10,
+                  }}>
+                  <Text style={{textAlign: 'center', marginTop: SIZES.base}}>
+                    Please make sure that tank is empty{'\n'}if empty{' '}
+                  </Text>
+                  <TextInput
+                    style={{
+                      width: '40%',
+                      height: 25,
+                      // position: 'absolute',
+                      top: SIZES.body1 * 1.7,
+                      alignSelf:'center'
+                    }}
+                    value={autoHeight.toString()}
+                    editable={false}
+                    mode="outlined"
+                    label="Tank height"
+                    // onChangeText={value => {
+                    //   setTankHeight(value);
+                    // }}
                   />
                 </View>
-              </View>
-            ) : (
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  // marginTop: 10,
-                }}>
-                <Text style={{textAlign: 'center', marginTop: SIZES.base}}>
-                  Please make sure that tank is empty{'\n'}if empty{' '}
-                </Text>
-                <TextInput
-                  style={{
-                    width: '40%',
-                    height: 25,
-                    position: 'absolute',
-                    top: SIZES.body1 * 1.7,
-                  }}
-                  mode="outlined"
-                  label="Tank height"
-                  
-                  onChangeText={value => {
-                    setTankHeight(value);
-                  }}
-                />
-             
-              </View>
-            )}
+              )}
             </View>
             <TouchableOpacity
               style={{
                 marginTop: 60,
                 backgroundColor: COLORS.blue_600,
-                borderRadius:SIZES.body4*0.5,
+                borderRadius: SIZES.body4 * 0.5,
                 alignItems: 'center',
                 padding: 5,
               }}
@@ -813,15 +915,23 @@ const Settings = () => {
           marginTop: 10,
           borderRadius: 10,
           elevation: 5,
-          backgroundColor: COLORS.cyan_600
-        }}>     
-        <TouchableOpacity style={{marginTop: 5}}>
-          <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'space-between',marginRight:SIZES.height*0.32}}>     
-              <AntDesign name="logout" size={20} color={COLORS.white} />
+          backgroundColor: COLORS.cyan_600,
+        }}>
+        <TouchableOpacity style={{marginTop: 5}} onPress={()=>{
+          logout();
+        }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginRight: SIZES.height * 0.32,
+            }}>
+            <AntDesign name="logout" size={20} color={COLORS.white} />
             <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
               Logout
             </Text>
-          </View>   
+          </View>
         </TouchableOpacity>
       </View>
     );
@@ -903,7 +1013,6 @@ const Settings = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       showsVerticalScrollIndicator={false}>
-
       {renderSwitchOnOffSettings()}
       {renderTankHeight()}
 
@@ -918,6 +1027,13 @@ const Settings = () => {
       {isSourceOne && renderSourceOne()}
       {isSourceTwo && renderSourceTwo()}
       {renderVersion()}
+      <CustomToast
+        isVisible={submitToast}
+        onClose={() => setSubmitToast(false)}
+        color={statusCode == 200 ? COLORS.green : COLORS.red}
+        title={statusCode == 200 ? 'Logout' : 'Something Went Wrong'}
+        message={mssg}
+      />
     </ScrollView>
   );
 };

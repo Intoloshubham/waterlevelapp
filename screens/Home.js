@@ -21,12 +21,15 @@ import {
   getPrevLevel,
 } from '../controllers/getImageController';
 import {postRemoteControl} from '../controllers/RemoteControlController';
+import {useSelector} from 'react-redux';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Home = () => {
+  const registeredId = useSelector(state => state.product);
+
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
@@ -41,7 +44,7 @@ const Home = () => {
   let overflowLevelStatus = true;
   let underFlowLevelStatus = true;
   // let resetStatus = true;
-  const [resetStatus, setResetStatus] = useState(true)
+  const [resetStatus, setResetStatus] = useState(true);
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
@@ -50,30 +53,63 @@ const Home = () => {
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const [timeInterval, setTimeInterval] = useState(0);
+
   const getStreamImage = async () => {
-    const res = await getImage();
-    setStreamImage(res.image);
-    setDate(res.date);
-    setTime(res.time);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getImage(registeredId.product_id);
+          setStreamImage(res.image);
+          setDate(res.date);
+          setTime(res.time);          
+        }        
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
   };
 
   const fetchLedStatus = async () => {
-    const res = await getLEDStatus();
-    setIsEnabled(res.data.led_status == 1 ? true : false);
-    if (waterLevelData.motor_notification == true) {
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getLEDStatus(registeredId.product_id);
+          if (res.data!=null) {
+            setIsEnabled(res.data.led_status == 1 ? true : false);
+            if (waterLevelData.motor_notification == true) {
+            }            
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   };
 
   const fetchSumpStatus = async () => {
-    const res = await getSUMPStatus();
-    setSumpStatus(res.data.sump_status);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getSUMPStatus(registeredId.product_id);
+          if (res.data!=null) {
+            setSumpStatus(res.data.sump_status);            
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
   };
 
   const getPrevWaterLevel = async () => {
     try {
-      const res = await getPrevLevel();
-      if (res) {
-        prevalue = res.prevLevel;
+      if (registeredId.hasOwnProperty('product_id')) {
+        const res = await getPrevLevel(registeredId.product_id);
+        if (res) {
+          prevalue = res.prevLevel;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -81,79 +117,88 @@ const Home = () => {
   };
 
   const WaterLevel = async () => {
-    const res = await getWaterLevel();
-    console.log('🚀 ~ file: Home.js:85 ~ WaterLevel ~ res', res);
-    console.log("pre==",prevalue == res.data.water_level);
-    console.log( res.data.led_status == 1 )
-    if (
-      res.data.led_status == 1 &&
-      prevalue == res.data.water_level &&
-      resetStatus == true
-    ) {
-      // console.log('object--')
-      // resetStatus = false;
-      setResetStatus(false);
-      setWarningModal(true);
-    }
-
-    setLevel(res.data.water_level);
-    setPhValue(res.data.ph_level);
-    if (parseFloat(res.data.water_level) >= 90) {
-      if (overflowLevelStatus) {
-        setWarningModal(true);
-        overflowLevelStatus = false;
-        const formData = {led_status: 0};
-        const response = await postRemoteControl(formData);
-      }
-    }
-
-    if (parseFloat(res.data.water_level) <= 20) {
-      if (underFlowLevelStatus) {
-        underFlowLevelStatus = false;
-        const formData = {led_status: 1};
-        const response = await postRemoteControl(formData);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getWaterLevel(registeredId.product_id);
+          if (res.data!=null) {
+            if (
+              res.data.led_status == 1 &&
+              prevalue == res.data.water_level &&
+              resetStatus == true
+            ) {
+              // resetStatus = false;
+              setResetStatus(false);
+              setWarningModal(true);
+            }
+      
+            setLevel(res.data.water_level);
+            setPhValue(res.data.ph_level);
+            
+            if (parseFloat(res.data.water_level) >= 90) {
+              if (overflowLevelStatus) {
+                setWarningModal(true);
+                overflowLevelStatus = false;
+                const formData = {led_status: 0};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }
+      
+            if (parseFloat(res.data.water_level) <= 20) {
+              if (underFlowLevelStatus) {
+                underFlowLevelStatus = false;
+                const formData = {led_status: 1};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }            
+          }
+          // console.log("🚀 ~ file: Home.js:123 ~ WaterLevel ~ res", res)
+    
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
   };
-  const ref = React.useRef(null);
+
   const [refreshing, setRefreshing] = React.useState(false);
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // getStreamImage();
+    getStreamImage();
     WaterLevel();
     fetchLedStatus();
     fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
+  setTimeout(() => {
+    setTimeInterval(timeInterval + 1);
+  }, 4000);
+
   React.useEffect(() => {
-    // getStreamImage();
+    console.log('object--', timeInterval);
+    getStreamImage();
     // WaterLevel();
     fetchSumpStatus();
-    // fetchLedStatus();
-    // setInterval(() => {
-    //   // getStreamImage();
-    //   WaterLevel();
-    //   getPrevWaterLevel();
-    //   fetchLedStatus();
+    // const interval = setInterval(() => {
+    WaterLevel();
+    // getPrevWaterLevel();
+    fetchLedStatus();
     // }, 4000);
 
-    // ref.current = setInterval(()=>{
-    //   WaterLevel();
-    //   getPrevWaterLevel();
-    // }, 5 * 80 * 10);
+    // return () => clearInterval(interval);
+  }, [timeInterval]);
 
-    // return () => {
-    //   if(ref.current){
-    //     clearInterval(ref.current)
-    //   }
-    // }
-  }, []);
-
-  let display = setInterval(() => {
-    WaterLevel();
-    getPrevWaterLevel();
-  }, 4000);
+  // useEffect(() => {
+  //   await updateData(id, state, setState); // API call
+  // }, []);
 
   function renderWarningModal() {
     return (

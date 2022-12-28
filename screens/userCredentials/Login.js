@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -12,13 +12,16 @@ import {
 } from 'react-native';
 import {SIZES, COLORS, icons, images, FONTS} from '../../constants';
 import {TextInput} from 'react-native-paper';
-import {TextButton,CustomToast} from '../../componets';
-import { loginUser } from '../../controllers/LoginController';
+import {TextButton, CustomToast} from '../../componets';
+import {loginUser} from '../../controllers/LoginController';
+import {useDispatch} from 'react-redux';
+import {addLoginCredentials} from '../../redux/userCredentialSlice';
 
 const Login = ({navigation}) => {
+  const dispatch = useDispatch();
   const [mobile, SetMobile] = React.useState('');
   const [password, SetPassword] = React.useState('');
-  
+
   const [submitToast, setSubmitToast] = React.useState(false);
   const [updateToast, setUpdateToast] = React.useState(false);
   const [deleteToast, setDeleteToast] = React.useState(false);
@@ -26,24 +29,37 @@ const Login = ({navigation}) => {
   const [errorCode, setErrorCode] = useState('');
   const [mssg, setMssg] = useState('');
 
-  const _loginUser = async () =>{
+  const _loginUser = async () => {
     try {
-
-      const body={ mobile, password };
-      const temp=await loginUser(body);
-
+      const body = {mobile, password};
+      const temp = await loginUser(body);
       if (temp.status === 200) {
         setErrorCode(200);
-        setMssg("Login successfully!");
+        setSubmitToast(true);
+        setMssg('Login successfully!');
+        dispatch(
+          addLoginCredentials({
+            refresh_token: temp.refresh_token,
+            user_credentials: temp.data,
+          }),
+        );
+        setTimeout(() => {
+          // navigation.navigate('Tabs');
+          navigation.navigate('Products');
+          setSubmitToast(false);
+        }, 700);
+      } else {
+        setErrorCode(400);
+        setMssg(temp.message);
         setSubmitToast(true);
         setTimeout(() => {
-          navigation.navigate('Tabs')
-        }, 700);
+          setSubmitToast(false);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   function renderLogin() {
     return (
@@ -64,7 +80,7 @@ const Login = ({navigation}) => {
                   height: 120,
                   width: 170,
                   borderRadius: 10,
-                  marginTop: 15
+                  marginTop: 15,
                 }}
               />
             </View>
@@ -75,7 +91,7 @@ const Login = ({navigation}) => {
                 elevation: 5,
                 borderRadius: 10,
                 paddingHorizontal: 20,
-                paddingVertical: 20
+                paddingVertical: 20,
               }}>
               <TouchableOpacity
                 style={{
@@ -134,9 +150,9 @@ const Login = ({navigation}) => {
                     alignItems: 'center',
                     borderRadius: 5,
                   }}
-                  onPress={() =>{
+                  onPress={() => {
                     _loginUser();
-                   }}
+                  }}
                 />
               </View>
             </View>
@@ -246,9 +262,7 @@ const Login = ({navigation}) => {
         isVisible={submitToast}
         onClose={() => setSubmitToast(false)}
         color={errorCode == 200 ? COLORS.green : COLORS.red}
-        title={
-          errorCode == 200 ? 'User Login' : 'Something Went Wrong'
-        }
+        title={errorCode == 200 ? 'User Login' : 'Something Went Wrong'}
         message={mssg}
       />
       {/* {renderBrandingVersion()} */}

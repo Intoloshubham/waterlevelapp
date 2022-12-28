@@ -22,4 +22,6 @@ const loginUser =async inputs =>{
     const temp=await resp.json();
     return temp;
 }
+
+
 export {registerUser,loginUser};
