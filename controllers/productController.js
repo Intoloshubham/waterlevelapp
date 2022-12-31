@@ -35,5 +35,18 @@ const updateProduct = async (inputs, id) => {
     console.log(error);
   }
 };
+const makeProductPrimary =async (id)=>{
+  try {
+    const resp=await fetch(`${API_URL}primary/${id}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      // body:JSON.stringify()
+    });
+    const temp=await resp.json();
+    return temp;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-export {addProduct, getProduct, updateProduct};
+export {addProduct, getProduct, updateProduct,makeProductPrimary};
