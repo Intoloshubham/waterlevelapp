@@ -9,8 +9,10 @@ import {
   RefreshControl,
   StyleSheet,
   Modal,
+  Switch,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
+import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {widthToDo, heightToDo} from './setImagePixels';
 import {FONTS, COLORS, icons, SIZES} from '../constants';
 import {
@@ -21,15 +23,17 @@ import {
   getPrevLevel,
 } from '../controllers/getImageController';
 import {postRemoteControl} from '../controllers/RemoteControlController';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import { addMode } from '../redux/modeSlice';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Home = () => {
+  const dispatch = useDispatch();
   const registeredId = useSelector(state => state.product);
-
+  const [mode, setMode] = React.useState('');
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
@@ -38,6 +42,7 @@ const Home = () => {
   const [square, setSquare] = React.useState(false);
   const [warningModal, setWarningModal] = useState(false);
   const [sumpStatus, setSumpStatus] = useState(0);
+  const [switchValue, setSwitchValue] = useState(false);
 
   let prevalue = 0;
   // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
@@ -62,12 +67,11 @@ const Home = () => {
           const res = await getImage(registeredId.product_id);
           setStreamImage(res.image);
           setDate(res.date);
-          setTime(res.time);          
-        }        
+          setTime(res.time);
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-
     }
   };
 
@@ -76,14 +80,14 @@ const Home = () => {
       try {
         if (registeredId.product_id) {
           const res = await getLEDStatus(registeredId.product_id);
-          if (res.data!=null) {
+          if (res.data != null) {
             setIsEnabled(res.data.led_status == 1 ? true : false);
             if (waterLevelData.motor_notification == true) {
-            }            
+            }
           }
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -93,12 +97,12 @@ const Home = () => {
       try {
         if (registeredId.product_id) {
           const res = await getSUMPStatus(registeredId.product_id);
-          if (res.data!=null) {
-            setSumpStatus(res.data.sump_status);            
+          if (res.data != null) {
+            setSumpStatus(res.data.sump_status);
           }
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -121,7 +125,7 @@ const Home = () => {
       try {
         if (registeredId.product_id) {
           const res = await getWaterLevel(registeredId.product_id);
-          if (res.data!=null) {
+          if (res.data != null) {
             if (
               res.data.led_status == 1 &&
               prevalue == res.data.water_level &&
@@ -131,10 +135,10 @@ const Home = () => {
               setResetStatus(false);
               setWarningModal(true);
             }
-      
+
             setLevel(res.data.water_level);
             setPhValue(res.data.ph_level);
-            
+
             if (parseFloat(res.data.water_level) >= 90) {
               if (overflowLevelStatus) {
                 setWarningModal(true);
@@ -146,7 +150,7 @@ const Home = () => {
                 );
               }
             }
-      
+
             if (parseFloat(res.data.water_level) <= 20) {
               if (underFlowLevelStatus) {
                 underFlowLevelStatus = false;
@@ -156,13 +160,12 @@ const Home = () => {
                   registeredId.product_id,
                 );
               }
-            }            
+            }
           }
           // console.log("🚀 ~ file: Home.js:123 ~ WaterLevel ~ res", res)
-    
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -656,6 +659,72 @@ const Home = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+        {/* <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#344953',
+            }}>
+            {switchValue ? 'Manual' : ''}
+          </Text>
+
+          <Switch
+          style={{position:'absolute',marginHorizontal:160}}
+            value={switchValue}
+            onValueChange={switchValue => setSwitchValue(switchValue)}
+          />
+           <Text
+            style={{
+              fontSize: 25,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#344953',
+            }}>
+            {switchValue ? '' : 'Automatic'}
+          </Text>
+        </View> */}
+        <View
+          style={{
+            alignSelf: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          {/* <Text style={{fontSize: 18,textAlign:'center', fontWeight: '500', color: COLORS.gray}}>
+            Mode 
+          </Text> */}
+          <DuoToggleSwitch
+            primaryText="Manual"
+            secondaryText="Automatic"
+            onPrimaryPress={() => {
+              setMode(0);
+              dispatch(
+                addMode({
+                  mode: 0
+                }),
+              );
+              // postRemoteControlData(0);
+            }}
+            onSecondaryPress={() => {
+              setMode(1);
+              dispatch(
+                addMode({
+                  mode: 1
+                }),
+              );
+              // postRemoteControlData(1);
+            }}
+            primaryButtonStyle={{
+              backgroundColor: mode == 0 ? 'green' : 'white',
+            }}
+            secondaryButtonStyle={{
+              backgroundColor: mode == 1 ? 'green' : 'white',
+            }}
+            secondaryTextStyle={{color: mode == 1 ? 'white' : 'black'}}
+            primaryTextStyle={{color: mode == 0 ? 'white' : 'black'}}
+          />
+        </View>
         {renderWaterTank()}
         {renderWaterLiveView()}
         {renderOthers()}
