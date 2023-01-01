@@ -106,9 +106,8 @@ const Settings = ({navigation}) => {
     if (registeredId.hasOwnProperty('product_id')) {
       if (registeredId.product_id) {
         const res = await getWaterLevel(registeredId.product_id);
-        if (res.data != null) {
-          // console.log("🚀 ~ file: Settings.js:107 ~ const__getWaterLevel= ~ res", res.data.water_level)
-          setWaterLevel(res.data.water_level);
+        if (res.data != null) {    
+         return setWaterLevel(res.data.water_level);
         }
       }
     }
@@ -137,11 +136,9 @@ const Settings = ({navigation}) => {
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
       const response = await getWaterLevelSettings(registeredId.product_id);
-      if (response.status === 200) {
-        console.log(
-          '🚀 ~ file: Settings.js:135 ~ fetchWaterLevelHeightSettings ~ response',
-          response.data.tank_height,
-        );
+      console.log("🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response", response.data)
+      if (response.status === 200) {     
+        // console.log("==========",response.data.tank_height)  
         setTempTankHeight(response.data.tank_height);
         setWaterLevelData(response.data);
         setIsEnabledSource1(response.data.water_source_1);
@@ -155,16 +152,18 @@ const Settings = ({navigation}) => {
 
   const postWaterTankHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
-      console.log('tankHeight==', tankHeight);
       const formData = {
         tank_height_type: isEnabledManually,
         tank_height: isEnabledManually === false ? 0 : tankHeight,
         tank_height_unit: isEnabledManually === false ? 0 : value,
       };
+
       const response = await postTankHeightSettings(
         formData,
         registeredId.product_id,
       );
+      console.log("🚀 ~ file: Settings.js:165 ~ postWaterTankHeightSettings ~ response", response)
+      
       if (response.status === 200) {
         setTankHeightModal(false);
         setValue('');
@@ -230,16 +229,18 @@ const Settings = ({navigation}) => {
     }
   };
 
-  React.useEffect(() => {
-    fetchWaterLevelHeightSettings();
-  }, []);
+  // React.useEffect(() => {
+  //   fetchWaterLevelHeightSettings();
+  // }, []);
 
   setTimeout(() => {
     setTimeInt(timeInt + 1);
   }, 4000);
 
-  React.useEffect(() => {
+  React.useMemo(() => {
+    console.log('timeInterval==',timeInt)
     __getWaterLevel();
+    fetchWaterLevelHeightSettings();
   }, [timeInt]);
 
   //===========================
@@ -509,6 +510,7 @@ const Settings = ({navigation}) => {
                   onPress={() => {
                     setIsEnabledManually(false);
                     __getWaterLevel();
+                    fetchWaterLevelHeightSettings()
                     console.log('waterLevel=-', waterLevel);
                     console.log('tempTankHeight--', tempTankHeight);
                     let tc = tempTankHeight * (1 - waterLevel);

@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Modal,
   Switch,
+  Dimensions 
 } from 'react-native';
 import Lottie from 'lottie-react-native';
 import DuoToggleSwitch from 'react-native-duo-toggle-switch';
@@ -23,8 +24,9 @@ import {
   getPrevLevel,
 } from '../controllers/getImageController';
 import {postRemoteControl} from '../controllers/RemoteControlController';
+import ImageZoom from 'react-native-image-pan-zoom';
 import {useDispatch, useSelector} from 'react-redux';
-import { addMode } from '../redux/modeSlice';
+import {addMode} from '../redux/modeSlice';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -181,7 +183,7 @@ const Home = () => {
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
-  setTimeout(() => {
+  let timer1 = setTimeout(() => {
     setTimeInterval(timeInterval + 1);
   }, 4000);
 
@@ -197,6 +199,9 @@ const Home = () => {
     // }, 4000);
 
     // return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer1);
+    };
   }, [timeInterval]);
 
   // useEffect(() => {
@@ -371,7 +376,7 @@ const Home = () => {
           }}>
           <View
             style={{
-              flexDirection: 'row',
+              // flexDirection: 'row',
               // justifyContent: 'space-between',
               alignItems: 'center',
               backgroundColor: COLORS.white,
@@ -380,17 +385,21 @@ const Home = () => {
               elevation: 2,
               borderRadius: 5,
             }}>
-            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
-              Sump Status -
-            </Text>
             <View
               style={{
-                flexDirection: 'row',
+                // flexDirection: 'row',
+                flex: 1,
                 backgroundColor: COLORS.white,
-                left: 5,
-                padding: 1,
+                // left: 5,
+                // padding: 10,
               }}>
-              <Text
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: COLORS.blue_300,
+                  padding: 15,
+                }}></View>
+              {/* <Text
                 style={{
                   fontSize: 14,
                   color: sumpStatus == 0 ? COLORS.white : COLORS.black,
@@ -412,12 +421,15 @@ const Home = () => {
                   borderWidth: 0.5,
                 }}>
                 ON
-              </Text>
+              </Text> */}
             </View>
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Sump Level
+            </Text>
           </View>
           <View
             style={{
-              flexDirection: 'row',
+              // flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: COLORS.white,
@@ -427,15 +439,12 @@ const Home = () => {
               elevation: 2,
               borderRadius: 5,
             }}>
-            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
-              Pump Status -
-            </Text>
             <View
               style={{
-                flexDirection: 'row',
+                // flexDirection: 'row',
                 backgroundColor: COLORS.white,
-                left: 5,
-                padding: 1,
+                // left: 5,
+                padding: 15,
               }}>
               <Text
                 style={{
@@ -462,6 +471,9 @@ const Home = () => {
                 ON
               </Text>
             </View>
+            <Text style={{fontSize: 15, color: COLORS.darkGray}}>
+              Pump Status
+            </Text>
           </View>
         </View>
         {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -503,7 +515,7 @@ const Home = () => {
           marginTop: 15,
           ...styles.shadow,
         }}>
-        <Image
+        {/* <Image
           source={{uri: streamImage}}
           style={{
             height: square == true ? 200 : 200,
@@ -513,7 +525,25 @@ const Home = () => {
             borderWidth: 1,
             borderColor: COLORS.black,
           }}
-        />
+        /> */}
+        <ImageZoom
+          cropWidth={Dimensions.get('window').width}
+          cropHeight={Dimensions.get('window').height}
+          imageWidth={200}
+          imageHeight={200}>
+          <Image
+            style={{
+              width: square == true ? 300 : 200,
+              height: square == true ? 200 : 200,
+              alignSelf: 'center',
+              borderRadius: square == true ? 10 : 100,
+              borderWidth: 1,
+              borderColor: COLORS.black,
+            }}
+            source={{uri: streamImage}}
+          />
+        </ImageZoom>
+
         <Text
           style={{
             fontSize: 12,
@@ -701,7 +731,7 @@ const Home = () => {
               setMode(0);
               dispatch(
                 addMode({
-                  mode: 0
+                  mode: 0,
                 }),
               );
               // postRemoteControlData(0);
@@ -710,7 +740,7 @@ const Home = () => {
               setMode(1);
               dispatch(
                 addMode({
-                  mode: 1
+                  mode: 1,
                 }),
               );
               // postRemoteControlData(1);

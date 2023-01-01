@@ -116,8 +116,8 @@ const Products = ({navigation}) => {
       if (data.status == 200) {
         setProductDetails(data.data);
       }
-      const temp_product_id= await getData('primary_product');
-      const temp_product_name= await getData('primary_product_name');
+      const temp_product_id= await getData('primary_product'); 
+      const temp_product_name= await getData('primary_product_name'); 
       dispatch(
         addSliceProduct({
           product_id: temp_product_id,
@@ -155,7 +155,7 @@ const Products = ({navigation}) => {
         
         return {label: ele.service_used_in, value: ele.product_id};
         // return {label: ele.product_id, value: ele._id};
-      });
+      });      
       setProductList(productListFromApi);
       
       if (data.data.length > 0) {
@@ -329,9 +329,10 @@ const Products = ({navigation}) => {
             flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
+            alignItems:'center',
             marginHorizontal: SIZES.base
           }}>
-          <View>
+          <View style={{alignItems:'center'}}>
             <Text style={{...FONTS.body3}}>{item.service_used_in}</Text>
           </View>
         </TouchableOpacity>

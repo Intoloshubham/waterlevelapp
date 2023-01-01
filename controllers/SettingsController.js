@@ -2,7 +2,7 @@ import {API_URL} from '@env';
 
 const postWaterLevelSettings = async (formData,registeredId) => {
   try {
-    const res = await fetch(API_URL + `water-level-setting/${registeredId}`, {
+    const res = await fetch(API_URL + `update-water-level-setting/${registeredId}`, {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
