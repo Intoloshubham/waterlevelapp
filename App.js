@@ -3,7 +3,7 @@ import Tabs from './navigation/Tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Login, Register} from './screens/userCredentials';
-import {Home, Products} from './screens';
+import {Home, Products, RemoteControl} from './screens';
 import {Provider} from 'react-redux';
 import store from './redux/store.js';
 import {COLORS} from './constants';
@@ -44,7 +44,8 @@ const App = () => {
             name="Products"
             component={Products}
           />
-          <Stack.Screen name="Login" component={Login} />
+
+          <Stack.Screen name="Login" component={Login} />       
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>

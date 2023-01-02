@@ -18,7 +18,7 @@ import Lottie from 'lottie-react-native';
 import {FONTS, COLORS, icons, SIZES} from '../constants';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput, Divider} from 'react-native-paper';
-import { getData, storeData } from '../utils/localStorage';
+import {getData, storeData} from '../utils/localStorage';
 import {CustomToast} from '../componets';
 import {
   addProduct,
@@ -34,16 +34,12 @@ import {addSliceProduct} from '../redux/productSlice';
 import {useSelector} from 'react-redux';
 
 const Products = ({navigation}) => {
-
   const dispatch = useDispatch();
   const creds = useSelector(state => state.userCreds);
   let userId = creds.user_credentials._id;
   const [productModal, setProductModal] = useState(false);
   const [productUniqueId, setProductUniqueId] = useState('');
   const [serviceUsedIn, setServiceUsedIn] = useState('');
-
-
-
 
   const [mssg, setMssg] = useState('');
   const [statusCode, setStatusCode] = useState('');
@@ -73,11 +69,10 @@ const Products = ({navigation}) => {
   }, []);
 
   const submitProductId = async () => {
-
     const data = {
       product_id: productUniqueId,
       service_used_in: serviceUsedIn,
-      user_id: userId
+      user_id: userId,
     };
 
     const temp = await addProduct(data);
@@ -116,12 +111,12 @@ const Products = ({navigation}) => {
       if (data.status == 200) {
         setProductDetails(data.data);
       }
-      const temp_product_id= await getData('primary_product'); 
-      const temp_product_name= await getData('primary_product_name'); 
+      const temp_product_id = await getData('primary_product');
+      const temp_product_name = await getData('primary_product_name');
       dispatch(
         addSliceProduct({
           product_id: temp_product_id,
-          service_used_in: temp_product_name
+          service_used_in: temp_product_name,
         }),
       );
       setProductValue(temp_product_id);
@@ -152,12 +147,12 @@ const Products = ({navigation}) => {
         //       ? updatePrimaryId
         //       : ele.product_id,
         // };
-        
+
         return {label: ele.service_used_in, value: ele.product_id};
         // return {label: ele.product_id, value: ele._id};
-      });      
+      });
       setProductList(productListFromApi);
-      
+
       if (data.data.length > 0) {
         setTimeout(() => {
           navigation.navigate('Tabs');
@@ -189,19 +184,19 @@ const Products = ({navigation}) => {
       setProductModal(false);
       setUpdateToast(false);
     }, 500);
-  }; 
-  const updatePrimaryStatus = async () => {
-    const data = await makeProductPrimary(productMainId);
+  };
+  const updatePrimaryStatus = async id => {
+    const data = await makeProductPrimary(id);
     // console.log("🚀 ~ file: Products.js:179 ~ updatePrimaryStatus ~ data", data)
     if (data.status == 200) {
-      setStatusCode(data.status);
+      // setStatusCode(data.status);
       setProductValue(data.product_id);
-      storeData('primary_product',data.product_id);
-      storeData('primary_product_name',data.label);
+      storeData('primary_product', data.product_id);
+      storeData('primary_product_name', data.label);
       // getProductId();
       setUpdatePrimaryLabel(data.label);
       // setUpdatePrimaryId(true);
-      setUpdatePrimaryId(data.product_id);
+      // setUpdatePrimaryId(data.product_id);
       dispatch(
         addSliceProduct({
           product_id: data.product_id,
@@ -209,14 +204,14 @@ const Products = ({navigation}) => {
         }),
       );
       // setProductValue(data.label);
-      setMssg(data.data);
-      setUpdateToast(true);
+      // setMssg(data.data);
+      // setUpdateToast(true);
     }
 
-    setTimeout(() => {
-      // setProductModal(false);
-      setUpdateToast(false);
-    }, 500);
+    // setTimeout(() => {
+    //   // setProductModal(false);
+    //   setUpdateToast(false);
+    // }, 500);
   };
   // const fetchProductLabelValue = async () => {
 
@@ -259,7 +254,8 @@ const Products = ({navigation}) => {
               // borderBottomWidth: 1,
               borderColor: COLORS.lightGray1,
             }}
-            onPress={() => updatePrimaryStatus()}>
+            // onPress={() => updatePrimaryStatus()}
+          >
             <Fontisto name="radio-btn-active" size={10} color={COLORS.gray} />
             <Text style={{...FONTS.body3, flex: 0.7, textAlign: 'center'}}>
               Primary
@@ -304,49 +300,55 @@ const Products = ({navigation}) => {
   const renderItem = ({item}) => (
     <View
       style={{
-        flex: 1,
-        flexDirection: 'row',
-        position: 'relative',
-        justifyContent: 'space-evenly',
-        // marginHorizontal: SIZES.body3,
-        padding: SIZES.base,
+        // alignItems:'center',
+        // marginHorizontal: SIZES.body1*0.5 ,
+        marginRight:SIZES.body1*7,
+        marginLeft:SIZES.base,
+        padding: SIZES.base * 0.5,
       }}>
-      <View
+      <TouchableOpacity
         style={{
           flex: 1,
           flexDirection: 'row',
-          padding: SIZES.body5 * 0.7,
-          elevation: 1,
+          justifyContent:'space-between',
+          marginHorizontal:SIZES.base,
+          alignItems:'center',
+          padding: SIZES.body5 * 0.5,
+          // elevation: 1,
           borderWidth: updatePrimaryId == item.product_id ? 2 : 0,
           borderColor:
-            updatePrimaryId == item.product_id ? COLORS.green : COLORS.blue_50,
+            updatePrimaryId == item.product_id
+              ? COLORS.cyan_500
+              : COLORS.blue_50,
           borderRadius: SIZES.base * 0.5,
-          borderLeftWidth: 5,
-          borderColor: COLORS.cyan_500
+          borderRightWidth: 0,
+          borderLeftWidth: updatePrimaryId == item.product_id ? 5 : 0,
+        }}
+        onPress={() => {
+          setServiceUsedIn(item.service_used_in);
+          setProductUniqueId(item.product_id);
+          setUpdatePrimaryId(item.product_id);
+          updatePrimaryStatus(item._id);
+          setTimeout(() => {
+            navigation.navigate('Home');
+          }, 700);
         }}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems:'center',
-            marginHorizontal: SIZES.base
+        <TouchableOpacity         
+          onPress={() => {
+            setServiceUsedIn(item.service_used_in);
+            setProductUniqueId(item.product_id);
+            setUpdatePrimaryId(item.product_id);
+            updatePrimaryStatus(item._id);
+            setTimeout(() => {
+              navigation.navigate('Home');
+            }, 700);
           }}>
-          <View style={{alignItems:'center'}}>
+          <View style={{}}>
             <Text style={{...FONTS.body3}}>{item.service_used_in}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            setProductPopupMenu(true);
-            setServiceUsedIn(item.service_used_in);
-            // setProLabel(item.service_used_in);
-            setProductUniqueId(item.product_id);
-            setProductMainId(item._id);
-          }}>
-          <Entypo name="dots-three-vertical" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+            <Entypo name='check' style={{}} size={22} color={updatePrimaryId == item.product_id ? COLORS.green : COLORS.white}/>
+      </TouchableOpacity>
     </View>
   );
 
@@ -440,7 +442,7 @@ const Products = ({navigation}) => {
       }}>
       {productList.length > 0 ? (
         <View>
-          <View style={{alignSelf: 'center'}}>
+          {/* <View style={{alignSelf: 'center'}}>
             <DropDownPicker
               style={{
                 borderWidth: null,
@@ -502,7 +504,7 @@ const Products = ({navigation}) => {
                 tintColor: 'black',
               }}
             />
-          </View>
+          </View> */}
           <View
             style={{
               marginTop: SIZES.body2,
@@ -511,9 +513,10 @@ const Products = ({navigation}) => {
               marginHorizontal: SIZES.body2,
             }}>
             <Text
-              style={{...FONTS.body2, textAlign: 'left', color: COLORS.black}}>
+              style={{...FONTS.body2, textAlign: 'left', color: COLORS.darkGray}}>
               Product List
             </Text>
+
             <TouchableOpacity
               style={{
                 borderWidth: 1,
@@ -535,13 +538,32 @@ const Products = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{marginTop: SIZES.body1}}>
+
+          <View style={{marginTop: SIZES.body1 * 2}}>
+            <View
+              style={{
+                backgroundColor: COLORS.white,
+                marginHorizontal: SIZES.body3,
+                paddingVertical:SIZES.base,
+                elevation:15,
+                alignItems:'center'
+              }}>
+              <Text
+                style={{
+                  ...FONTS.body3,
+                  textAlign: 'center',
+                  // marginTop: 5,
+                  color: COLORS.darkGray,
+                }}>
+                Show as Dashboard
+              </Text>
+            </View>
             <FlatList
               data={productDetails}
+              style={{marginTop: SIZES.body1}}
               renderItem={renderItem}
               keyExtractor={item => item._id}
             />
-            {renderPopup()}
           </View>
         </View>
       ) : (
