@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { COLORS } from '../constants';
 
 const CustomSwitch = ({
   navigation,
@@ -23,12 +24,12 @@ const CustomSwitch = ({
     <View>
       <View
         style={{
-          height: 44,
-          width: 215,
+          height: 30,
+          width: 145,
           backgroundColor: 'white',
-          borderRadius: getRoundCorner ? 25 : 0,
+          borderRadius: getRoundCorner ? 3 : 0,
           borderWidth: 1,
-          borderColor: selectionColor,
+          borderColor: COLORS.blue_300,
           flexDirection: 'row',
           justifyContent: 'center',
           padding: 2,
@@ -40,13 +41,13 @@ const CustomSwitch = ({
             flex: 1,
 
             backgroundColor: getSelectionMode == 0 ? selectionColor : 'white',
-            borderRadius: getRoundCorner ? 25 : 0,
+            borderRadius: getRoundCorner ? 3 : 0,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
             style={{
-              color: getSelectionMode == 0 ? 'white' : selectionColor,
+              color: getSelectionMode == 0 ? 'white' : 'black',
             }}>
             {option1}
           </Text>
@@ -59,13 +60,13 @@ const CustomSwitch = ({
             flex: 1,
 
             backgroundColor: getSelectionMode == 1 ? selectionColor : 'white',
-            borderRadius: getRoundCorner ? 25 : 0,
+            borderRadius: getRoundCorner ? 3 : 0,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
             style={{
-              color: getSelectionMode == 1 ? 'white' : selectionColor,
+              color: getSelectionMode == 1 ? 'white' : 'black',
             }}>
             {option2}
           </Text>

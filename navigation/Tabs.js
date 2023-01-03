@@ -2,7 +2,8 @@ import React from 'react';
 import {Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Home, Settings, RemoteControl, Products} from '../screens';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {Home, Settings, RemoteControl, Products,WaterUses} from '../screens';
 import {COLORS,icons} from '../constants';
 
 const Tab = createBottomTabNavigator();
@@ -73,6 +74,26 @@ const Tabs = () => {
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="gamepad-circle-down"
+              color={COLORS.cyan_600}
+              size={20}
+            />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Water Uses"
+        component={WaterUses}
+        options={{
+          tabBarLabel: 'Water Uses',
+          tabBarLabelStyle: {
+            marginBottom: 5,
+            fontSize: 12,
+            color: COLORS.true_gray_800,
+          },
+          tabBarIcon: ({color, size}) => (
+            <FontAwesome5
+              name="hand-holding-water"
               color={COLORS.cyan_600}
               size={20}
             />
