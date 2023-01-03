@@ -257,7 +257,7 @@ const Settings = ({navigation}) => {
           elevation: 3,
         }}>
         <View>
-          <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
+          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
             Set ON/OFF Tank
           </Text>
           {/* <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
@@ -359,13 +359,15 @@ const Settings = ({navigation}) => {
               value={maximumPersent}
             />
             <Text
-              style={{...FONTS.body4, marginTop: 5, color: COLORS.darkGray}}>
-              Note:- not advisable to set more than 80 %
+              style={{...FONTS.body3,fontWeight:'700', marginTop: 5, color: COLORS.darkGray,textAlign:'center'}}>
+              Note:- Not advisable to set more than 80 %
             </Text>
             <TouchableOpacity
               style={{
                 marginTop: 30,
-                backgroundColor: COLORS.blue_600,
+                borderRadius:SIZES.base*0.5,
+                // backgroundColor: COLORS.blue_600,
+                backgroundColor: COLORS.cyan_600,
                 alignItems: 'center',
                 padding: 10,
               }}
@@ -399,7 +401,7 @@ const Settings = ({navigation}) => {
           }}>
           <View>
             <Text
-              style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+              style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
               Overhead Water Tank Height
             </Text>
           </View>
@@ -488,17 +490,18 @@ const Settings = ({navigation}) => {
                 <View style={{width: '90%'}}>
                   <Text
                     style={{
-                      ...FONTS.body4,
+                      ...FONTS.body3,
                       color: COLORS.darkGray,
-                      textAlign: 'left',
+                      textAlign: 'left'
                     }}>
-                    Feed data Manually{' '}
+                    Feed data Manually
                   </Text>
                 </View>
               </Pressable>
               <Pressable
                 style={{
                   flexDirection: 'row',
+                  marginTop:SIZES.base*2,
                   width: '100%',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -539,16 +542,16 @@ const Settings = ({navigation}) => {
                 <View style={{width: '90%'}}>
                   <Text
                     style={{
-                      ...FONTS.body4,
+                      ...FONTS.body3,
                       color: COLORS.darkGray,
-                      textAlign: 'left',
+                      textAlign: 'left'
                     }}>
                     Automatic with empty tank Condition
                   </Text>
                 </View>
               </Pressable>
             </View>
-            <View style={{flex: 1}}>
+            <View style={{flex: 1,marginTop:SIZES.base*3}}>
               {isEnabledManually ? (
                 <View
                   style={{
@@ -621,9 +624,9 @@ const Settings = ({navigation}) => {
                       }}>
                       <Text
                         style={{
-                          ...FONTS.body4,
-                          textAlign: 'center',
+                          ...FONTS.body3,
                           color: COLORS.darkGray,
+                          textAlign: 'center',
                         }}>
                         Please make sure that tank is empty {'\n'} if empty
                       </Text>
@@ -653,9 +656,10 @@ const Settings = ({navigation}) => {
                       }}>
                       <Text
                         style={{
-                          ...FONTS.body4,
-                          textAlign: 'center',
+                          ...FONTS.body3,
                           color: COLORS.darkGray,
+                          textAlign: 'center',
+                         
                         }}>
                         Press reset button for 2 seconds
                       </Text>
@@ -672,12 +676,15 @@ const Settings = ({navigation}) => {
                       paddingHorizontal: SIZES.body1 * 2,
                       borderRadius: SIZES.base * 0.5,
                       backgroundColor: COLORS.cyan_600,
-                    }}>
+                    }}
+                    delayLongPress={'2000'}
+                    onLongPress={()=>alert('df')}
+                    >
                     <Text
                       style={{
-                        ...FONTS.body4,
+                        ...FONTS.body3,
+                        color: COLORS.white,
                         textAlign: 'center',
-                        color: COLORS.white2,
                       }}>
                       Reset
                     </Text>
@@ -705,7 +712,8 @@ const Settings = ({navigation}) => {
             <TouchableOpacity
               style={{
                 marginTop: 60,
-                backgroundColor: COLORS.blue_600,
+                // backgroundColor: COLORS.blue_600,
+                backgroundColor: COLORS.cyan_600,
                 borderRadius: SIZES.body4 * 0.5,
                 alignItems: 'center',
                 padding: 5,
@@ -731,7 +739,7 @@ const Settings = ({navigation}) => {
           elevation: 5,
         }}>
         <View>
-          <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
             Water Source Preference
           </Text>
 
@@ -745,7 +753,7 @@ const Settings = ({navigation}) => {
                 onValueChange={toggleSwitchSource1}
                 value={isEnabledSource1}
               />
-              <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+              <Text style={{...FONTS.body3, color: COLORS.white, left: 10}}>
                 Source-1 (Bore Pump)
               </Text>
             </View>
@@ -762,12 +770,12 @@ const Settings = ({navigation}) => {
                 onValueChange={toggleSwitchSource2}
                 value={isEnabledSource2}
               />
-              <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+              <Text style={{...FONTS.body3, color: COLORS.white, left: 10}}>
                 Source-2 (Sump Pump)
               </Text>
             </View>
-            <Text style={{...FONTS.body4, color: COLORS.white}}>
-              <Text style={{...FONTS.body4, fontWeight: '700'}}>Note: </Text>
+            <Text style={{...FONTS.body3, color: COLORS.white}}>
+              <Text style={{...FONTS.body3, fontWeight: '700'}}>Note: </Text>
               Water will be taken first from this source if this source is not
               available then second source will be started automatically.
             </Text>
@@ -784,15 +792,15 @@ const Settings = ({navigation}) => {
           flex: 1,
           backgroundColor: COLORS.cyan_600,
           paddingHorizontal: 15,
-          paddingVertical: 10,
+          paddingVertical: 20,
           marginTop: 10,
           borderRadius: 10,
           elevation: 5,
         }}>
-        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
+        <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
           Notification Turn On / Off
         </Text>
-        <View style={{flex: 1, justifyContent: 'space-around'}}>
+        <View style={{flex: 1,marginTop:SIZES.base, justifyContent: 'space-around'}}>
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <View
@@ -1033,8 +1041,8 @@ const Settings = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Text style={{...FONTS.h3, color: COLORS.white}}>
-            Leakage Setting
+          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+            Leakage Testing
           </Text>
           <Switch
             style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
@@ -1048,8 +1056,8 @@ const Settings = ({navigation}) => {
             value={isEnabledNotification}
           />
         </View>
-        <Text style={{...FONTS.body4, color: COLORS.white}}>
-          <Text style={{...FONTS.body4, fontWeight: '700'}}>Note:</Text> Please
+        <Text style={{...FONTS.body3, color: COLORS.white}}>
+          <Text style={{...FONTS.body3, fontWeight: '700'}}>Note :</Text> Please
           make sure that water from the entire water distribution system will
           not be in use for next 30 minute.
         </Text>
@@ -1085,8 +1093,8 @@ const Settings = ({navigation}) => {
           elevation: 5,
           backgroundColor: COLORS.cyan_600,
         }}>
-        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white}}>
-          Oprational Layout
+        <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+          Operational Layout
         </Text>
         <View style={{marginTop: 5}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -1100,7 +1108,7 @@ const Settings = ({navigation}) => {
               }}
               value={isSourceOne}
             />
-            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+            <Text style={{...FONTS.body3, color: COLORS.white, left: 10}}>
               OHT + Source 1
             </Text>
           </View>
@@ -1115,7 +1123,7 @@ const Settings = ({navigation}) => {
               }}
               value={isSourceTwo}
             />
-            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+            <Text style={{...FONTS.body3, color: COLORS.white, left: 10}}>
               OHT + Source 1 + Source 2
             </Text>
           </View>

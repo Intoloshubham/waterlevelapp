@@ -154,7 +154,7 @@ const RemoteControl = () => {
               paddingHorizontal: SIZES.base,
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 15, color: COLORS.white2}}>
+            <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
               Sump Pump {'{ Source-I }'}
             </Text>
             <View
@@ -204,8 +204,7 @@ const RemoteControl = () => {
             }}>
             <Text
               style={{
-                fontSize: 15,
-                color: COLORS.white2,
+                ...FONTS.h2,fontWeight:'700', color: COLORS.white
               }}>
               Bore Pump {'{ Source-II }'}
             </Text>
@@ -250,15 +249,15 @@ const RemoteControl = () => {
     return (
       <View
         style={{
-          paddingHorizontal: 15,
+          paddingHorizontal: 10,
           paddingVertical: 10,
           borderRadius: 5,
           elevation: 5,
           backgroundColor: COLORS.cyan_600,
         }}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.white2}}>
-            Manually Motor On/Off
+          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+            Manually Motor ON/OFF
           </Text>
           <Switch
             trackColor={{false: '#767577', true: '#767577'}}

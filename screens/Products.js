@@ -419,7 +419,8 @@ const Products = ({navigation}) => {
               <TouchableOpacity
                 style={{
                   marginTop: 60,
-                  backgroundColor: COLORS.blue_600,
+                  // backgroundColor: COLORS.blue_600,
+                  backgroundColor: COLORS.cyan_600,
                   borderRadius: SIZES.body4 * 0.5,
                   alignItems: 'center',
                   padding: 5,
@@ -521,7 +522,8 @@ const Products = ({navigation}) => {
               style={{
                 borderWidth: 1,
                 elevation: 1,
-                borderColor: COLORS.transparentBlack1,
+                borderColor: COLORS.transparent,
+                backgroundColor: COLORS.cyan_600,
                 padding: SIZES.base * 0.6,
               }}
               onPress={() => {
@@ -532,7 +534,7 @@ const Products = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  ...FONTS.body4,
+                  ...FONTS.body4,color:COLORS.white
                 }}>
                 Add New Product
               </Text>
