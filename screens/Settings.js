@@ -654,7 +654,7 @@ const Settings = ({navigation}) => {
                       style={{
                         flexDirection: 'row',
                         alignSelf: 'center',
-                        marginTop: SIZES.base,
+                        // marginTop: SIZES.base*4 ,
                       }}>
                       <Text
                         style={{
@@ -673,7 +673,7 @@ const Settings = ({navigation}) => {
                       borderWidth: 1,
                       borderColor: COLORS.transparent,
                       elevation: 5,
-                      marginTop: SIZES.body1 * 0.5,
+                      marginTop: SIZES.body1*0.5,
                       padding: SIZES.base * 0.5,
                       paddingHorizontal: SIZES.body1 * 2,
                       borderRadius: SIZES.base * 0.5,
@@ -713,7 +713,7 @@ const Settings = ({navigation}) => {
             </View>
             <TouchableOpacity
               style={{
-                marginTop: 60,
+                marginTop: 10,
                 // backgroundColor: COLORS.blue_600,
                 backgroundColor: COLORS.cyan_600,
                 borderRadius: SIZES.body4 * 0.5,
@@ -1255,7 +1255,7 @@ const Settings = ({navigation}) => {
       {renderTankHeightModal()}
 
       {renderOprationalLayout()}
-      {/* {logoutLayout()} */}
+      {logoutLayout()}
       {isSourceOne && renderSourceOne()}
       {isSourceTwo && renderSourceTwo()}
       {renderVersion()}
