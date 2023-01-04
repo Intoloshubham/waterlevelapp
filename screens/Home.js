@@ -211,7 +211,7 @@ const Home = ({navigation}) => {
   }, 4000);
 
   React.useEffect(() => {
-    console.log('object--', timeInterval);
+    // console.log('object--', timeInterval);
     getStreamImage();
     // WaterLevel();
     fetchSumpStatus();
