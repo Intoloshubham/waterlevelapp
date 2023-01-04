@@ -241,12 +241,9 @@ const Settings = ({navigation}) => {
   }, 4000);
 
   React.useMemo(() => {
-    // console.log('timeInterval==', timeInt);
     __getWaterLevel();
     fetchWaterLevelHeightSettings();
   }, [timeInt]);
-
-  //===========================
 
   function renderSwitchOnOffSettings() {
     return (
@@ -259,7 +256,7 @@ const Settings = ({navigation}) => {
           elevation: 3,
         }}>
         <View>
-          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
             Set ON/OFF Tank
           </Text>
           {/* <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
@@ -361,13 +358,19 @@ const Settings = ({navigation}) => {
               value={maximumPersent}
             />
             <Text
-              style={{...FONTS.body3,fontWeight:'700', marginTop: 5, color: COLORS.darkGray,textAlign:'center'}}>
+              style={{
+                ...FONTS.body3,
+                fontWeight: '700',
+                marginTop: 5,
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
               Note:- Not advisable to set more than 80 %
             </Text>
             <TouchableOpacity
               style={{
                 marginTop: 30,
-                borderRadius:SIZES.base*0.5,
+                borderRadius: SIZES.base * 0.5,
                 // backgroundColor: COLORS.blue_600,
                 backgroundColor: COLORS.cyan_600,
                 alignItems: 'center',
@@ -402,8 +405,7 @@ const Settings = ({navigation}) => {
             justifyContent: 'space-between',
           }}>
           <View>
-            <Text
-              style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+            <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
               Overhead Water Tank Height
             </Text>
           </View>
@@ -494,7 +496,7 @@ const Settings = ({navigation}) => {
                     style={{
                       ...FONTS.body3,
                       color: COLORS.darkGray,
-                      textAlign: 'left'
+                      textAlign: 'left',
                     }}>
                     Feed data Manually
                   </Text>
@@ -503,7 +505,7 @@ const Settings = ({navigation}) => {
               <Pressable
                 style={{
                   flexDirection: 'row',
-                  marginTop:SIZES.base*2,
+                  marginTop: SIZES.base * 2,
                   width: '100%',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -546,14 +548,14 @@ const Settings = ({navigation}) => {
                     style={{
                       ...FONTS.body3,
                       color: COLORS.darkGray,
-                      textAlign: 'left'
+                      textAlign: 'left',
                     }}>
                     Automatic with empty tank Condition
                   </Text>
                 </View>
               </Pressable>
             </View>
-            <View style={{flex: 1,marginTop:SIZES.base*3}}>
+            <View style={{flex: 1, marginTop: SIZES.base * 3}}>
               {isEnabledManually ? (
                 <View
                   style={{
@@ -661,27 +663,26 @@ const Settings = ({navigation}) => {
                           ...FONTS.body3,
                           color: COLORS.darkGray,
                           textAlign: 'center',
-                         
                         }}>
                         Press reset button for 2 seconds
                       </Text>
                     </View>
                   </View>
+                  <View style={{flexDirection:'row',justifyContent:"space-around",width:'100%'}}>
                   <TouchableOpacity
                     style={{
                       alignSelf: 'center',
                       borderWidth: 1,
                       borderColor: COLORS.transparent,
                       elevation: 5,
-                      marginTop: SIZES.body1*0.5,
+                      marginTop: SIZES.body1 * 0.5,
                       padding: SIZES.base * 0.5,
-                      paddingHorizontal: SIZES.body1 * 2,
+                      paddingHorizontal: SIZES.body1 ,
                       borderRadius: SIZES.base * 0.5,
                       backgroundColor: COLORS.cyan_600,
                     }}
                     delayLongPress={'2000'}
-                    onLongPress={()=>alert('df')}
-                    >
+                    onLongPress={() => alert('df')}>
                     <Text
                       style={{
                         ...FONTS.body3,
@@ -691,7 +692,24 @@ const Settings = ({navigation}) => {
                       Reset
                     </Text>
                   </TouchableOpacity>
-
+                  <TouchableOpacity
+                  style={{
+                    alignSelf: 'center',
+                    borderWidth: 1,
+                    borderColor: COLORS.transparent,
+                    elevation: 5,
+                    marginTop: SIZES.body1 * 0.5,
+                    padding: SIZES.base * 0.5,
+                    paddingHorizontal: SIZES.body1 ,
+                    borderRadius: SIZES.base * 0.5,
+                    backgroundColor: COLORS.cyan_600,
+                  }}
+                    onPress={() => postWaterTankHeightSettings()}>
+                    <Text style={{...FONTS.h3, color: COLORS.white}}>
+                      Submit
+                    </Text>
+                  </TouchableOpacity>
+                  </View>
                   {/* <TextInput
                     style={{
                       width: '40%',
@@ -711,7 +729,7 @@ const Settings = ({navigation}) => {
                 </View>
               )}
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 marginTop: 10,
                 // backgroundColor: COLORS.blue_600,
@@ -722,7 +740,7 @@ const Settings = ({navigation}) => {
               }}
               onPress={() => postWaterTankHeightSettings()}>
               <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </Modal>
@@ -741,7 +759,7 @@ const Settings = ({navigation}) => {
           elevation: 5,
         }}>
         <View>
-          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
             Water Source Preference
           </Text>
 
@@ -762,7 +780,7 @@ const Settings = ({navigation}) => {
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center'
+                alignItems: 'center',
               }}>
               <Switch
                 style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
@@ -799,10 +817,15 @@ const Settings = ({navigation}) => {
           borderRadius: 10,
           elevation: 5,
         }}>
-        <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+        <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
           Notification Turn On / Off
         </Text>
-        <View style={{flex: 1,marginTop:SIZES.base, justifyContent: 'space-around'}}>
+        <View
+          style={{
+            flex: 1,
+            marginTop: SIZES.base,
+            justifyContent: 'space-around',
+          }}>
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}>
             <View
@@ -1043,7 +1066,7 @@ const Settings = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
             Leakage Testing
           </Text>
           <Switch
@@ -1053,7 +1076,7 @@ const Settings = ({navigation}) => {
             ios_backgroundColor="#3e3e3e"
             onValueChange={value => {
               // setIsEnabledNotification(value);
-              setLeakageToggle(value)
+              setLeakageToggle(value);
               // postMotorNotificationSetting(value);
             }}
             value={leakageToggle}
@@ -1096,7 +1119,7 @@ const Settings = ({navigation}) => {
           elevation: 5,
           backgroundColor: COLORS.cyan_600,
         }}>
-        <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+        <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
           Operational Layout
         </Text>
         <View style={{marginTop: 5}}>

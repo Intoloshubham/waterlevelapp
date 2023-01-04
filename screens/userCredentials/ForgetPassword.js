@@ -360,8 +360,8 @@ const ForgetPassword = ({navigation}) => {
                 source={images.mail_image}
                 resizeMode="contain"
                 style={{
-                  height: 650,
-                  width: 600,
+                  height: 400,
+                  width: 400,
                 }}
               />
             </View>
