@@ -72,6 +72,8 @@ const Settings = ({navigation}) => {
   const toggleSwitchManually = () => {
     setIsEnabledManually(previousState => !previousState);
   };
+  //leakage
+  const [leakageToggle, setLeakageToggle] = useState(false);
 
   const [waterLevel, setWaterLevel] = useState(0);
   const [timeInt, setTimeInt] = useState(0);
@@ -136,10 +138,10 @@ const Settings = ({navigation}) => {
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
       const response = await getWaterLevelSettings(registeredId.product_id);
-      console.log(
-        '🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response',
-        response.data,
-      );
+      // console.log(
+      //   '🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response',
+      //   response.data,
+      // );
       if (response.status === 200) {
         // console.log("==========",response.data.tank_height)
         setTempTankHeight(response.data.tank_height);
@@ -760,7 +762,7 @@ const Settings = ({navigation}) => {
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center',
+                alignItems: 'center'
               }}>
               <Switch
                 style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
@@ -1047,13 +1049,14 @@ const Settings = ({navigation}) => {
           <Switch
             style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
             trackColor={{false: COLORS.gray, true: COLORS.success_400}}
-            thumbColor={isEnabledNotification ? COLORS.white : COLORS.white}
+            thumbColor={leakageToggle ? COLORS.white : COLORS.white}
             ios_backgroundColor="#3e3e3e"
             onValueChange={value => {
               // setIsEnabledNotification(value);
+              setLeakageToggle(value)
               // postMotorNotificationSetting(value);
             }}
-            value={isEnabledNotification}
+            value={leakageToggle}
           />
         </View>
         <Text style={{...FONTS.body3, color: COLORS.white}}>
