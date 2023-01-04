@@ -397,9 +397,12 @@ const ForgetPassword = ({navigation}) => {
                       borderBottomWidth: 1,
                       width: '95%',
                       borderBottomColor: COLORS.lightblue_300,
+                      ...FONTS.body3
                     }}
+                    
                     value={email}
                     placeholder={'Enter your registered email id'}
+                    
                     placeholderTextColor={COLORS.darkGray}
                     onChangeText={text => {
                       setEmail(text);

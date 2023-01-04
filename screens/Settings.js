@@ -241,7 +241,7 @@ const Settings = ({navigation}) => {
   }, 4000);
 
   React.useMemo(() => {
-    console.log('timeInterval==', timeInt);
+    // console.log('timeInterval==', timeInt);
     __getWaterLevel();
     fetchWaterLevelHeightSettings();
   }, [timeInt]);
@@ -571,7 +571,7 @@ const Settings = ({navigation}) => {
                     mode="outlined"
                     label="Tank height"
                     onChangeText={value => {
-                      console.log('unit--', unit);
+                      // console.log('unit--', unit);
                       unit == 'CM'
                         ? setTankHeight(value)
                         : setTankHeight(value * 100);
