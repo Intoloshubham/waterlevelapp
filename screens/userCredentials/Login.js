@@ -63,6 +63,7 @@ const Login = ({navigation}) => {
 
   function renderLogin() {
     return (
+      <>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         style={{flex: 1}}>
@@ -86,7 +87,7 @@ const Login = ({navigation}) => {
             </View>
             <View
               style={{
-                marginBottom: 50,
+                marginBottom: 10,
                 backgroundColor: COLORS.white,
                 elevation: 5,
                 borderRadius: 10,
@@ -156,7 +157,13 @@ const Login = ({navigation}) => {
                 />
               </View>
             </View>
-
+            <View style={{marginTop:SIZES.base*2}}>
+              <TouchableOpacity onPress={()=>{
+                navigation.navigate('ForgetPassword')
+              }}>
+                <Text style={{textAlign: 'center',...FONTS.body4}}>Forget Password ?</Text>
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 flex: 1,
@@ -235,6 +242,7 @@ const Login = ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      </>
     );
   }
 
