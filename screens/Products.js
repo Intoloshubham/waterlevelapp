@@ -66,7 +66,7 @@ const Products = ({navigation}) => {
   const onProductOpen = React.useCallback(() => {
     setOnSelect(false);
     getProductId();
-  }, []);
+  }, []); 
 
   const submitProductId = async () => {
     const data = {
@@ -572,10 +572,11 @@ const Products = ({navigation}) => {
         <>
           <View
             style={{
-              flex: 0.5,
-              alignItems: 'center',
-              // alignSelf:'center',
-              // alignContent: 'space-between',
+              width:'80%',
+              height: '40%',
+              alignItems: 'center',  
+              // backgroundColor:'red' ,
+              alignSelf:'center'    
             }}>
             <Image
               resizeMode="center"
@@ -595,14 +596,14 @@ const Products = ({navigation}) => {
           <View>
             <TouchableOpacity
               style={{
-                borderWidth: 2,
-                borderColor: COLORS.transparentBlack2,
                 marginTop: SIZES.body1,
-                padding: SIZES.base * 0.2,
-                marginHorizontal: SIZES.body1 * 4.3,
+                padding: SIZES.base * 0.6,
+                paddingHorizontal:SIZES.body2,
                 alignItems: 'center',
-                // elevation:1
-                // marginBottom:  0,
+                alignSelf:'center',
+                backgroundColor: COLORS.cyan_600,
+                elevation:2,
+                borderRadius:SIZES.base*0.5
               }}
               onPress={() => {
                 setUpdateStatus(false);
@@ -612,7 +613,7 @@ const Products = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  ...FONTS.body4,
+                  ...FONTS.body4,color:COLORS.white
                 }}>
                 Add New Product
               </Text>

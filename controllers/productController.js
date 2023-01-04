@@ -18,7 +18,7 @@ const getProduct = async (user_id) => {
     const resp = await fetch(`${API_URL}get-product/${user_id}`, {method: 'GET'});
     const temp = await resp.json();
     return temp;
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
   }
 };
