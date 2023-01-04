@@ -122,7 +122,7 @@ const WaterUses = () => {
                       backgroundColor: cylinderShape
                         ? COLORS.cyan_600
                         : COLORS.transparentBlack2,
-                      width: '40%',
+                      width: '45%',
                       elevation: 0.2,
                     }}
                     onPress={() => {
@@ -144,7 +144,7 @@ const WaterUses = () => {
                         ? COLORS.cyan_600
                         : COLORS.transparentBlack2,
 
-                      width: '40%',
+                      width: '45%',
                       elevation: 1,
                     }}
                     onPress={() => {
@@ -257,7 +257,7 @@ const WaterUses = () => {
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 4.4,
+            paddingHorizontal: SIZES.body1 * 4,            
             paddingVertical: SIZES.base,
           }}
           onPress={() => {
@@ -265,7 +265,7 @@ const WaterUses = () => {
           }}>
           <Text
             style={{
-              ...FONTS.body2,
+              ...FONTS.h3,
               color: COLORS.white,
               textAlign: 'center',
             }}>
