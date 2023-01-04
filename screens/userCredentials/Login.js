@@ -101,7 +101,7 @@ const Login = ({navigation}) => {
                   justifyContent: 'center',
                 }}
                 onPress={() => {
-                  console.log('object');
+                  // console.log('object');
                 }}>
                 <Text
                   style={{

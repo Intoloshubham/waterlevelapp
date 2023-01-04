@@ -10,7 +10,7 @@ import PushNotification, {Importance} from 'react-native-push-notification';
 
 PushNotification.configure({
   onRegister: function (token) {
-    console.log('TOKEN:', token);
+    // console.log('TOKEN:', token);
   },
 
   // onNotification: function (notification) {
@@ -39,10 +39,10 @@ PushNotification.configure({
 
 const RemoteControl = () => {
   const modeValue = useSelector(state => state.mode);
-  console.log(
-    '🚀 ~ file: RemoteControl.js:44 ~ RemoteControl ~ modeValue',
-    modeValue,
-  );
+  // console.log(
+  //   '🚀 ~ file: RemoteControl.js:44 ~ RemoteControl ~ modeValue',
+  //   modeValue,
+  // );
   const [isEnabled, setIsEnabled] = useState(false);
   // let randomNum=Math.random().toString();
 
@@ -60,50 +60,42 @@ const RemoteControl = () => {
       setIsEnabled(val);
       if (val) {
         // console.log('true');
-        testPush('Motor is switched ON!', 'Motor Status');
+        // testPush('Motor is switched ON!', 'Motor Status');
         postRemoteControlData(1);
       } else {
-        testPush('Motor is switched OFF!', 'Motor Status');
+        // testPush('Motor is switched OFF!', 'Motor Status');
         postRemoteControlData(0);
       }
     } else {
       // setIsEnabled(val);
-      testPush('Motor is switched ON!', 'Motor Status');
+      // testPush('Motor is switched ON!', 'Motor Status');
       postRemoteControlData(1);
     }
   };
 
   useEffect(() => {
-    let randomNum = Math.random().toString();
-    PushNotification.createChannel(
-      {
-        channelId: '1',
-        // channelId: randomNum,
-        // channelId: Math.random().toString(),
-        channelName: 'My channel',
-        channelDescription: 'A channel to categorise your notifications',
-        playSound: true,
-        soundName: 'default',
-        importance: Importance.HIGH,
-        vibrate: true,
-      },
-      // (created) => console.log(`createChannel returned '${created}'`)
-    );
+    // let randomNum = Math.random().toString();
+    // PushNotification.createChannel(
+    //   {
+    //     channelId: '1',
+    //     // channelId: randomNum,
+    //     // channelId: Math.random().toString(),
+    //     channelName: 'My channel',
+    //     channelDescription: 'A channel to categorise your notifications',
+    //     playSound: true,
+    //     soundName: 'default',
+    //     importance: Importance.HIGH,
+    //     vibrate: true,
+    //   },
+    //   // (created) => console.log(`createChannel returned '${created}'`)
+    // );
 
-    if (modeValue.mode == 1) {
-      setIsEnabled(true);
-      testPush('Motor is switched ON!', 'Motor Status');
-      postRemoteControlData(1);
-    }
-    // else{
-    //   if (isEnabled) {
-
-    //   } else {
-    //     testPush('Motor is switched OFF!','Motor Status');
-    //     postRemoteControlData(0);
-    //   }
-
+    // if (modeValue.mode == 1) {
+    //   setIsEnabled(true);
+    //   testPush('Motor is switched ON!', 'Motor Status');
+    //   postRemoteControlData(1);
     // }
+
   }, [modeValue.mode]);
 
   const testPush = (msg1, msg2) => {
