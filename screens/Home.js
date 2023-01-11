@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {API_URL} from '@env';
 import {
   Text,
   View,
@@ -7,27 +8,58 @@ import {
   ScrollView,
   RefreshControl,
   StyleSheet,
+  Modal,
+  Switch,
+  Dimensions,
 } from 'react-native';
 import Lottie from 'lottie-react-native';
+import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {widthToDo, heightToDo} from './setImagePixels';
-import {FONTS, COLORS, icons} from '../constants';
+import {FONTS, COLORS, icons, SIZES} from '../constants';
+import ProgressBar from 'react-native-animated-progress';
 import {
   getImage,
   getWaterLevel,
   getLEDStatus,
-} from '../controllers/GetImageController';
+  getSUMPStatus,
+  getPrevLevel,
+} from '../controllers/getImageController';
+import {postRemoteControl} from '../controllers/RemoteControlController';
+import ImageZoom from 'react-native-image-pan-zoom';
+import {useDispatch, useSelector} from 'react-redux';
+import {CustomSwitch} from '../componets';
+import {addMode} from '../redux/modeSlice';
+import socketIOClient from 'socket.io-client';
+import { addIntervalMode } from '../redux/intervalSlice';
+const END_POINT = 'http://192.168.0.117:8000';
+
+let socket = socketIOClient(END_POINT);
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const Home = () => {
+const Home = ({navigation}) => {
+  // const dispatch = useDispatch();
+  const registeredId = useSelector(state => state.product);
+  const interval=useSelector(state=>state.intervalMode);
+  // const [mode, setMode] = React.useState('');
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
   const [level, setLevel] = React.useState('');
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
+  const [warningModal, setWarningModal] = useState(false);
+  const [sumpStatus, setSumpStatus] = useState(0);
+  const [switchValue, setSwitchValue] = useState(false);
+  const [imageView, setImageView] = useState(false);
+  let prevalue = 0;
+  // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
+  let overflowLevelStatus = true;
+  let underFlowLevelStatus = true;
+  // let resetStatus = true;
+  const [resetStatus, setResetStatus] = useState(true);
   var NewLevel = parseInt(level);
   const [waterLevelData, setWaterLevelData] = React.useState('');
 
@@ -36,184 +68,488 @@ const Home = () => {
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
+  const [timeInterval, setTimeInterval] = useState(0);
+
   const getStreamImage = async () => {
-    const res = await getImage();
-    setStreamImage(res.image);
-    setDate(res.date);
-    setTime(res.time);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getImage(registeredId.product_id);
+          setStreamImage(res.image);
+          setDate(res.date);
+          setTime(res.time);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const fetchLedStatus = async () => {
-    const res = await getLEDStatus();
-    setIsEnabled(res.data.led_status == 1 ? true : false);
-    if (waterLevelData.motor_notification == true) {
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getLEDStatus(registeredId.product_id);
+          if (res.data != null) {
+            setIsEnabled(res.data.led_status == 1 ? true : false);
+            if (waterLevelData.motor_notification == true) {
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const fetchSumpStatus = async () => {
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getSUMPStatus(registeredId.product_id);
+          if (res.data != null) {
+            setSumpStatus(res.data.sump_status);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const getPrevWaterLevel = async () => {
+    try {
+      if (registeredId.hasOwnProperty('product_id')) {
+        const res = await getPrevLevel(registeredId.product_id);
+        if (res) {
+          prevalue = res.prevLevel;
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const WaterLevel = async () => {
-    const res = await getWaterLevel();
-    setLevel(res.data.water_level);
-    setPhValue(res.data.ph_level);
+    if (registeredId.hasOwnProperty('product_id')) {
+      try {
+        if (registeredId.product_id) {
+          const res = await getWaterLevel(registeredId.product_id);
+          console.log("🚀 ~ file: Home.js:137 ~ WaterLevel ~ res", res)
+          if (res != undefined) {
+            if (
+              res.data.led_status == 1 &&
+              prevalue == res.data.water_level &&
+              resetStatus == true
+            ) {
+              // resetStatus = false;
+              setResetStatus(false);
+              setWarningModal(true);
+            }
+
+            setLevel(res.data.water_level);
+            setPhValue(res.data.ph_level);
+
+            if (parseFloat(res.data.water_level) >= 90) {
+              if (overflowLevelStatus) {
+                setWarningModal(true);
+                overflowLevelStatus = false;
+                const formData = {led_status: 0};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }
+
+            if (parseFloat(res.data.water_level) <= 20) {
+              if (underFlowLevelStatus) {
+                underFlowLevelStatus = false;
+                const formData = {led_status: 1};
+                const response = await postRemoteControl(
+                  formData,
+                  registeredId.product_id,
+                );
+              }
+            }
+          }
+          // console.log("🚀 ~ file: Home.js:123 ~ WaterLevel ~ res", res)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
+
+  // const onSelectSwitch = index => {
+  //   if (index == 0) {
+  //     setMode(0);
+      // dispatch(
+      //   addMode({
+      //     mode: 0,
+      //   }),
+      // );
+  //     setTimeout(() => {
+  //       navigation.navigate('Remote Control');
+  //     }, 700);
+  //   } else {
+  //     setMode(1);
+  //     dispatch(
+  //       addMode({
+  //         mode: 1,
+  //       }),
+  //     );
+  //   }
+  // };
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getStreamImage();
     WaterLevel();
     fetchLedStatus();
+    fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
+  // let timer1 = setTimeout(() => {
+  //   setTimeInterval(timeInterval + 1);
+  // }, 4000);
+  // const timer = React.useRef();
+
   React.useEffect(() => {
-    getStreamImage();
-    WaterLevel();
-    fetchLedStatus();
-    setInterval(() => {
-      getStreamImage();
-      WaterLevel();
-      fetchLedStatus();
-    }, 4000);
+    let cls_interval;    
+ 
+    if (interval) {  
+      cls_interval = setInterval(() => {
+        // timer.current = setInterval(() => {
+        WaterLevel();
+        getStreamImage();
+        fetchSumpStatus();
+        // getPrevWaterLevel();
+        socket.emit('join_room', 'fronte');
+        fetchLedStatus();
+      }, 4000);      
+      
+      return () => {
+        clearInterval(cls_interval);
+      };
+    }
+
+ 
+    // if (interval) {
+    //   clearInterval(interval);
+    // }
   }, []);
+
+  // useEffect(() => {
+  //   await updateData(id, state, setState); // API call
+  // }, []);
+
+  function renderWarningModal() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={warningModal}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.transparentBlack7,
+          }}>
+          <View
+            style={{
+              width: '90%',
+              padding: 25,
+              borderRadius: 10,
+              backgroundColor: COLORS.white,
+            }}>
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                marginBottom: 5,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Image
+                source={icons.cross}
+                style={{height: 25, width: 25, tintColor: COLORS.black}}
+              />
+            </TouchableOpacity>
+            <View style={{marginTop: SIZES.base}}>
+              <Text
+                style={{textAlign: 'center', lineHeight: 30, ...FONTS.body3}}>
+                {overflowLevelStatus ? (
+                  <>
+                    <Text
+                      style={{
+                        ...FONTS.body3,
+                        textAlign: 'center',
+                        color: 'red',
+                      }}>
+                      Warning: Error code 04 {'\n'}
+                    </Text>
+                    <Text
+                      style={{...FONTS.body3, textAlign: 'center', top: 15}}>
+                      Please reset device {'\n'}or{'\n'} Contact to Toll Free
+                      no:{'\n'} 000 000 000
+                    </Text>
+                  </>
+                ) : null}
+              </Text>
+            </View>
+            {/* <TextInput
+              mode="outlined"
+              label="Minimum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMinimumPersent(value);
+              }}
+              value={minimumPersent}
+            />
+            <TextInput
+              style={{marginTop: 10}}
+              mode="outlined"
+              label="Maximum %"
+              // placeholder="Type something"
+              left={<TextInput.Icon icon="file-percent-outline" />}
+              onChangeText={value => {
+                SetMaximumPersent(value);
+              }}
+              value={maximumPersent}
+            /> */}
+
+            <TouchableOpacity
+              style={{
+                marginTop: 30,
+                backgroundColor: COLORS.blue_600,
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 12,
+                width: '20%',
+                padding: 7,
+              }}
+              onPress={() => setWarningModal(false)}>
+              <Text style={{...FONTS.h3, color: COLORS.white}}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
+  function renderImageView() {
+    return (
+      <Modal animationType="fade" transparent={true} visible={imageView}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.white,
+          }}>
+          {/* <TouchableOpacity
+            style={{
+              flex:1,
+              alignItems: 'flex-end',
+              justifyContent: 'center',
+              marginBottom: 5,
+              backgroundColor:'red'
+            }}
+            onPress={() => setImageView(false)}>
+            <Image
+              source={icons.cross}
+              resizeMode={'contain'}
+              style={{height: 25, width: 25, tintColor: COLORS.black}}
+            />
+          </TouchableOpacity> */}
+          <ImageZoom
+            cropWidth={Dimensions.get('window').width}
+            cropHeight={Dimensions.get('window').height}
+            imageWidth={Dimensions.get('window').width}
+            imageHeight={Dimensions.get('window').height}
+            // imageHeight={'50%'}
+            onClick={() => {
+              setImageView(false);
+            }}
+            // onDoubleClick={()=>{setImageView(false)}}
+          >
+            <Image
+              resizeMode="center"
+              style={{
+                // width: square == true ? '50%' : '50%',
+                // height: square == true ? '50%' : '50%',
+                marginTop: SIZES.height * 0.3,
+                height: square == true ? 260 : 200,
+                width: square == true ? 390 : 600,
+
+                alignSelf: 'center',
+
+                borderRadius: square == true ? 10 : 100,
+                borderWidth: 1,
+                borderColor: COLORS.black,
+              }}
+              source={{uri: streamImage}}
+            />
+          </ImageZoom>
+        </View>
+      </Modal>
+    );
+  }
 
   function renderWaterTank() {
     return (
       <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              color: COLORS.rose_600,
-              zIndex: 2,
-              top: heightToDo((number = 1)),
-              position: 'absolute',
-            }}>
-            {Math.floor(level)}%
-          </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View
             style={{
               alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              zIndex: 1,
+              paddingHorizontal: 2,
+              paddingVertical: 5,
+              borderRadius: 5,
             }}>
-            <Image
-              source={icons.tank}
-              style={{
-                zIndex: 2,
-                width: widthToDo((number = '12%')),
-                height: heightToDo((number = '7.5%')),
-              }}
-            />
             <View
               style={{
-                bottom: !NewLevel ? 0.5 : NewLevel,
-                position: 'absolute',
+                flex: 1,
+                flexDirection: 'row',
+
+                marginTop: SIZES.body1 * 2.6,
+                // backgroundColor: COLORS.amber_300,
+                // elevation: 5
               }}>
-              {level > 0 ? (
-                <Lottie
-                  style={{
-                    width: widthToDo((number = '11.5%')),
-                    zIndex: 1,
-                    backgroundColor: '#3490dc',
-                  }}
-                  source={require('../img/demo.json')}
-                  autoPlay
-                  loop
-                />
-              ) : null}
+              <View
+                style={{
+                  // flex: 1,
+                  flexDirection: 'row-reverse',
+                  alignSelf: 'flex-end',
+                  width: '5%',
+                  elevation: 5,
+                  height: '0%',
+                  backgroundColor: COLORS.blue_300,
+                  padding: 10,
+                }}></View>
+              <View
+                style={{
+                  flexDirection: 'row-reverse',
+                  alignSelf: 'flex-end',
+                  height: `${20 + 0}%`,
+                  // backgroundColor: COLORS.blue_300,
+                }}>
+                <Text> 0%</Text>
+              </View>
             </View>
-            <View
-              style={{
-                backgroundColor: '#3490dc',
-                width: widthToDo((number = '11.5%')),
-                height: !NewLevel ? 0.5 : NewLevel,
-                bottom: heightToDo((number = '0.09%')),
-                position: 'absolute',
-                borderBottomRightRadius: heightToDo((number = '1.2%')),
-                borderBottomLeftRadius: heightToDo((number = '1.2%')),
-                zIndex: 0,
-              }}></View>
+            <Text
+              style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 8}}>
+              Sump{'\n'}Level
+            </Text>
           </View>
-          <Text
-            style={{fontSize: 15, color: COLORS.darkGray, marginVertical: 5}}>
-            Live Water Level{'\n'}
-            (OverHead Tank)
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: COLORS.white,
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            elevation: 2,
-            borderRadius: 5,
-          }}>
-          <Text style={{fontSize: 15, color: COLORS.darkGray}}>
-            Pump Status -
-          </Text>
           <View
             style={{
-              flexDirection: 'row',
-              backgroundColor: COLORS.white,
-              left: 10,
-              padding: 1,
+              alignItems: 'center',
             }}>
             <Text
               style={{
-                fontSize: 14,
-                color: isEnabled == false ? COLORS.white : COLORS.black,
-                backgroundColor: isEnabled == false ? COLORS.red : COLORS.white,
-                // paddingHorizontal: 5,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                borderWidth: 0.5,
+                fontSize: 12,
+                color: COLORS.rose_600,
+                zIndex: 2,
+                top: heightToDo((number = 1)),
+                position: 'absolute',
               }}>
-              OFF
+              {Math.floor(level)}%
             </Text>
-            <Text
+            <View
               style={{
-                fontSize: 14,
-                color: isEnabled == true ? COLORS.white : COLORS.black,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                backgroundColor: isEnabled == true ? 'green' : COLORS.white,
-                borderWidth: 0.5,
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                zIndex: 1,
               }}>
-              ON
+              <Image
+                source={icons.tank}
+                style={{
+                  zIndex: 2,
+                  width: widthToDo((number = '12%')),
+                  height: heightToDo((number = '7.5%')),
+                }}
+              />
+              <View
+                style={{
+                  bottom: !NewLevel ? 0.5 : NewLevel,
+                  position: 'absolute',
+                }}>
+                {level > 0 ? (
+                  <Lottie
+                    style={{
+                      width: widthToDo((number = '11.5%')),
+                      zIndex: 1,
+                      backgroundColor: '#3490dc',
+                    }}
+                    source={require('../img/demo.json')}
+                    autoPlay
+                    loop
+                  />
+                ) : null}
+              </View>
+              <View
+                style={{
+                  backgroundColor: '#3490dc',
+                  width: widthToDo((number = '11.5%')),
+                  height: !NewLevel ? 0.5 : NewLevel,
+                  bottom: heightToDo((number = '0.09%')),
+                  position: 'absolute',
+                  borderBottomRightRadius: heightToDo((number = '1.2%')),
+                  borderBottomLeftRadius: heightToDo((number = '1.2%')),
+                  zIndex: 0,
+                }}></View>
+            </View>
+            <Text
+              style={{fontSize: 15, color: COLORS.darkGray, marginVertical: 5}}>
+              Live Water Level{'\n'}
+              (OverHead Tank)
+            </Text>
+          </View>
+          <View
+            style={{
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              borderRadius: 5,
+            }}>
+            <View
+              style={{
+                padding: 4,
+              }}>
+              <Text
+                style={{
+                  ...FONTS.body5,
+                  color: isEnabled == false ? COLORS.white : COLORS.black,
+                  backgroundColor:
+                    isEnabled == false ? COLORS.red : COLORS.white,
+                  elevation: 5,
+                  paddingHorizontal: 2,
+                  paddingVertical: 3,
+                }}>
+                OFF
+              </Text>
+              <Text
+                style={{
+                  ...FONTS.body5,
+                  color: isEnabled == true ? COLORS.white : COLORS.black,
+                  paddingHorizontal: 4,
+                  elevation: 5,
+                  paddingVertical: 3,
+                  backgroundColor: isEnabled == true ? 'green' : COLORS.white,
+                }}>
+                ON
+              </Text>
+            </View>
+            <Text style={{...FONTS.body5, color: COLORS.darkGray}}>
+              Pump{'\n'}Status
             </Text>
           </View>
         </View>
-        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{...FONTS.h3, color: COLORS.darkGray}}>
-            Pump Status{' '}
-          </Text>
-          <Switch
-            trackColor={{false: COLORS.darkGray, true: COLORS.green}}
-            thumbColor={isEnabled ? COLORS.white : COLORS.white}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-            disabled={true}
-          />
-          {isEnabled === true ? (
-            <Text
-              style={{...FONTS.h4, color: COLORS.darkGray, fontWeight: 'bold'}}>
-              ON
-            </Text>
-          ) : (
-            <Text
-              style={{...FONTS.h4, color: COLORS.darkGray, fontWeight: 'bold'}}>
-              OFF
-            </Text>
-          )}
-        </View> */}
       </View>
     );
   }
@@ -229,17 +565,43 @@ const Home = () => {
           marginTop: 15,
           ...styles.shadow,
         }}>
-        <Image
-          source={{uri: streamImage}}
-          style={{
-            height: square == true ? 200 : 200,
-            width: square == true ? 300 : 200,
-            alignSelf: 'center',
-            borderRadius: square == true ? 10 : 100,
-            borderWidth: 1,
-            borderColor: COLORS.black,
-          }}
-        />
+        <TouchableOpacity
+          onPress={() => {
+            setImageView(true);
+          }}>
+          <Image
+            source={{uri: streamImage}}
+            resizeMode={'center'}
+            style={{
+              height: square == true ? 200 : 200,
+              width: square == true ? 300 : 200,
+              alignSelf: 'center',
+              borderRadius: square == true ? 10 : 100,
+              borderWidth: 1,
+              borderColor: COLORS.black,
+            }}
+          />
+        </TouchableOpacity>
+        {/* <ImageZoom
+          cropWidth={Dimensions.get('window').width}
+          cropHeight={Dimensions.get('window').height}
+          imageWidth={500}
+          imageHeight={500}
+          onDoubleClick={()=>{setImageView(false)}}
+          >
+          <Image
+            style={{
+              width: square == true ? 300 : 200,
+              height: square == true ? 200 : 200,
+              alignSelf: 'center',
+              borderRadius: square == true ? 10 : 100,
+              borderWidth: 1,
+              borderColor: COLORS.black,
+            }}
+            source={{uri: streamImage}}
+          />
+        </ImageZoom> */}
+
         <Text
           style={{
             fontSize: 12,
@@ -258,25 +620,28 @@ const Home = () => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            // paddingLeft:SIZES.body1*3
           }}>
+          <Text
+            style={{
+              fontSize: 15,
+              textAlign: 'center',
+              color: COLORS.darkGray,
+            }}>
+            Live Camera
+          </Text>
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text
-              style={{
-                fontSize: 15,
-                textAlign: 'center',
-                color: COLORS.darkGray,
-              }}>
-              Live Camera
-            </Text>
             <Image
               source={icons.camera}
-              style={{height: 25, width: 25, left: 5}}
+              resizeMode={'center'}
+              style={{height: 25, width: 25}}
             />
-            <Text
+            {/* <Text
               style={{
                 fontSize: 15,
                 textAlign: 'center',
@@ -284,7 +649,7 @@ const Home = () => {
                 color: COLORS.darkGray,
               }}>
               View
-            </Text>
+            </Text> */}
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
@@ -304,7 +669,8 @@ const Home = () => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => getStreamImage()}
+              // onPress={() => getStreamImage()
+              // }
               style={{alignItems: 'flex-end'}}>
               <Image
                 source={icons.refresh}
@@ -328,8 +694,14 @@ const Home = () => {
           borderRadius: 10,
           ...styles.shadow,
         }}>
-        <Text style={{fontSize: 18, fontWeight: '500', color: COLORS.darkGray}}>
-          Water & Tank Climate
+        <Text
+          style={{
+            fontSize: 18,
+            textAlign: 'center',
+            fontWeight: '500',
+            color: COLORS.darkGray,
+          }}>
+          INFO
         </Text>
         <View style={{marginTop: 10}}>
           <Text style={{fontSize: 15, color: COLORS.darkGray}}>
@@ -343,7 +715,8 @@ const Home = () => {
             }}></View>
           <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             PH Value{' - '}
-            {phValue}
+            {/* {Math.round(phValue)} */}
+            {parseFloat(phValue).toFixed(2)}
           </Text>
           <View
             style={{
@@ -384,9 +757,93 @@ const Home = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+        {/* <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#344953',
+            }}>
+            {switchValue ? 'Manual' : ''}
+          </Text>
+
+          <Switch
+          style={{position:'absolute',marginHorizontal:160}}
+            value={switchValue}
+            onValueChange={switchValue => setSwitchValue(switchValue)}
+          />
+           <Text
+            style={{
+              fontSize: 25,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#344953',
+            }}>
+            {switchValue ? '' : 'Automatic'}
+          </Text>
+        </View> */}
+        <View
+          style={{
+            alignSelf: 'center',
+            flexDirection: 'row',
+            marginBottom: 10,
+            alignItems: 'center',
+          }}>
+          {/* <CustomSwitch
+            selectionMode={0}
+            roundCorner={true}
+            option1={'Manual'}
+            option2={'Automatic'}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={COLORS.green}
+            // selectionColor={'green'}
+          /> */}
+
+          {/* <DuoToggleSwitch
+            primaryText="Manual"
+            secondaryText="Automatic"
+            onPrimaryPress={() => {
+              setMode(0);
+              dispatch(
+                addMode({
+                  mode: 0, 
+                }),
+              );
+              setTimeout(() => {
+                navigation.navigate('Remote Control');
+              }, 700);
+
+              // postRemoteControlData(0);
+            }}
+            onSecondaryPress={() => {
+              setMode(1);
+              dispatch(
+                addMode({
+                  mode: 1,
+                }),
+              );
+              // postRemoteControlData(1);
+            }}
+            primaryButtonStyle={{
+              backgroundColor: mode == 0 ? 'green' : 'white',
+              borderTopLeftRadius: 5,
+              borderBottomLeftRadius: 5,
+            }}
+            secondaryButtonStyle={{
+              backgroundColor: mode == 1 ? 'green' : 'white',
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
+            }}
+            secondaryTextStyle={{color: mode == 1 ? 'white' : 'black'}}
+            primaryTextStyle={{color: mode == 0 ? 'white' : 'black'}}
+          /> */}
+        </View>
         {renderWaterTank()}
         {renderWaterLiveView()}
         {renderOthers()}
+        {renderWarningModal()}
+        {renderImageView()}
       </ScrollView>
     </View>
   );

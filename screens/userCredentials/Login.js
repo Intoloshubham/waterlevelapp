@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -12,14 +12,67 @@ import {
 } from 'react-native';
 import {SIZES, COLORS, icons, images, FONTS} from '../../constants';
 import {TextInput} from 'react-native-paper';
-import {TextButton} from '../../componets';
+import {TextButton, CustomToast} from '../../componets';
+import {loginUser} from '../../controllers/LoginController';
+import {useDispatch} from 'react-redux';
+import {storeData, storeObjectData,getData} from '../../utils/localStorage.js';
+import {addLoginCredentials} from '../../redux/userCredentialSlice';
 
 const Login = ({navigation}) => {
+  const dispatch = useDispatch();
   const [mobile, SetMobile] = React.useState('');
   const [password, SetPassword] = React.useState('');
 
+  const [submitToast, setSubmitToast] = React.useState(false);
+  const [updateToast, setUpdateToast] = React.useState(false);
+  const [deleteToast, setDeleteToast] = React.useState(false);
+
+  const [errorCode, setErrorCode] = useState('');
+  const [mssg, setMssg] = useState('');
+
+  const _loginUser = async () => {
+    try {
+      const body = {mobile, password};
+      const temp = await loginUser(body);
+      storeData('login_token',temp.refresh_token);
+      storeObjectData('user_credentials',temp.data);
+      if (temp.status === 200) {
+        storeObjectData('login_token_status',{token:temp.refresh_token,  status:true});
+        setErrorCode(200);
+        setSubmitToast(true);
+        setMssg('Login successfully!');
+        dispatch(
+          addLoginCredentials({
+            refresh_token: temp.refresh_token,
+            user_credentials: temp.data,
+          }),
+        );
+        let lg_tkn = await getData('login_token');
+        setTimeout(async () => {
+          if(lg_tkn){
+            navigation.replace('Tabs');
+          }else{
+            navigation.replace('Products')
+          }
+          
+          setSubmitToast(false);
+        }, 700);
+      } else {
+        setErrorCode(400);
+        setMssg(temp.message);
+        setSubmitToast(true);
+        setTimeout(() => {
+          setSubmitToast(false);
+        }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   function renderLogin() {
     return (
+      <>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         style={{flex: 1}}>
@@ -43,7 +96,7 @@ const Login = ({navigation}) => {
             </View>
             <View
               style={{
-                marginBottom: 50,
+                marginBottom: 10,
                 backgroundColor: COLORS.white,
                 elevation: 5,
                 borderRadius: 10,
@@ -57,7 +110,7 @@ const Login = ({navigation}) => {
                   justifyContent: 'center',
                 }}
                 onPress={() => {
-                  console.log('object');
+                  // console.log('object');
                 }}>
                 <Text
                   style={{
@@ -77,7 +130,6 @@ const Login = ({navigation}) => {
                   }}
                 />
               </TouchableOpacity>
-
               <View style={{marginTop: 40}}>
                 <TextInput
                   mode="outlined"
@@ -93,7 +145,7 @@ const Login = ({navigation}) => {
                   mode="outlined"
                   label="Password"
                   left={<TextInput.Icon icon="security" />}
-                  secureTextEntry
+                  // secureTextEntry
                   right={<TextInput.Icon icon="eye" />}
                   onChangeText={value => {
                     SetPassword(value);
@@ -107,11 +159,19 @@ const Login = ({navigation}) => {
                     alignItems: 'center',
                     borderRadius: 5,
                   }}
-                  onPress={() => navigation.navigate('Tabs')}
+                  onPress={() => {
+                    _loginUser();
+                  }}
                 />
               </View>
             </View>
-
+            <View style={{marginTop:SIZES.base*2}}>
+              <TouchableOpacity onPress={()=>{
+                navigation.navigate('ForgetPassword')
+              }}>
+                <Text style={{textAlign: 'center',...FONTS.body4}}>Forget Password ?</Text>
+              </TouchableOpacity>
+            </View>
             <View
               style={{
                 flex: 1,
@@ -190,6 +250,7 @@ const Login = ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      </>
     );
   }
 
@@ -213,6 +274,13 @@ const Login = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       {renderLogin()}
+      <CustomToast
+        isVisible={submitToast}
+        onClose={() => setSubmitToast(false)}
+        color={errorCode == 200 ? COLORS.green : COLORS.red}
+        title={errorCode == 200 ? 'User Login' : 'Something Went Wrong'}
+        message={mssg}
+      />
       {/* {renderBrandingVersion()} */}
     </View>
   );

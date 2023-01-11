@@ -12,6 +12,7 @@ const back = require('../assets/icons/back.png');
 const login = require('../assets/icons/login.png');
 const logout = require('../assets/icons/logout.png');
 const right = require('../assets/icons/right.png');
+const addProduct=require('../assets/icons/add.png');
 
 export default {
   user,
@@ -28,4 +29,5 @@ export default {
   login,
   logout,
   right,
+  addProduct
 };
