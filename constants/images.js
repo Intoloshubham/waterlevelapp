@@ -13,6 +13,7 @@ const shape_2 = require('../assets/images/background/shape2.png');
 const shape_3 = require('../assets/images/background/shape3.png');
 const bg_shape = require('../assets/images/background/bg_shape.png');
 const bg_shape1 = require('../assets/images/background/bg_shape1.png');
+const change_pass=require('../assets/images/change_pass1.png');
 
 export default {
   OHT_Source1,
@@ -28,4 +29,5 @@ export default {
   logo1,
   mail_image,
   waterinfo,
+  change_pass
 };

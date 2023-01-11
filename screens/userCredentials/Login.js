@@ -15,6 +15,7 @@ import {TextInput} from 'react-native-paper';
 import {TextButton, CustomToast} from '../../componets';
 import {loginUser} from '../../controllers/LoginController';
 import {useDispatch} from 'react-redux';
+import {storeData, storeObjectData,getData} from '../../utils/localStorage.js';
 import {addLoginCredentials} from '../../redux/userCredentialSlice';
 
 const Login = ({navigation}) => {
@@ -33,7 +34,10 @@ const Login = ({navigation}) => {
     try {
       const body = {mobile, password};
       const temp = await loginUser(body);
+      storeData('login_token',temp.refresh_token);
+      storeObjectData('user_credentials',temp.data);
       if (temp.status === 200) {
+        storeObjectData('login_token_status',true);
         setErrorCode(200);
         setSubmitToast(true);
         setMssg('Login successfully!');
@@ -43,9 +47,14 @@ const Login = ({navigation}) => {
             user_credentials: temp.data,
           }),
         );
-        setTimeout(() => {
-          // navigation.navigate('Tabs');
-          navigation.navigate('Products');
+        let lg_tkn = await getData('login_token');
+        setTimeout(async () => {
+          if(lg_tkn){
+            navigation.navigate('Tabs');
+          }else{
+            navigation.replace('Products')
+          }
+          
           setSubmitToast(false);
         }, 700);
       } else {
@@ -121,7 +130,6 @@ const Login = ({navigation}) => {
                   }}
                 />
               </TouchableOpacity>
-
               <View style={{marginTop: 40}}>
                 <TextInput
                   mode="outlined"

@@ -5,7 +5,8 @@ import {FONTS, COLORS, SIZES} from '../constants';
 import {postRemoteControl} from '../controllers/RemoteControlController';
 import {getLEDStatus} from '../controllers/getImageController';
 import {API_URL} from '@env';
-import {useSelector} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
+import {addMode} from '../redux/modeSlice.js';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
 PushNotification.configure({
@@ -38,7 +39,9 @@ PushNotification.configure({
 });
 
 const RemoteControl = () => {
-  const modeValue = useSelector(state => state.mode);
+  const dispatch = useDispatch();
+  const [mode, setMode] = React.useState('');
+  // const modeValue = useSelector(state => state.mode);
   // console.log(
   //   '🚀 ~ file: RemoteControl.js:44 ~ RemoteControl ~ modeValue',
   //   modeValue,
@@ -52,28 +55,64 @@ const RemoteControl = () => {
   //     setChecked(val)
   //     sCK(!val)
   //   }
+
+  // const onSelectSwitch = index => {
+  //   if (index == 0) {
+  //     setMode(0);
+  //     dispatch(
+  //       addMode({
+  //         mode: 0,
+  //       }),
+  //     );
+   
+  //   } else {
+  //     setMode(1);
+  //     dispatch(
+  //       addMode({
+  //         mode: 1,
+  //       }),
+  //     );
+  //   }
+  // };
+
+
+
   const toggleSwitch = val => {
     // setIsEnabled(val);
+    // console.log('val--',val);
     // console.log(modeValue.mode);
     // randomNum=Math.random().toString();
-    if (modeValue.mode == 0) {
+    if (val) {
       setIsEnabled(val);
-      if (val) {
-        // console.log('true');
-        // testPush('Motor is switched ON!', 'Motor Status');
-        postRemoteControlData(1);
-      } else {
-        // testPush('Motor is switched OFF!', 'Motor Status');
-        postRemoteControlData(0);
-      }
-    } else {
-      // setIsEnabled(val);
-      // testPush('Motor is switched ON!', 'Motor Status');
+      setMode(1);
+      dispatch(
+        addMode({
+          mode: 1,
+        }),
+      );
       postRemoteControlData(1);
+      // if (val) {
+      //   // console.log('true');
+      //   // testPush('Motor is switched ON!', 'Motor Status');
+      //   // postRemoteControlData(1);
+      // } else {
+      //   // testPush('Motor is switched OFF!', 'Motor Status');
+      //   // postRemoteControlData(0);
+      // }
+    } else {
+      dispatch(
+        addMode({
+          mode: 0,
+        }),
+      );
+      setMode(0);
+      setIsEnabled(val);
+      // testPush('Motor is switched ON!', 'Motor Status');
+      postRemoteControlData(0);
     }
   };
 
-  useEffect(() => {
+  // useEffect(() => {
     // let randomNum = Math.random().toString();
     // PushNotification.createChannel(
     //   {
@@ -96,7 +135,7 @@ const RemoteControl = () => {
     //   postRemoteControlData(1);
     // }
 
-  }, [modeValue.mode]);
+  // }, [modeValue.mode]);
 
   const testPush = (msg1, msg2) => {
     PushNotification.localNotification({
@@ -136,7 +175,7 @@ const RemoteControl = () => {
           style={{
             marginVertical: SIZES.base ,
             backgroundColor: COLORS.cyan_600,
-            elevation: 8,
+            elevation: 5,
             borderRadius: 5,
           }}>
           <View
@@ -144,9 +183,12 @@ const RemoteControl = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               paddingHorizontal: SIZES.base,
-              alignItems: 'center',
+              alignItems: 'center',           
+               marginHorizontal: SIZES.base 
+              // marginHorizontal: SIZES.base * 2,
+        
             }}>
-            <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+            <Text style={{...FONTS.h2,fontWeight:'600', color: COLORS.white}}>
               Sump Pump {'{ Source-I }'}
             </Text>
             <View
@@ -193,22 +235,23 @@ const RemoteControl = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
+              marginHorizontal: SIZES.base 
             }}>
             <Text
               style={{
-                ...FONTS.h2,fontWeight:'700', color: COLORS.white
+                ...FONTS.h2,fontWeight:'600', color: COLORS.white
               }}>
               Bore Pump {'{ Source-II }'}
             </Text>
             <View
               style={{
-                backgroundColor: COLORS.cyan_600,
                 padding: 10,
                 flexDirection: 'row',
               }}>
               <Text
                 style={{               
                   color: isEnabled == false ? COLORS.white : COLORS.black,
+                  
                   backgroundColor:
                     isEnabled == false ? COLORS.red : COLORS.white,
                     ...FONTS.body5,
@@ -246,9 +289,10 @@ const RemoteControl = () => {
           borderRadius: 5,
           elevation: 5,
           backgroundColor: COLORS.cyan_600,
+          
         }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{...FONTS.h2,fontWeight:'700', color: COLORS.white}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'  , marginHorizontal: SIZES.base }}>
+          <Text style={{...FONTS.h2,fontWeight:'600', color: COLORS.white}}>
             Manually Motor ON/OFF
           </Text>
           <Switch
@@ -256,7 +300,7 @@ const RemoteControl = () => {
             thumbColor={isEnabled ? COLORS.blue_300 : COLORS.red}
             ios_backgroundColor="#3e3e3e"
             onValueChange={toggleSwitch}
-            value={modeValue.mode == 0 ? isEnabled : true}
+            value={mode == 0 ? isEnabled : true}
           />
           {/* <DuoToggleSwitch
             primaryText="OFF"
@@ -280,7 +324,7 @@ const RemoteControl = () => {
   }
 
   return (
-    <View style={{margin: 10}}>
+    <View style={{marginBottom:10}}>
       {renderManuallyOnOffMotor()}
       {renderSourceRemote()}
     </View>

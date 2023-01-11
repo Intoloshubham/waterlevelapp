@@ -18,7 +18,7 @@ import Lottie from 'lottie-react-native';
 import {FONTS, COLORS, icons, SIZES} from '../constants';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput, Divider} from 'react-native-paper';
-import {getData, storeData} from '../utils/localStorage';
+import {getData, storeData, getObjectData} from '../utils/localStorage';
 import {CustomToast} from '../componets';
 import {
   addProduct,
@@ -31,12 +31,37 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useDispatch} from 'react-redux';
 import {addSliceProduct} from '../redux/productSlice';
+import {addIntervalMode} from '../redux/intervalSlice';
 import {useSelector} from 'react-redux';
 
 const Products = ({navigation}) => {
   const dispatch = useDispatch();
   const creds = useSelector(state => state.userCreds);
-  let userId = creds.user_credentials._id;
+  const interval = useSelector(state => state.intervalMode);
+  const [userId, setUserId] = useState('');
+  // let userId;
+  let lg_tkn;
+  let us_cred;
+
+  const credFunc = async () => {
+    try {
+      lg_tkn = await getData('login_token');
+      us_cred = await getObjectData('user_credentials');
+
+      if (Object.keys(creds).length === 0) {
+        // userId = us_cred._id;
+        return us_cred._id;
+        // return setUserId(us_cred._id);
+      } else {
+        // userId = creds.user_credentials._id;
+        return us_cred._id;
+        // return setUserId(creds.user_credentials._id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [productModal, setProductModal] = useState(false);
   const [productUniqueId, setProductUniqueId] = useState('');
   const [serviceUsedIn, setServiceUsedIn] = useState('');
@@ -54,19 +79,17 @@ const Products = ({navigation}) => {
   const [openProduct, setOpenProduct] = React.useState(false);
   const [productValue, setProductValue] = React.useState([]);
 
-  // const [proLabel, setProLabel] = useState('');
-  // const [selId, setSelId] = useState('');
   const [updateStatus, setUpdateStatus] = useState(false);
   const [productPopupMenu, setProductPopupMenu] = useState(false);
   const [productMainId, setProductMainId] = useState('');
 
   const [updatePrimaryLabel, setUpdatePrimaryLabel] = useState('');
   const [updatePrimaryId, setUpdatePrimaryId] = useState('');
-  // let showProLabelName;
+
   const onProductOpen = React.useCallback(() => {
     setOnSelect(false);
     getProductId();
-  }, []); 
+  }, []);
 
   const submitProductId = async () => {
     const data = {
@@ -106,7 +129,9 @@ const Products = ({navigation}) => {
 
   const getProductId = async () => {
     try {
-      const data = await getProduct(userId);
+      const temp = await credFunc();
+      setUserId(temp);
+      const data = await getProduct(temp);
 
       if (data.status == 200) {
         setProductDetails(data.data);
@@ -302,17 +327,17 @@ const Products = ({navigation}) => {
       style={{
         // alignItems:'center',
         // marginHorizontal: SIZES.body1*0.5 ,
-        marginRight:SIZES.body1*7,
-        marginLeft:SIZES.base,
+        marginRight: SIZES.body1 * 7,
+        marginLeft: SIZES.base,
         padding: SIZES.base * 0.5,
       }}>
       <TouchableOpacity
         style={{
           flex: 1,
           flexDirection: 'row',
-          justifyContent:'space-between',
-          marginHorizontal:SIZES.base,
-          alignItems:'center',
+          justifyContent: 'space-between',
+          marginHorizontal: SIZES.base,
+          alignItems: 'center',
           padding: SIZES.body5 * 0.5,
           // elevation: 1,
           borderWidth: updatePrimaryId == item.product_id ? 2 : 0,
@@ -330,16 +355,26 @@ const Products = ({navigation}) => {
           setUpdatePrimaryId(item.product_id);
           updatePrimaryStatus(item._id);
           setTimeout(() => {
+            dispatch(
+              addIntervalMode({
+                intervalMode: true,
+              }),
+            );
             navigation.navigate('Home');
           }, 700);
         }}>
-        <TouchableOpacity         
+        <TouchableOpacity
           onPress={() => {
             setServiceUsedIn(item.service_used_in);
             setProductUniqueId(item.product_id);
             setUpdatePrimaryId(item.product_id);
             updatePrimaryStatus(item._id);
             setTimeout(() => {
+              dispatch(
+                addIntervalMode({
+                  intervalMode: true,
+                }),
+              );
               navigation.navigate('Home');
             }, 700);
           }}>
@@ -347,13 +382,26 @@ const Products = ({navigation}) => {
             <Text style={{...FONTS.body3}}>{item.service_used_in}</Text>
           </View>
         </TouchableOpacity>
-            <Entypo name='check' style={{}} size={22} color={updatePrimaryId == item.product_id ? COLORS.green : COLORS.white}/>
+        <Entypo
+          name="check"
+          style={{}}
+          size={22}
+          color={
+            updatePrimaryId == item.product_id ? COLORS.green : COLORS.white
+          }
+        />
       </TouchableOpacity>
     </View>
   );
 
   useEffect(() => {
+    dispatch(
+      addIntervalMode({
+        intervalMode: false,
+      }),
+    );
     getProductId();
+    credFunc();
   }, []);
 
   function renderAddProductModal() {
@@ -514,7 +562,11 @@ const Products = ({navigation}) => {
               marginHorizontal: SIZES.body2,
             }}>
             <Text
-              style={{...FONTS.body2, textAlign: 'left', color: COLORS.darkGray}}>
+              style={{
+                ...FONTS.body2,
+                textAlign: 'left',
+                color: COLORS.darkGray,
+              }}>
               Product List
             </Text>
 
@@ -534,7 +586,8 @@ const Products = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  ...FONTS.body4,color:COLORS.white
+                  ...FONTS.body4,
+                  color: COLORS.white,
                 }}>
                 Add New Product
               </Text>
@@ -544,18 +597,18 @@ const Products = ({navigation}) => {
           <View style={{marginTop: SIZES.body1 * 2}}>
             <View
               style={{
-                backgroundColor: COLORS.white,
-                marginHorizontal: SIZES.body3,
-                paddingVertical:SIZES.base,
-                elevation:15,
-                alignItems:'center'
+                // backgroundColor: COLORS.white,
+                // marginHorizontal: SIZES.body3,
+                // paddingVertical: SIZES.base,
+                // elevation: 15,
+                alignItems: 'center',
               }}>
               <Text
                 style={{
-                  ...FONTS.body3,
-                  textAlign: 'center',
-                  // marginTop: 5,
+                  ...FONTS.body2,
+
                   color: COLORS.darkGray,
+                  textAlign: 'center',
                 }}>
                 Show as Dashboard
               </Text>
@@ -572,11 +625,11 @@ const Products = ({navigation}) => {
         <>
           <View
             style={{
-              width:'80%',
+              width: '80%',
               height: '40%',
-              alignItems: 'center',  
+              alignItems: 'center',
               // backgroundColor:'red' ,
-              alignSelf:'center'    
+              alignSelf: 'center',
             }}>
             <Image
               resizeMode="center"
@@ -598,12 +651,12 @@ const Products = ({navigation}) => {
               style={{
                 marginTop: SIZES.body1,
                 padding: SIZES.base * 0.6,
-                paddingHorizontal:SIZES.body2,
+                paddingHorizontal: SIZES.body2,
                 alignItems: 'center',
-                alignSelf:'center',
+                alignSelf: 'center',
                 backgroundColor: COLORS.cyan_600,
-                elevation:2,
-                borderRadius:SIZES.base*0.5
+                elevation: 2,
+                borderRadius: SIZES.base * 0.5,
               }}
               onPress={() => {
                 setUpdateStatus(false);
@@ -613,7 +666,8 @@ const Products = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  ...FONTS.body4,color:COLORS.white
+                  ...FONTS.body4,
+                  color: COLORS.white,
                 }}>
                 Add New Product
               </Text>
