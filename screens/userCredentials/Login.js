@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
       storeData('login_token',temp.refresh_token);
       storeObjectData('user_credentials',temp.data);
       if (temp.status === 200) {
-        storeObjectData('login_token_status',{token:temp.refresh_token,  status:true});
+        storeObjectData('login_token_status',true);
         setErrorCode(200);
         setSubmitToast(true);
         setMssg('Login successfully!');
@@ -50,7 +50,7 @@ const Login = ({navigation}) => {
         let lg_tkn = await getData('login_token');
         setTimeout(async () => {
           if(lg_tkn){
-            navigation.replace('Tabs');
+            navigation.navigate('Tabs');
           }else{
             navigation.replace('Products')
           }
