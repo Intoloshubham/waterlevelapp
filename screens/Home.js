@@ -30,7 +30,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CustomSwitch} from '../componets';
 import {addMode} from '../redux/modeSlice';
 import socketIOClient from 'socket.io-client';
-import { addIntervalMode } from '../redux/intervalSlice';
+import {addIntervalMode} from '../redux/intervalSlice';
 const END_POINT = 'http://192.168.0.117:8000';
 
 let socket = socketIOClient(END_POINT);
@@ -42,7 +42,7 @@ const wait = timeout => {
 const Home = ({navigation}) => {
   // const dispatch = useDispatch();
   const registeredId = useSelector(state => state.product);
-  const interval=useSelector(state=>state.intervalMode);
+  const interval = useSelector(state => state.intervalMode);
   // const [mode, setMode] = React.useState('');
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
@@ -135,7 +135,6 @@ const Home = ({navigation}) => {
       try {
         if (registeredId.product_id) {
           const res = await getWaterLevel(registeredId.product_id);
-          console.log("🚀 ~ file: Home.js:137 ~ WaterLevel ~ res", res)
           if (res != undefined) {
             if (
               res.data.led_status == 1 &&
@@ -186,11 +185,11 @@ const Home = ({navigation}) => {
   // const onSelectSwitch = index => {
   //   if (index == 0) {
   //     setMode(0);
-      // dispatch(
-      //   addMode({
-      //     mode: 0,
-      //   }),
-      // );
+  // dispatch(
+  //   addMode({
+  //     mode: 0,
+  //   }),
+  // );
   //     setTimeout(() => {
   //       navigation.navigate('Remote Control');
   //     }, 700);
@@ -219,9 +218,9 @@ const Home = ({navigation}) => {
   // const timer = React.useRef();
 
   React.useEffect(() => {
-    let cls_interval;    
- 
-    if (interval) {  
+    let cls_interval;
+
+    if (interval) {
       cls_interval = setInterval(() => {
         // timer.current = setInterval(() => {
         WaterLevel();
@@ -230,14 +229,13 @@ const Home = ({navigation}) => {
         // getPrevWaterLevel();
         socket.emit('join_room', 'fronte');
         fetchLedStatus();
-      }, 4000);      
-      
+      }, 4000);
+
       return () => {
         clearInterval(cls_interval);
       };
     }
 
- 
     // if (interval) {
     //   clearInterval(interval);
     // }

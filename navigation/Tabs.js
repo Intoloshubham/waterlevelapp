@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity, Button} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -22,24 +22,12 @@ const Tabs = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarVisible: true,
-
-          // tabBarButton: props => null,
           tabBarLabelStyle: {
             marginBottom: 5,
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-          // tabBarButton: () => {
-          //   <TouchableOpacity
-          //     onPress={() => {
-          //       dispatch(
-          //         addIntervalMode({
-          //           intervalMode: true,
-          //         }),
-          //       );
-          //     }}
-          //   />;
-          // },
+
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="home"
@@ -65,29 +53,9 @@ const Tabs = () => {
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-          
-          // tabBarButton: () => {
-             
-          //   // <TouchableOpacity
-          //   //   onPress={() => {
-        
-          //   //   }}
-          //   // />;
-          // },
 
           tabBarIcon: ({color, size}) => (
-            // <Image
-            //   resizeMode="contain"
-            //   style={{
-            //     height: '90%',
-            //     tintColor: COLORS.cyan_600,
-            //     width: '90%',
-            //   }}
-            //   source={icons.addProduct}
-            // />
-             (
-              <>
-              <Image
+            <Image
               resizeMode="contain"
               style={{
                 height: '90%',
@@ -96,15 +64,6 @@ const Tabs = () => {
               }}
               source={icons.addProduct}
             />
-              <TouchableOpacity style={{borderWidth: 2}}>
-                <Button
-                  status={color}
-                  appearance="ghost"
-                  accessoryLeft={<Icon name={iconName} />}
-                />
-              </TouchableOpacity>
-              </>
-            )
           ),
           headerShown: false,
         }}
