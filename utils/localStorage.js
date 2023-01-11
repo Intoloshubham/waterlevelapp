@@ -6,6 +6,8 @@ const storeData = async (key,value) => {
       console.log(e);
     }
   }
+
+
   const storeObjectData =async (key,object) =>{
     try {
       await AsyncStorage.setItem(key,JSON.stringify(object))

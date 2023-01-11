@@ -1,5 +1,12 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  Button,
+  TouchableWithoutFeedback,
+  Pressable,
+  TouchableHighlight,
+} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -11,7 +18,8 @@ import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = () => {
+const Tabs = (props) => {
+  console.log('props--',props)
   const dispatch = useDispatch();
 
   return (
@@ -19,6 +27,16 @@ const Tabs = () => {
       <Tab.Screen
         name="Home"
         component={Home}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {       
+            // navigation.navigate("Products");
+            dispatch(
+              addIntervalMode({
+                intervalMode: true,
+              }),
+            );
+          },
+        })}
         options={{
           tabBarLabel: 'Home',
           tabBarVisible: true,
@@ -32,11 +50,11 @@ const Tabs = () => {
           // tabBarButton: () => {
           //   <TouchableOpacity
           //     onPress={() => {
-          //       dispatch(
-          //         addIntervalMode({
-          //           intervalMode: true,
-          //         }),
-          //       );
+          // dispatch(
+          //   addIntervalMode({
+          //     intervalMode: true,
+          //   }),
+          // );
           //     }}
           //   />;
           // },
@@ -57,6 +75,16 @@ const Tabs = () => {
       <Tab.Screen
         name="Add Products"
         component={Products}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {       
+            // navigation.navigate("Products");
+            dispatch(
+              addIntervalMode({
+                intervalMode: false,
+              }),
+            );
+          },
+        })}
         options={{
           tabBarLabel: 'Product List',
 
@@ -65,29 +93,18 @@ const Tabs = () => {
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-          
+
           // tabBarButton: () => {
-             
+
           //   // <TouchableOpacity
           //   //   onPress={() => {
-        
+
           //   //   }}
           //   // />;
           // },
 
           tabBarIcon: ({color, size}) => (
-            // <Image
-            //   resizeMode="contain"
-            //   style={{
-            //     height: '90%',
-            //     tintColor: COLORS.cyan_600,
-            //     width: '90%',
-            //   }}
-            //   source={icons.addProduct}
-            // />
-             (
-              <>
-              <Image
+            <Image
               resizeMode="contain"
               style={{
                 height: '90%',
@@ -96,15 +113,6 @@ const Tabs = () => {
               }}
               source={icons.addProduct}
             />
-              <TouchableOpacity style={{borderWidth: 2}}>
-                <Button
-                  status={color}
-                  appearance="ghost"
-                  accessoryLeft={<Icon name={iconName} />}
-                />
-              </TouchableOpacity>
-              </>
-            )
           ),
           headerShown: false,
         }}

@@ -31,29 +31,36 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useDispatch} from 'react-redux';
 import {addSliceProduct} from '../redux/productSlice';
-import { addIntervalMode } from '../redux/intervalSlice';
+import {addIntervalMode} from '../redux/intervalSlice';
 import {useSelector} from 'react-redux';
 
 const Products = ({navigation}) => {
   const dispatch = useDispatch();
   const creds = useSelector(state => state.userCreds);
-  const interval=useSelector(state=>state.intervalMode);
-  let userId;
+  const interval = useSelector(state => state.intervalMode);
+  const [userId, setUserId] = useState('');
+  // let userId;
   let lg_tkn;
   let us_cred;
+
   const credFunc = async () => {
     try {
       lg_tkn = await getData('login_token');
       us_cred = await getObjectData('user_credentials');
+
+      if (Object.keys(creds).length === 0) {
+        // userId = us_cred._id;
+        return us_cred._id;
+        // return setUserId(us_cred._id);
+      } else {
+        // userId = creds.user_credentials._id;
+        return us_cred._id;
+        // return setUserId(creds.user_credentials._id);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  if (Object.keys(creds).length === 0) {
-    userId = us_cred._id;
-  } else {
-    userId = creds.user_credentials._id;
-  }
 
   const [productModal, setProductModal] = useState(false);
   const [productUniqueId, setProductUniqueId] = useState('');
@@ -72,15 +79,13 @@ const Products = ({navigation}) => {
   const [openProduct, setOpenProduct] = React.useState(false);
   const [productValue, setProductValue] = React.useState([]);
 
-  // const [proLabel, setProLabel] = useState('');
-  // const [selId, setSelId] = useState('');
   const [updateStatus, setUpdateStatus] = useState(false);
   const [productPopupMenu, setProductPopupMenu] = useState(false);
   const [productMainId, setProductMainId] = useState('');
 
   const [updatePrimaryLabel, setUpdatePrimaryLabel] = useState('');
   const [updatePrimaryId, setUpdatePrimaryId] = useState('');
-  // let showProLabelName;
+
   const onProductOpen = React.useCallback(() => {
     setOnSelect(false);
     getProductId();
@@ -124,7 +129,9 @@ const Products = ({navigation}) => {
 
   const getProductId = async () => {
     try {
-      const data = await getProduct(userId);
+      const temp = await credFunc();
+      setUserId(temp);
+      const data = await getProduct(temp);
 
       if (data.status == 200) {
         setProductDetails(data.data);
@@ -348,6 +355,11 @@ const Products = ({navigation}) => {
           setUpdatePrimaryId(item.product_id);
           updatePrimaryStatus(item._id);
           setTimeout(() => {
+            dispatch(
+              addIntervalMode({
+                intervalMode: true,
+              }),
+            );
             navigation.navigate('Home');
           }, 700);
         }}>
@@ -358,6 +370,11 @@ const Products = ({navigation}) => {
             setUpdatePrimaryId(item.product_id);
             updatePrimaryStatus(item._id);
             setTimeout(() => {
+              dispatch(
+                addIntervalMode({
+                  intervalMode: true,
+                }),
+              );
               navigation.navigate('Home');
             }, 700);
           }}>
@@ -380,8 +397,8 @@ const Products = ({navigation}) => {
   useEffect(() => {
     dispatch(
       addIntervalMode({
-        intervalMode:false
-      })
+        intervalMode: false,
+      }),
     );
     getProductId();
     credFunc();
@@ -589,10 +606,9 @@ const Products = ({navigation}) => {
               <Text
                 style={{
                   ...FONTS.body2,
-                  
+
                   color: COLORS.darkGray,
                   textAlign: 'center',
-             
                 }}>
                 Show as Dashboard
               </Text>
