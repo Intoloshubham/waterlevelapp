@@ -2,7 +2,7 @@ import {API_URL} from '@env';
 
 const postWaterLevelSettings = async formData => {
   try {
-    const res = await fetch(API_URL + 'water-level-setting/2', {
+    const res = await fetch(API_URL + 'water-level-setting/3', {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ const postWaterLevelSettings = async formData => {
 
 const getWaterLevelSettings = async () => {
   try {
-    const res = await fetch(API_URL + 'water-level-setting/2', {
+    const res = await fetch(API_URL + 'water-level-setting/3', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const getWaterLevelSettings = async () => {
 
 const postTankHeightSettings = async formData => {
   try {
-    const res = await fetch(API_URL + 'tank-height-setting/2', {
+    const res = await fetch(API_URL + 'tank-height-setting/3', {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const postTankHeightSettings = async formData => {
 
 const postWaterSourceSettings = async formData => {
   try {
-    const res = await fetch(API_URL + 'water-source-setting/2', {
+    const res = await fetch(API_URL + 'water-source-setting/3', {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const postWaterSourceSettings = async formData => {
 
 const postMotorNotification = async formData => {
   try {
-    const res = await fetch(API_URL + 'motor-notification-setting/2', {
+    const res = await fetch(API_URL + 'motor-notification-setting/3', {
       method: 'put',
       headers: {
         'Content-Type': 'application/json',

@@ -2,7 +2,7 @@ import {API_URL} from '@env';
 
 const getImage = async () => {
   try {
-    const res = await fetch(API_URL + 'water-level-image/2', {
+    const res = await fetch(API_URL + 'water-level-image/3', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ const getImage = async () => {
 
 const getWaterLevel = async () => {
   try {
-    const res = await fetch(API_URL + 'water-level/2', {
+    const res = await fetch(API_URL + 'water-level/3', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const getWaterLevel = async () => {
 
 const getLEDStatus = async () => {
   try {
-    const res = await fetch(API_URL + 'led-status/2', {
+    const res = await fetch(API_URL + 'led-status/3', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
