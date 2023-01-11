@@ -23,6 +23,7 @@
     "lottie-react-native": "^5.1.4",
     "react": "18.0.0",
     "react-native": "0.69.4",
+    "react-native-animated-progress": "^1.0.2",
     "react-native-dotenv": "^3.4.2",
     "react-native-dropdown-picker": "^5.4.2",
     "react-native-duo-toggle-switch": "^1.1.0",
@@ -39,7 +40,8 @@
     "react-native-textinput-effects": "^0.6.3",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.5",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "socket.io-client": "^4.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

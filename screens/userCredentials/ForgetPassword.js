@@ -167,7 +167,7 @@ const ForgetPassword = ({navigation}) => {
                   backgroundColor: COLORS.success_100,
                   // backgroundColor: 'white',
                   borderRadius: SIZES.base,
-                  height: '60%',
+                  height: '55%',
                   width: '85%',
                 }}>
                 <Pressable
@@ -188,14 +188,15 @@ const ForgetPassword = ({navigation}) => {
                 <View
                   style={{
                     alignItems: 'center',
-                    marginTop: SIZES.body2,
+                    marginTop: SIZES.body2*0.5,
                   }}>
                   <Image
                     source={images.change_pass}
+                    resizeMode={'center'}
                     style={{
                       width: 100,
                       height: 100,
-                      tintColor: COLORS.green,
+                      // tintColor: COLORS.green,
                     }}
                   />
                 </View>
@@ -334,7 +335,7 @@ const ForgetPassword = ({navigation}) => {
                 </Text>
               </View>
               <View>
-                <Text
+                {/* <Text
                   style={{
                     ...FONTS.h2,
                     color: COLORS.darkGray,
@@ -342,7 +343,7 @@ const ForgetPassword = ({navigation}) => {
                     flexWrap: 'wrap',
                   }}>
                   We will send Verification code on {'\n'} your email id
-                </Text>
+                </Text> */}
               </View>
             </View>
             <View
@@ -426,7 +427,7 @@ const ForgetPassword = ({navigation}) => {
                     }}
                     onPress={verifyOtp}>
                     <Text style={{color: COLORS.white, textAlign: 'center'}}>
-                      Verfiy Send Otp
+                      Verfiy Otp
                     </Text>
                   </TouchableOpacity>
                 ) : (

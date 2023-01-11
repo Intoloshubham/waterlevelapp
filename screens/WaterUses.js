@@ -75,7 +75,7 @@ const WaterUses = () => {
                   outlineColor={COLORS.cyan_600}
                   activeOutlineColor={COLORS.cyan_600}
                   placeholderTextColor={COLORS.darkGray}
-                  left={<TextInput.Icon icon="account-supervisor" />}
+                  // left={<TextInput.Icon icon="account-supervisor" />}
                   onChangeText={value => {
                     setNoOfUser(value);
                   }}
@@ -97,13 +97,13 @@ const WaterUses = () => {
                   style={{
                     width: '34%',
                     flexDirection: 'row',
-                    justifyContent: 'space-around',
+                    justifyContent: 'space-between',
                   }}>
-                  <FontAwesome5
+                  {/* <FontAwesome5
                     name="shapes"
                     color={COLORS.darkGray}
                     size={18}
-                  />
+                  /> */}
                   <Text style={{...FONTS.h4, color: COLORS.darkGray}}>
                     Tank Shape
                   </Text>
@@ -174,7 +174,7 @@ const WaterUses = () => {
                   outlineColor={COLORS.cyan_600}
                   activeOutlineColor={COLORS.cyan_500}
                   placeholderTextColor={COLORS.darkGray}
-                  left={<TextInput.Icon icon="diameter" />}
+                  // left={<TextInput.Icon icon="diameter" />}
                   onChangeText={value => {
                     setDiameter(value);
                   }}
@@ -193,7 +193,7 @@ const WaterUses = () => {
                     outlineColor={COLORS.cyan_600}
                     activeOutlineColor={COLORS.cyan_600}
                     placeholderTextColor={COLORS.darkGray}
-                    left={<TextInput.Icon icon="diameter" />}
+                    // left={<TextInput.Icon icon="diameter" />}
                     onChangeText={value => {
                       setLangth(value);
                     }}
@@ -210,7 +210,7 @@ const WaterUses = () => {
                     outlineColor={COLORS.cyan_600}
                     activeOutlineColor={COLORS.cyan_500}
                     placeholderTextColor={COLORS.darkGray}
-                    left={<TextInput.Icon icon="diameter" />}
+                    // left={<TextInput.Icon icon="diameter" />}
                     onChangeText={value => {
                       setBreadth(value);
                     }}
