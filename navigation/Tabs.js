@@ -1,52 +1,45 @@
 import React from 'react';
-import {Image} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Home, Settings, RemoteControl, Products,WaterUses} from '../screens';
-import {COLORS,icons} from '../constants';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Home, Settings, RemoteControl, Products, WaterUses} from '../screens';
+import {COLORS, icons} from '../constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+  const dispatch = useDispatch();
+
   return (
     <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen
-        name="Add Products"
-        component={Products}
-        options={{
-          tabBarLabel: 'Product List',
-          tabBarLabelStyle: {
-            marginBottom: 5,
-            fontSize: 12,
-            color: COLORS.true_gray_800,
-          },
-          tabBarIcon: ({color, size}) => (
-            <Image
-            resizeMode='contain'
-          
-            style={{
-              height:'90%',
-              tintColor:COLORS.cyan_600,
-              width:'90%'
-            }}            
-            source={icons.addProduct                  
-            }/>
-       
-          ),
-          headerShown: false,
-        }}
-      />
       <Tab.Screen
         name="Home"
         component={Home}
         options={{
           tabBarLabel: 'Home',
+          tabBarVisible: true,
+
+          // tabBarButton: props => null,
           tabBarLabelStyle: {
             marginBottom: 5,
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
+          // tabBarButton: () => {
+          //   <TouchableOpacity
+          //     onPress={() => {
+          //       dispatch(
+          //         addIntervalMode({
+          //           intervalMode: true,
+          //         }),
+          //       );
+          //     }}
+          //   />;
+          // },
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="home"
@@ -62,6 +55,62 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
+        name="Add Products"
+        component={Products}
+        options={{
+          tabBarLabel: 'Product List',
+
+          tabBarLabelStyle: {
+            marginBottom: 5,
+            fontSize: 12,
+            color: COLORS.true_gray_800,
+          },
+          
+          // tabBarButton: () => {
+             
+          //   // <TouchableOpacity
+          //   //   onPress={() => {
+        
+          //   //   }}
+          //   // />;
+          // },
+
+          tabBarIcon: ({color, size}) => (
+            // <Image
+            //   resizeMode="contain"
+            //   style={{
+            //     height: '90%',
+            //     tintColor: COLORS.cyan_600,
+            //     width: '90%',
+            //   }}
+            //   source={icons.addProduct}
+            // />
+             (
+              <>
+              <Image
+              resizeMode="contain"
+              style={{
+                height: '90%',
+                tintColor: COLORS.cyan_600,
+                width: '90%',
+              }}
+              source={icons.addProduct}
+            />
+              <TouchableOpacity style={{borderWidth: 2}}>
+                <Button
+                  status={color}
+                  appearance="ghost"
+                  accessoryLeft={<Icon name={iconName} />}
+                />
+              </TouchableOpacity>
+              </>
+            )
+          ),
+          headerShown: false,
+        }}
+      />
+
+      {/* <Tab.Screen
         name="Remote Control"
         component={RemoteControl}
         options={{
@@ -80,7 +129,7 @@ const Tabs = () => {
           ),
           headerShown: false,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Water Uses"
         component={WaterUses}
@@ -113,12 +162,9 @@ const Tabs = () => {
             color: COLORS.true_gray_800,
           },
           tabBarIcon: ({color, size}) => (
-            <MaterialCommunityIcons
-              name="application-settings"
-              color={COLORS.cyan_600}
-              size={20}
-            />
+            <Ionicons name="settings" color={COLORS.cyan_600} size={20} />
           ),
+
           headerShown: false,
         }}
       />

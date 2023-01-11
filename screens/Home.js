@@ -16,6 +16,7 @@ import Lottie from 'lottie-react-native';
 import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {widthToDo, heightToDo} from './setImagePixels';
 import {FONTS, COLORS, icons, SIZES} from '../constants';
+import ProgressBar from 'react-native-animated-progress';
 import {
   getImage,
   getWaterLevel,
@@ -28,15 +29,21 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import {useDispatch, useSelector} from 'react-redux';
 import {CustomSwitch} from '../componets';
 import {addMode} from '../redux/modeSlice';
+import socketIOClient from 'socket.io-client';
+import { addIntervalMode } from '../redux/intervalSlice';
+const END_POINT = 'http://192.168.0.117:8000';
+
+let socket = socketIOClient(END_POINT);
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Home = ({navigation}) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const registeredId = useSelector(state => state.product);
-  const [mode, setMode] = React.useState('');
+  const interval=useSelector(state=>state.intervalMode);
+  // const [mode, setMode] = React.useState('');
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
@@ -46,7 +53,6 @@ const Home = ({navigation}) => {
   const [warningModal, setWarningModal] = useState(false);
   const [sumpStatus, setSumpStatus] = useState(0);
   const [switchValue, setSwitchValue] = useState(false);
-
   const [imageView, setImageView] = useState(false);
   let prevalue = 0;
   // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
@@ -129,7 +135,8 @@ const Home = ({navigation}) => {
       try {
         if (registeredId.product_id) {
           const res = await getWaterLevel(registeredId.product_id);
-          if (res.data != null) {
+          console.log("🚀 ~ file: Home.js:137 ~ WaterLevel ~ res", res)
+          if (res != undefined) {
             if (
               res.data.led_status == 1 &&
               prevalue == res.data.water_level &&
@@ -176,26 +183,26 @@ const Home = ({navigation}) => {
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const onSelectSwitch = index => {
-    if (index==0) {
-      setMode(0);
-      dispatch(
-        addMode({
-          mode: 0,
-        }),
-      );
-      setTimeout(() => {
-        navigation.navigate('Remote Control');
-      }, 700);
-    } else {
-      setMode(1);
-      dispatch(
-        addMode({
-          mode: 1,
-        }),
-      );
-    }
-  };
+  // const onSelectSwitch = index => {
+  //   if (index == 0) {
+  //     setMode(0);
+      // dispatch(
+      //   addMode({
+      //     mode: 0,
+      //   }),
+      // );
+  //     setTimeout(() => {
+  //       navigation.navigate('Remote Control');
+  //     }, 700);
+  //   } else {
+  //     setMode(1);
+  //     dispatch(
+  //       addMode({
+  //         mode: 1,
+  //       }),
+  //     );
+  //   }
+  // };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -206,26 +213,35 @@ const Home = ({navigation}) => {
     wait(1000).then(() => setRefreshing(false));
   }, []);
 
-  let timer1 = setTimeout(() => {
-    setTimeInterval(timeInterval + 1);
-  }, 4000);
+  // let timer1 = setTimeout(() => {
+  //   setTimeInterval(timeInterval + 1);
+  // }, 4000);
+  // const timer = React.useRef();
 
   React.useEffect(() => {
-    // console.log('object--', timeInterval);
-    getStreamImage();
-    // WaterLevel();
-    fetchSumpStatus();
-    // const interval = setInterval(() => {
-    WaterLevel();
-    // getPrevWaterLevel();
-    fetchLedStatus();
-    // }, 4000);
+    let cls_interval;    
+ 
+    if (interval) {  
+      cls_interval = setInterval(() => {
+        // timer.current = setInterval(() => {
+        WaterLevel();
+        getStreamImage();
+        fetchSumpStatus();
+        // getPrevWaterLevel();
+        socket.emit('join_room', 'fronte');
+        fetchLedStatus();
+      }, 4000);      
+      
+      return () => {
+        clearInterval(cls_interval);
+      };
+    }
 
-    // return () => clearInterval(interval);
-    return () => {
-      clearTimeout(timer1);
-    };
-  }, [timeInterval]);
+ 
+    // if (interval) {
+    //   clearInterval(interval);
+    // }
+  }, []);
 
   // useEffect(() => {
   //   await updateData(id, state, setState); // API call
@@ -352,7 +368,6 @@ const Home = ({navigation}) => {
             cropWidth={Dimensions.get('window').width}
             cropHeight={Dimensions.get('window').height}
             imageWidth={Dimensions.get('window').width}
-            // imageWidth={'50%'}
             imageHeight={Dimensions.get('window').height}
             // imageHeight={'50%'}
             onClick={() => {
@@ -363,9 +378,14 @@ const Home = ({navigation}) => {
             <Image
               resizeMode="center"
               style={{
-                width: square == true ? '98%' : '98%',
-                height: square == true ? '98%' : '98%',
+                // width: square == true ? '50%' : '50%',
+                // height: square == true ? '50%' : '50%',
+                marginTop: SIZES.height * 0.3,
+                height: square == true ? 260 : 200,
+                width: square == true ? 390 : 600,
+
                 alignSelf: 'center',
+
                 borderRadius: square == true ? 10 : 100,
                 borderWidth: 1,
                 borderColor: COLORS.black,
@@ -392,18 +412,35 @@ const Home = ({navigation}) => {
             <View
               style={{
                 flex: 1,
-                marginTop: SIZES.body1 * 3,
-                backgroundColor: COLORS.white,
-                elevation: 5,
+                flexDirection: 'row',
+
+                marginTop: SIZES.body1 * 2.6,
+                // backgroundColor: COLORS.amber_300,
+                // elevation: 5
               }}>
               <View
                 style={{
-                  flex: 1,
+                  // flex: 1,
+                  flexDirection: 'row-reverse',
+                  alignSelf: 'flex-end',
+                  width: '5%',
+                  elevation: 5,
+                  height: '0%',
                   backgroundColor: COLORS.blue_300,
                   padding: 10,
                 }}></View>
+              <View
+                style={{
+                  flexDirection: 'row-reverse',
+                  alignSelf: 'flex-end',
+                  height: `${20 + 0}%`,
+                  // backgroundColor: COLORS.blue_300,
+                }}>
+                <Text> 0%</Text>
+              </View>
             </View>
-            <Text style={{...FONTS.body5, color: COLORS.darkGray}}>
+            <Text
+              style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 8}}>
               Sump{'\n'}Level
             </Text>
           </View>
@@ -534,6 +571,7 @@ const Home = ({navigation}) => {
           }}>
           <Image
             source={{uri: streamImage}}
+            resizeMode={'center'}
             style={{
               height: square == true ? 200 : 200,
               width: square == true ? 300 : 200,
@@ -582,25 +620,28 @@ const Home = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            // paddingLeft:SIZES.body1*3
           }}>
+          <Text
+            style={{
+              fontSize: 15,
+              textAlign: 'center',
+              color: COLORS.darkGray,
+            }}>
+            Live Camera
+          </Text>
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text
-              style={{
-                fontSize: 15,
-                textAlign: 'center',
-                color: COLORS.darkGray,
-              }}>
-              Live Camera
-            </Text>
             <Image
               source={icons.camera}
-              style={{height: 25, width: 25, left: 5}}
+              resizeMode={'center'}
+              style={{height: 25, width: 25}}
             />
-            <Text
+            {/* <Text
               style={{
                 fontSize: 15,
                 textAlign: 'center',
@@ -608,7 +649,7 @@ const Home = ({navigation}) => {
                 color: COLORS.darkGray,
               }}>
               View
-            </Text>
+            </Text> */}
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity
@@ -653,7 +694,13 @@ const Home = ({navigation}) => {
           borderRadius: 10,
           ...styles.shadow,
         }}>
-        <Text style={{fontSize: 18,textAlign:'center', fontWeight: '500', color: COLORS.darkGray}}>
+        <Text
+          style={{
+            fontSize: 18,
+            textAlign: 'center',
+            fontWeight: '500',
+            color: COLORS.darkGray,
+          }}>
           INFO
         </Text>
         <View style={{marginTop: 10}}>
@@ -668,7 +715,8 @@ const Home = ({navigation}) => {
             }}></View>
           <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             PH Value{' - '}
-            {phValue}
+            {/* {Math.round(phValue)} */}
+            {parseFloat(phValue).toFixed(2)}
           </Text>
           <View
             style={{
@@ -739,18 +787,18 @@ const Home = ({navigation}) => {
           style={{
             alignSelf: 'center',
             flexDirection: 'row',
-            marginBottom:10,
+            marginBottom: 10,
             alignItems: 'center',
-          }}>          
-            <CustomSwitch
-              selectionMode={0}
-              roundCorner={true}
-              option1={'Manual'}
-              option2={'Automatic'}
-              onSelectSwitch={onSelectSwitch}
-              selectionColor={COLORS.green}
-              // selectionColor={'green'}
-            />
+          }}>
+          {/* <CustomSwitch
+            selectionMode={0}
+            roundCorner={true}
+            option1={'Manual'}
+            option2={'Automatic'}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={COLORS.green}
+            // selectionColor={'green'}
+          /> */}
 
           {/* <DuoToggleSwitch
             primaryText="Manual"

@@ -24,15 +24,43 @@ import {
 import {getWaterLevel} from '../controllers/getImageController.js';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import {useSelector} from 'react-redux';
 import {CustomToast} from '../componets';
+import {Login} from './userCredentials';
+import RemoteControl from './RemoteControl.js';
+import {
+  getData,
+  getObjectData,
+  removeData,
+  storeObjectData,
+} from '../utils/localStorage.js';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
 const Settings = ({navigation}) => {
+  // const navigation = useNavigation()
+  // const { index, routes,key,routeNames } = useNavigation();
+  // console.log('key--',key)
+  // console.log('routeNames--',routeNames)
+  // console.log('currentRoute: ', routes);
+
+  let lg_tkn;
+  let us_cred;
+  const credFunc = async () => {
+    try {
+      lg_tkn = await getData('login_token');
+
+      us_cred = await getObjectData('user_credentials');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const registeredId = useSelector(state => state.product);
   const creds = useSelector(state => state.userCreds);
 
@@ -140,9 +168,9 @@ const Settings = ({navigation}) => {
       const response = await getWaterLevelSettings(registeredId.product_id);
       // console.log(
       //   '🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response',
-      //   response.data,
+      //   response,
       // );
-      if (response.status === 200) {
+      if (response.status === 200 && response.data!=null) {
         // console.log("==========",response.data.tank_height)
         setTempTankHeight(response.data.tank_height);
         setWaterLevelData(response.data);
@@ -211,22 +239,25 @@ const Settings = ({navigation}) => {
 
   const logout = async () => {
     try {
-      // console.log(creds.refresh_token)
-      const body = {refresh_token: creds.refresh_token};
+      // navigation.navigate('Login');
+      const body = {refresh_token: creds.refresh_token || lg_tkn};
       const temp = await UserlogOut(body);
       if (temp.status == 200) {
         // await AsyncStorage.clear();
+
         setStatusCode(temp.status);
         setMssg(temp.data);
         setSubmitToast(true);
         setTimeout(() => {
           setSubmitToast(false);
-        }, 700);
+        }, 600);
+        removeData('login_token');
+        storeObjectData('login_token_status', {token: '', status: false});
         setTimeout(() => {
-          navigation.navigate('Login');
+          navigation.replace('Login');
         }, 400);
+    
       }
-      // console.log("🚀 ~ file: Settings.js:165 ~ logout ~ temp", temp)
     } catch (error) {
       console.log(error);
     }
@@ -242,6 +273,7 @@ const Settings = ({navigation}) => {
 
   React.useMemo(() => {
     __getWaterLevel();
+    credFunc();
     fetchWaterLevelHeightSettings();
   }, [timeInt]);
 
@@ -256,7 +288,7 @@ const Settings = ({navigation}) => {
           elevation: 3,
         }}>
         <View>
-          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
             Set ON/OFF Tank
           </Text>
           {/* <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
@@ -331,7 +363,7 @@ const Settings = ({navigation}) => {
           </TouchableOpacity>
           <View
             style={{
-              width: '90%',
+              width: '93%',
               padding: 30,
               borderRadius: 10,
               backgroundColor: COLORS.white,
@@ -346,6 +378,16 @@ const Settings = ({navigation}) => {
               }}
               value={minimumPersent}
             />
+              <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                marginTop: 5,
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              Note:- Not advisable to set less than 20 %
+            </Text>
             <TextInput
               style={{marginTop: 10}}
               mode="outlined"
@@ -360,7 +402,7 @@ const Settings = ({navigation}) => {
             <Text
               style={{
                 ...FONTS.body3,
-                fontWeight: '700',
+                fontWeight: '600',
                 marginTop: 5,
                 color: COLORS.darkGray,
                 textAlign: 'center',
@@ -405,7 +447,7 @@ const Settings = ({navigation}) => {
             justifyContent: 'space-between',
           }}>
           <View>
-            <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+            <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
               Overhead Water Tank Height
             </Text>
           </View>
@@ -668,47 +710,52 @@ const Settings = ({navigation}) => {
                       </Text>
                     </View>
                   </View>
-                  <View style={{flexDirection:'row',justifyContent:"space-around",width:'100%'}}>
-                  <TouchableOpacity
+                  <View
                     style={{
-                      alignSelf: 'center',
-                      borderWidth: 1,
-                      borderColor: COLORS.transparent,
-                      elevation: 5,
-                      marginTop: SIZES.body1 * 0.5,
-                      padding: SIZES.base * 0.5,
-                      paddingHorizontal: SIZES.body1 ,
-                      borderRadius: SIZES.base * 0.5,
-                      backgroundColor: COLORS.cyan_600,
-                    }}
-                    delayLongPress={'2000'}
-                    onLongPress={() => alert('df')}>
-                    <Text
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      width: '100%',
+                    }}>
+                    <TouchableOpacity
                       style={{
-                        ...FONTS.body3,
-                        color: COLORS.white,
-                        textAlign: 'center',
-                      }}>
-                      Reset
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                  style={{
-                    alignSelf: 'center',
-                    borderWidth: 1,
-                    borderColor: COLORS.transparent,
-                    elevation: 5,
-                    marginTop: SIZES.body1 * 0.5,
-                    padding: SIZES.base * 0.5,
-                    paddingHorizontal: SIZES.body1 ,
-                    borderRadius: SIZES.base * 0.5,
-                    backgroundColor: COLORS.cyan_600,
-                  }}
-                    onPress={() => postWaterTankHeightSettings()}>
-                    <Text style={{...FONTS.h3, color: COLORS.white}}>
-                      Submit
-                    </Text>
-                  </TouchableOpacity>
+                        alignSelf: 'center',
+                        borderWidth: 1,
+                        borderColor: COLORS.transparent,
+                        elevation: 5,
+                        marginTop: SIZES.body1 * 0.5,
+                        padding: SIZES.base * 0.5,
+                        paddingHorizontal: SIZES.body1,
+                        borderRadius: SIZES.base * 0.5,
+                        backgroundColor: COLORS.cyan_600,
+                      }}
+                      delayLongPress={'2000'}
+                      onLongPress={() => alert('df')}>
+                      <Text
+                        style={{
+                          ...FONTS.body3,
+                          color: COLORS.white,
+                          textAlign: 'center',
+                        }}>
+                        Reset
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        alignSelf: 'center',
+                        borderWidth: 1,
+                        borderColor: COLORS.transparent,
+                        elevation: 5,
+                        marginTop: SIZES.body1 * 0.5,
+                        padding: SIZES.base * 0.5,
+                        paddingHorizontal: SIZES.body1,
+                        borderRadius: SIZES.base * 0.5,
+                        backgroundColor: COLORS.cyan_600,
+                      }}
+                      onPress={() => postWaterTankHeightSettings()}>
+                      <Text style={{...FONTS.h3, color: COLORS.white}}>
+                        Submit
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                   {/* <TextInput
                     style={{
@@ -759,7 +806,7 @@ const Settings = ({navigation}) => {
           elevation: 5,
         }}>
         <View>
-          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
             Water Source Preference
           </Text>
 
@@ -795,7 +842,7 @@ const Settings = ({navigation}) => {
               </Text>
             </View>
             <Text style={{...FONTS.body3, color: COLORS.white}}>
-              <Text style={{...FONTS.body3, fontWeight: '700'}}>Note: </Text>
+              <Text style={{...FONTS.body3, fontWeight: '600'}}>Note: </Text>
               Water will be taken first from this source if this source is not
               available then second source will be started automatically.
             </Text>
@@ -817,7 +864,7 @@ const Settings = ({navigation}) => {
           borderRadius: 10,
           elevation: 5,
         }}>
-        <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+        <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
           Notification Turn On / Off
         </Text>
         <View
@@ -1066,7 +1113,7 @@ const Settings = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+          <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
             Leakage Testing
           </Text>
           <Switch
@@ -1083,7 +1130,7 @@ const Settings = ({navigation}) => {
           />
         </View>
         <Text style={{...FONTS.body3, color: COLORS.white}}>
-          <Text style={{...FONTS.body3, fontWeight: '700'}}>Note :</Text> Please
+          <Text style={{...FONTS.body3, fontWeight: '600'}}>Note :</Text> Please
           make sure that water from the entire water distribution system will
           not be in use for next 30 minute.
         </Text>
@@ -1119,7 +1166,7 @@ const Settings = ({navigation}) => {
           elevation: 5,
           backgroundColor: COLORS.cyan_600,
         }}>
-        <Text style={{...FONTS.h2, fontWeight: '700', color: COLORS.white}}>
+        <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
           Operational Layout
         </Text>
         <View style={{marginTop: 5}}>
@@ -1181,7 +1228,7 @@ const Settings = ({navigation}) => {
               marginRight: SIZES.height * 0.32,
             }}>
             <AntDesign name="logout" size={20} color={COLORS.white} />
-            <Text style={{fontSize: 15, color: COLORS.white, left: 10}}>
+            <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white, left: 10}}>
               Logout
             </Text>
           </View>
@@ -1267,6 +1314,7 @@ const Settings = ({navigation}) => {
       }
       showsVerticalScrollIndicator={false}>
       {renderTankHeight()}
+      <RemoteControl/>
       {renderSwitchOnOffSettings()}
 
       {renderWaterSource()}
