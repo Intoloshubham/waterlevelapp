@@ -1,12 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {
-  View,
-  Text,
-  Switch,
-  Animated,
-  TouchableOpacity,
-  Easing,
-} from 'react-native';
+import {View, Text, Switch} from 'react-native';
 import {FONTS, COLORS, SIZES} from '../constants';
 import {postRemoteControl} from '../controllers/RemoteControlController';
 import {getLEDStatus} from '../controllers/getImageController';
@@ -25,8 +18,8 @@ const RemoteControl = () => {
   const [mode, setMode] = React.useState('');
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const creds = useSelector(state => state.userCreds);
-  const user_id = creds.user_credentials._id;
+  const user = useSelector(state => state.userCreds);
+  const user_id = user.user_credentials._id;
 
   const toggleSwitch = val => {
     if (val) {
@@ -105,6 +98,7 @@ const RemoteControl = () => {
   //
   const [sump, setSump] = React.useState(false);
   const [bore, setBore] = React.useState(false);
+  //saurabh
 
   React.useEffect(() => {
     fetchLedStatus();
