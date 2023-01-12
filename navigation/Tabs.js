@@ -20,8 +20,8 @@ import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = (props) => {
-  console.log('props--',props)
+const Tabs = () => {
+
   const dispatch = useDispatch();
 
   return (

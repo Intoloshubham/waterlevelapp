@@ -10,6 +10,7 @@ import {
   Switch,
   ImageBackground,
   Pressable,
+  BackHandler,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
 import CheckBox from '@react-native-community/checkbox';
@@ -32,6 +33,7 @@ import {CustomToast} from '../componets';
 import {Login} from './userCredentials';
 import RemoteControl from './RemoteControl.js';
 import {
+  clearStorage,
   getData,
   getObjectData,
   removeData,
@@ -43,8 +45,10 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const Settings = () => {
-  const navigation = useNavigation();
+const Settings = ({navigation}) => {
+  // const Auth = React.createContext(null);
+  // const navigation = useNavigation();
+  // const { setToken } = React.useContext(Auth)
   let lg_tkn;
   let us_cred;
 
@@ -52,7 +56,7 @@ const Settings = () => {
     try {
       lg_tkn = await getData('login_token');
       us_cred = await getObjectData('user_credentials');
-      return {lg_tkn,us_cred};
+      return {lg_tkn, us_cred};
     } catch (error) {
       console.log(error);
     }
@@ -60,7 +64,6 @@ const Settings = () => {
 
   const registeredId = useSelector(state => state.product);
   const creds = useSelector(state => state.userCreds);
- 
 
   //Modal
   const [persentModal, setPersentModal] = useState(false);
@@ -236,13 +239,17 @@ const Settings = () => {
   };
 
   const logout = async () => {
-    navigation.navigate('Screen');
+    // BackHandler.exitApp();
     try {
-      await credFunc()
+      await credFunc();
 
-      const body = {refresh_token: Object.keys(creds).length === 0?lg_tkn:creds.refresh_token};
+      const body = {
+        refresh_token:
+          Object.keys(creds).length === 0 ? lg_tkn : creds.refresh_token,
+      };
       const temp = await UserlogOut(body);
-   
+      console.log("🚀 ~ file: Settings.js:250 ~ logout ~ temp", temp)
+
       if (temp.status == 200) {
         // await AsyncStorage.clear();
         setStatusCode(temp.status);
@@ -254,13 +261,11 @@ const Settings = () => {
         }, 600);
 
         removeData('login_token');
-
-        storeObjectData('login_token_status',  false);
-
+        removeData('user_credential_body');
+        // clearStorage();
+        storeObjectData('login_token_status', false);
         setTimeout(() => {
-          navigation.push('Logins');
-    
-          // navigation.replace('Login');
+          navigation.navigate('Login')
         }, 400);
       }
     } catch (error) {
