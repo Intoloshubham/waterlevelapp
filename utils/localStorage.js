@@ -45,7 +45,14 @@ const storeData = async (key,value) => {
       console.log(e);
     }
   }
+  const clearStorage = async ()=>{
+    try {
+      AsyncStorage.clear();
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
 
-  export {storeData,getData,removeData,storeObjectData,getObjectData};
+  export {storeData,getData,removeData,storeObjectData,getObjectData,clearStorage};
