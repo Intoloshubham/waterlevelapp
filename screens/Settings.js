@@ -37,6 +37,7 @@ import {
   removeData,
   storeObjectData,
 } from '../utils/localStorage.js';
+import Notification from './Notification';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -261,43 +262,6 @@ const Settings = ({navigation}) => {
       console.log(error);
     }
   };
-
-  // saurabh
-
-  const [notificationsData, setNotificationData] = React.useState([
-    {
-      id: 1,
-      name: 'uses',
-    },
-    {
-      id: 2,
-      name: 'leakage',
-    },
-    {
-      id: 3,
-      name: 'quality',
-    },
-    {
-      id: 4,
-      name: 'Need Cleaning',
-    },
-  ]);
-
-  const [checked, setChecked] = React.useState('');
-
-  console.log(checked);
-  const [data, setData] = React.useState('');
-
-  const checkBoxHandler = leave_date_id => {
-    let d = {...data, leave_date_id};
-    setData(d);
-    console.log(d);
-  };
-  // saurabh
-
-  // React.useEffect(() => {
-  //   fetchWaterLevelHeightSettings();
-  // }, []);
 
   setTimeout(() => {
     setTimeInt(timeInt + 1);
@@ -899,31 +863,7 @@ const Settings = ({navigation}) => {
         <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
           Notification Turn On / Off
         </Text>
-        {notificationsData.map((item, index) => {
-          return (
-            <View
-              key={index}
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <CheckBox
-                disabled={false}
-                value={checked[item.id]}
-                onValueChange={newValue => {
-                  setChecked({...checked, [item.id]: newValue});
-                }}
-                // onChange={() => checkBoxHandler(item.name)}
-                style={{height: 25}}
-              />
-              <Text
-                style={{
-                  ...FONTS.h4,
-                  color: COLORS.white,
-                  textTransform: 'capitalize',
-                }}>
-                {item.name}
-              </Text>
-            </View>
-          );
-        })}
+
         {/* <View
           style={{
             flex: 1,
@@ -1379,15 +1319,14 @@ const Settings = ({navigation}) => {
       {renderTankHeight()}
       <RemoteControl />
       {renderSwitchOnOffSettings()}
-
       {renderWaterSource()}
-
       {renderLeakage()}
-      {renderOtherSettings()}
-
+      {/* {renderOtherSettings()} */}
+      {/* //saurabh */}
+      <Notification />
+      {/* //saurabh */}
       {renderPersentModal()}
       {renderTankHeightModal()}
-
       {renderOprationalLayout()}
       {logoutLayout()}
       {isSourceOne && renderSourceOne()}
