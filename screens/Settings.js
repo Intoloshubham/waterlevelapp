@@ -43,20 +43,16 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const Settings = ({navigation}) => {
-  // const navigation = useNavigation()
-  // const { index, routes,key,routeNames } = useNavigation();
-  // console.log('key--',key)
-  // console.log('routeNames--',routeNames)
-  // console.log('currentRoute: ', routes);
-
+const Settings = () => {
+  const navigation = useNavigation();
   let lg_tkn;
   let us_cred;
+
   const credFunc = async () => {
     try {
       lg_tkn = await getData('login_token');
-
       us_cred = await getObjectData('user_credentials');
+      return {lg_tkn,us_cred};
     } catch (error) {
       console.log(error);
     }
@@ -64,6 +60,7 @@ const Settings = ({navigation}) => {
 
   const registeredId = useSelector(state => state.product);
   const creds = useSelector(state => state.userCreds);
+ 
 
   //Modal
   const [persentModal, setPersentModal] = useState(false);
@@ -239,23 +236,31 @@ const Settings = ({navigation}) => {
   };
 
   const logout = async () => {
+    navigation.navigate('Screen');
     try {
-      // navigation.navigate('Login');
-      const body = {refresh_token: creds.refresh_token || lg_tkn};
+      await credFunc()
+
+      const body = {refresh_token: Object.keys(creds).length === 0?lg_tkn:creds.refresh_token};
       const temp = await UserlogOut(body);
+   
       if (temp.status == 200) {
         // await AsyncStorage.clear();
-
         setStatusCode(temp.status);
         setMssg(temp.data);
         setSubmitToast(true);
+
         setTimeout(() => {
           setSubmitToast(false);
         }, 600);
+
         removeData('login_token');
-        storeObjectData('login_token_status', {token: '', status: false});
+
+        storeObjectData('login_token_status',  false);
+
         setTimeout(() => {
-          navigation.replace('Login');
+          navigation.push('Logins');
+    
+          // navigation.replace('Login');
         }, 400);
       }
     } catch (error) {

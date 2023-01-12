@@ -1,5 +1,14 @@
 import React from 'react';
-import {Image, TouchableOpacity, Button} from 'react-native';
+
+import {
+  Image,
+  TouchableOpacity,
+  Button,
+  TouchableWithoutFeedback,
+  Pressable,
+  TouchableHighlight,
+} from 'react-native';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -11,7 +20,8 @@ import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = () => {
+const Tabs = (props) => {
+  console.log('props--',props)
   const dispatch = useDispatch();
 
   return (
@@ -19,6 +29,16 @@ const Tabs = () => {
       <Tab.Screen
         name="Home"
         component={Home}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {       
+            // navigation.navigate("Products");
+            dispatch(
+              addIntervalMode({
+                intervalMode: true,
+              }),
+            );
+          },
+        })}
         options={{
           tabBarLabel: 'Home',
           tabBarVisible: true,
@@ -45,6 +65,16 @@ const Tabs = () => {
       <Tab.Screen
         name="Add Products"
         component={Products}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {       
+            // navigation.navigate("Products");
+            dispatch(
+              addIntervalMode({
+                intervalMode: false,
+              }),
+            );
+          },
+        })}
         options={{
           tabBarLabel: 'Product List',
 
