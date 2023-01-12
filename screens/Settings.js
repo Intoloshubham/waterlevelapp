@@ -10,9 +10,10 @@ import {
   Switch,
   ImageBackground,
   Pressable,
+  BackHandler,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
-
+import CheckBox from '@react-native-community/checkbox';
 import {
   getWaterLevelSettings,
   postWaterLevelSettings,
@@ -32,6 +33,7 @@ import {CustomToast} from '../componets';
 import {Login} from './userCredentials';
 import RemoteControl from './RemoteControl.js';
 import {
+  clearStorage,
   getData,
   getObjectData,
   removeData,
@@ -42,8 +44,10 @@ const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
 
-const Settings = () => {
-  const navigation = useNavigation();
+const Settings = ({navigation}) => {
+  // const Auth = React.createContext(null);
+  // const navigation = useNavigation();
+  // const { setToken } = React.useContext(Auth)
   let lg_tkn;
   let us_cred;
 
@@ -51,7 +55,7 @@ const Settings = () => {
     try {
       lg_tkn = await getData('login_token');
       us_cred = await getObjectData('user_credentials');
-      return {lg_tkn,us_cred};
+      return {lg_tkn, us_cred};
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +63,6 @@ const Settings = () => {
 
   const registeredId = useSelector(state => state.product);
   const creds = useSelector(state => state.userCreds);
- 
 
   //Modal
   const [persentModal, setPersentModal] = useState(false);
@@ -167,7 +170,7 @@ const Settings = () => {
       //   '🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response',
       //   response,
       // );
-      if (response.status === 200 && response.data!=null) {
+      if (response.status === 200 && response.data != null) {
         // console.log("==========",response.data.tank_height)
         setTempTankHeight(response.data.tank_height);
         setWaterLevelData(response.data);
@@ -235,13 +238,17 @@ const Settings = () => {
   };
 
   const logout = async () => {
-    navigation.navigate('Screen');
+    // BackHandler.exitApp();
     try {
-      await credFunc()
+      await credFunc();
 
-      const body = {refresh_token: Object.keys(creds).length === 0?lg_tkn:creds.refresh_token};
+      const body = {
+        refresh_token:
+          Object.keys(creds).length === 0 ? lg_tkn : creds.refresh_token,
+      };
       const temp = await UserlogOut(body);
-   
+      console.log("🚀 ~ file: Settings.js:250 ~ logout ~ temp", temp)
+
       if (temp.status == 200) {
         // await AsyncStorage.clear();
         setStatusCode(temp.status);
@@ -253,20 +260,50 @@ const Settings = () => {
         }, 600);
 
         removeData('login_token');
-
-        storeObjectData('login_token_status',  false);
-
+        removeData('user_credential_body');
+        // clearStorage();
+        storeObjectData('login_token_status', false);
         setTimeout(() => {
-          navigation.push('Logins');
-    
-          // navigation.replace('Login');
+          navigation.navigate('Login')
         }, 400);
-    
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // saurabh
+
+  const [notificationsData, setNotificationData] = React.useState([
+    {
+      id: 1,
+      name: 'uses',
+    },
+    {
+      id: 2,
+      name: 'leakage',
+    },
+    {
+      id: 3,
+      name: 'quality',
+    },
+    {
+      id: 4,
+      name: 'Need Cleaning',
+    },
+  ]);
+
+  const [checked, setChecked] = React.useState('');
+
+  console.log(checked);
+  const [data, setData] = React.useState('');
+
+  const checkBoxHandler = leave_date_id => {
+    let d = {...data, leave_date_id};
+    setData(d);
+    console.log(d);
+  };
+  // saurabh
 
   // React.useEffect(() => {
   //   fetchWaterLevelHeightSettings();
@@ -383,7 +420,7 @@ const Settings = () => {
               }}
               value={minimumPersent}
             />
-              <Text
+            <Text
               style={{
                 ...FONTS.body3,
                 fontWeight: '600',
@@ -872,7 +909,32 @@ const Settings = () => {
         <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
           Notification Turn On / Off
         </Text>
-        <View
+        {notificationsData.map((item, index) => {
+          return (
+            <View
+              key={index}
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <CheckBox
+                disabled={false}
+                value={checked[item.id]}
+                onValueChange={newValue => {
+                  setChecked({...checked, [item.id]: newValue});
+                }}
+                // onChange={() => checkBoxHandler(item.name)}
+                style={{height: 25}}
+              />
+              <Text
+                style={{
+                  ...FONTS.h4,
+                  color: COLORS.white,
+                  textTransform: 'capitalize',
+                }}>
+                {item.name}
+              </Text>
+            </View>
+          );
+        })}
+        {/* <View
           style={{
             flex: 1,
             marginTop: SIZES.base,
@@ -924,7 +986,7 @@ const Settings = () => {
               Need Cleaning
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         {/* <View style={{flexDirection: 'row', marginTop: 15}}>
           <View style={{flex: 1}}>
             <Text
@@ -1030,17 +1092,17 @@ const Settings = () => {
             borderColor: COLORS.gray3,
             marginVertical: SIZES.padding,
           }}></View> */}
-        <View
+        {/* <View
           style={{
             // marginTop: 5,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}>
-          {/* <Text style={{fontSize: 15, color: COLORS.white}}>
+          }}> */}
+        {/* <Text style={{fontSize: 15, color: COLORS.white}}>
             Notification Turn On / Off
           </Text> */}
-          {/* <Switch
+        {/* <Switch
             style={{transform: [{scaleX: 1.2}, {scaleY: 1.2}]}}
             trackColor={{false: COLORS.gray, true: COLORS.success_400}}
             thumbColor={isEnabledNotification ? COLORS.white : COLORS.white}
@@ -1052,7 +1114,7 @@ const Settings = () => {
             value={isEnabledNotification}
           /> */}
 
-          {/* <DuoToggleSwitch
+        {/* <DuoToggleSwitch
             style={{
               maxHeight: 25,
               maxWidth: 80,
@@ -1071,7 +1133,7 @@ const Settings = () => {
             }}
             primaryTextStyle={{borderRadius: null}}
           /> */}
-          {/* <ToggleSwitch
+        {/* <ToggleSwitch
             text={{
               on: 'ON',
               off: 'OFF',
@@ -1096,7 +1158,7 @@ const Settings = () => {
               postMotorNotificationSetting(value);
             }}
           /> */}
-        </View>
+        {/* </View> */}
       </View>
     );
   }
@@ -1233,7 +1295,13 @@ const Settings = () => {
               marginRight: SIZES.height * 0.32,
             }}>
             <AntDesign name="logout" size={20} color={COLORS.white} />
-            <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white, left: 10}}>
+            <Text
+              style={{
+                ...FONTS.h2,
+                fontWeight: '600',
+                color: COLORS.white,
+                left: 10,
+              }}>
               Logout
             </Text>
           </View>
@@ -1319,7 +1387,7 @@ const Settings = () => {
       }
       showsVerticalScrollIndicator={false}>
       {renderTankHeight()}
-      <RemoteControl/>
+      <RemoteControl />
       {renderSwitchOnOffSettings()}
 
       {renderWaterSource()}

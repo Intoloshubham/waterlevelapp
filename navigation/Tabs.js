@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Image,
   TouchableOpacity,
@@ -7,6 +8,7 @@ import {
   Pressable,
   TouchableHighlight,
 } from 'react-native';
+
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -18,8 +20,8 @@ import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
 
-const Tabs = (props) => {
-  console.log('props--',props)
+const Tabs = () => {
+
   const dispatch = useDispatch();
 
   return (
@@ -40,24 +42,12 @@ const Tabs = (props) => {
         options={{
           tabBarLabel: 'Home',
           tabBarVisible: true,
-
-          // tabBarButton: props => null,
           tabBarLabelStyle: {
             marginBottom: 5,
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-          // tabBarButton: () => {
-          //   <TouchableOpacity
-          //     onPress={() => {
-          // dispatch(
-          //   addIntervalMode({
-          //     intervalMode: true,
-          //   }),
-          // );
-          //     }}
-          //   />;
-          // },
+
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
               name="home"
@@ -93,15 +83,6 @@ const Tabs = (props) => {
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-
-          // tabBarButton: () => {
-
-          //   // <TouchableOpacity
-          //   //   onPress={() => {
-
-          //   //   }}
-          //   // />;
-          // },
 
           tabBarIcon: ({color, size}) => (
             <Image

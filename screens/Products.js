@@ -104,7 +104,7 @@ const Products = ({navigation}) => {
       setTimeout(() => {
         navigation.navigate('Tabs');
       }, 700);
-
+      storeData('primary_product', temp.product_id);
       setStatusCode(temp.status);
       setMssg(temp.data);
       getProductId();

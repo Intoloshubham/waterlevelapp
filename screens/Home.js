@@ -31,7 +31,9 @@ import {CustomSwitch} from '../componets';
 import {addMode} from '../redux/modeSlice';
 import socketIOClient from 'socket.io-client';
 import {addIntervalMode} from '../redux/intervalSlice';
+
 import {checkIfKeyExist} from '../utils/customFunctions';
+
 const END_POINT = 'http://192.168.0.117:8000';
 
 let socket = socketIOClient(END_POINT);
@@ -41,12 +43,14 @@ const wait = timeout => {
 };
 
 const Home = ({navigation}) => {
+
   let cls_interval;
 
   let temp_registeredId = useSelector(state => state.product);
   const [registeredId, setRegisteredId] = useState(temp_registeredId);
 
   const interval = useSelector(state => state.intervalMode);
+
 
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
@@ -135,6 +139,7 @@ const Home = ({navigation}) => {
   const WaterLevel = async () => {
     if (checkIfKeyExist(registeredId, 'product_id')) {
       try {
+
         const res = await getWaterLevel(registeredId.product_id);
         if (res != undefined) {
           if (
@@ -149,6 +154,7 @@ const Home = ({navigation}) => {
 
           setLevel(res.data.water_level);
           setPhValue(res.data.ph_level);
+
 
           if (parseFloat(res.data.water_level) >= 90) {
             if (overflowLevelStatus) {
@@ -210,7 +216,6 @@ const Home = ({navigation}) => {
     fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
-
  
 
   React.useMemo(() => {
@@ -218,6 +223,7 @@ const Home = ({navigation}) => {
     if (interval.intervalMode === true) {
       // timer.current =  setInterval(() => {
       cls_interval = window.setInterval(() => {
+
         WaterLevel();
         getStreamImage();
         fetchSumpStatus();
@@ -225,11 +231,14 @@ const Home = ({navigation}) => {
         socket.emit('join_room', 'fronte');
         fetchLedStatus();
       }, 4000);
+
       return () => {
         window.clearInterval(cls_interval);
       };
     }
+
   }, [temp_registeredId, interval.intervalMode]);
+
 
   // useEffect(() => {
   //   await updateData(id, state, setState); // API call
