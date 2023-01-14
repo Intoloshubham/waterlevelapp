@@ -7,34 +7,34 @@ import {useSelector} from 'react-redux';
 import {getWaterLevelSettings} from '../controllers/SettingsController';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
-PushNotification.configure({
-  onRegister: function (token) {
-    // console.log('TOKEN:', token);
-  },
+// PushNotification.configure({
+//   onRegister: function (token) {
+//     // console.log('TOKEN:', token);
+//   },
 
-  // onNotification: function (notification) {
-  //   console.log('NOTIFICATION:', notification);
-  //   notification.finish(PushNotificationIOS.FetchResult.NoData);
-  // },
+//   // onNotification: function (notification) {
+//   //   console.log('NOTIFICATION:', notification);
+//   //   notification.finish(PushNotificationIOS.FetchResult.NoData);
+//   // },
 
-  // onAction: function (notification) {
-  //   console.log('ACTION:', notification.action);
-  //   console.log('NOTIFICATION:', notification);
-  // },
+//   // onAction: function (notification) {
+//   //   console.log('ACTION:', notification.action);
+//   //   console.log('NOTIFICATION:', notification);
+//   // },
 
-  // onRegistrationError: function (err) {
-  //   console.error(err.message, err);
-  // },
+//   // onRegistrationError: function (err) {
+//   //   console.error(err.message, err);
+//   // },
 
-  permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
 
-  popInitialNotification: true,
-  requestPermissions: true,
-});
+//   popInitialNotification: true,
+//   requestPermissions: true,
+// });
 
 const Notification = () => {
   const user = useSelector(state => state.userCreds);
@@ -48,7 +48,6 @@ const Notification = () => {
   const postNotificationSettings = async (type, status) => {
     const formData = {notification_type: type, status: status};
     const res = await postNotificationStatus(formData, user_id);
-    console.log('post noti', res);
     if (res.status == 200) {
       getNotificationSettings();
     }
@@ -56,7 +55,6 @@ const Notification = () => {
 
   const getNotificationSettings = async () => {
     const res = await getWaterLevelSettings(user_id);
-    console.log('get noti', res);
     if (res.status === 200) {
       setUses(res.data.uses_notification);
       setLeakage(res.data.leakage_notification);
@@ -64,16 +62,28 @@ const Notification = () => {
       setNeedCleaning(res.data.need_cleaning_notification);
 
       if (res.data.uses_notification) {
-        pushNotification('Uses', 'Notification is enable');
+        pushNotification(
+          'Uses',
+          'Over use of water is found please save water',
+        );
       }
       if (res.data.leakage_notification) {
-        pushNotification('Leakage', 'Notification is enable');
+        pushNotification(
+          'Leakage',
+          'There is no leakage found in the water distribution system',
+        );
       }
       if (res.data.quality_notification) {
-        pushNotification('Quality', 'Notification is enable');
+        pushNotification(
+          'Quality',
+          'Water is safe within an acceptable PH range',
+        );
       }
       if (res.data.need_cleaning_notification) {
-        pushNotification('Need cleaning', 'Notification is enable');
+        pushNotification(
+          'Need cleaning',
+          "Doesn't need to clean the water tank",
+        );
       }
     }
   };
