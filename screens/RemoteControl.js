@@ -12,14 +12,38 @@ import {
   postSumpStatus,
 } from '../controllers/PumpController';
 import {useSelector} from 'react-redux';
+import { getObjectData } from '../utils/localStorage';
 
 const RemoteControl = () => {
+  let user_id;
+  let us_cred;
   const dispatch = useDispatch();
   const [mode, setMode] = React.useState('');
   const [isEnabled, setIsEnabled] = useState(false);
 
   const user = useSelector(state => state.userCreds);
-  const user_id = user.user_credentials._id;
+  
+  
+
+  const credFunc = async () => {
+    try {
+      // lg_tkn = await getData('login_token');
+      us_cred = await getObjectData('user_credentials');
+      user_id=us_cred._id;
+  
+      if (Object.keys(user).length === 0) {
+        // userId = us_cred._id;
+        return us_cred._id;
+        // return setUserId(us_cred._id);
+      } else {
+        // userId = creds.user_credentials._id;
+        return user.user_credentials._id;
+        // return setUserId(creds.user_credentials._id);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const toggleSwitch = val => {
     if (val) {
@@ -101,6 +125,7 @@ const RemoteControl = () => {
   //saurabh
 
   React.useEffect(() => {
+    credFunc();
     fetchLedStatus();
     getSump();
     getBore();

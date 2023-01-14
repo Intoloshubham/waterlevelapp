@@ -248,10 +248,10 @@ const Settings = ({navigation}) => {
           Object.keys(creds).length === 0 ? lg_tkn : creds.refresh_token,
       };
       const temp = await UserlogOut(body);
-      console.log("🚀 ~ file: Settings.js:250 ~ logout ~ temp", temp)
+      
 
       if (temp.status == 200) {
-        // await AsyncStorage.clear();
+        
         setStatusCode(temp.status);
         setMssg(temp.data);
         setSubmitToast(true);
@@ -262,7 +262,7 @@ const Settings = ({navigation}) => {
 
         removeData('login_token');
         removeData('user_credential_body');
-        // clearStorage();
+        
         storeObjectData('login_token_status', false);
         setTimeout(() => {
           navigation.navigate('Login')

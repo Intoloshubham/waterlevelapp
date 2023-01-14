@@ -43,14 +43,12 @@ const wait = timeout => {
 };
 
 const Home = ({navigation}) => {
-
   let cls_interval;
 
   let temp_registeredId = useSelector(state => state.product);
   const [registeredId, setRegisteredId] = useState(temp_registeredId);
 
   const interval = useSelector(state => state.intervalMode);
-
 
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
@@ -59,6 +57,7 @@ const Home = ({navigation}) => {
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
   const [warningModal, setWarningModal] = useState(false);
+  const [sumpLevel, setSumpLevel] = useState(0);
   const [sumpStatus, setSumpStatus] = useState(0);
   const [switchValue, setSwitchValue] = useState(false);
   const [imageView, setImageView] = useState(false);
@@ -74,7 +73,7 @@ const Home = ({navigation}) => {
   //toggle
   const [isEnabled, setIsEnabled] = React.useState('');
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);  
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const getStreamImage = async () => {
     if (checkIfKeyExist(registeredId, 'product_id')) {
@@ -139,7 +138,6 @@ const Home = ({navigation}) => {
   const WaterLevel = async () => {
     if (checkIfKeyExist(registeredId, 'product_id')) {
       try {
-
         const res = await getWaterLevel(registeredId.product_id);
         if (res != undefined) {
           if (
@@ -152,9 +150,9 @@ const Home = ({navigation}) => {
             setWarningModal(true);
           }
 
+          setSumpLevel(res.data.sump_level);
           setLevel(res.data.water_level);
           setPhValue(res.data.ph_level);
-
 
           if (parseFloat(res.data.water_level) >= 90) {
             if (overflowLevelStatus) {
@@ -216,14 +214,12 @@ const Home = ({navigation}) => {
     fetchSumpStatus();
     wait(1000).then(() => setRefreshing(false));
   }, []);
- 
 
   React.useMemo(() => {
     setRegisteredId(temp_registeredId);
     if (interval.intervalMode === true) {
       // timer.current =  setInterval(() => {
       cls_interval = window.setInterval(() => {
-
         WaterLevel();
         getStreamImage();
         fetchSumpStatus();
@@ -236,9 +232,7 @@ const Home = ({navigation}) => {
         window.clearInterval(cls_interval);
       };
     }
-
   }, [temp_registeredId, interval.intervalMode]);
-
 
   // useEffect(() => {
   //   await updateData(id, state, setState); // API call
@@ -412,6 +406,7 @@ const Home = ({navigation}) => {
                 flexDirection: 'row',
 
                 marginTop: SIZES.body1 * 2.6,
+
                 // backgroundColor: COLORS.amber_300,
                 // elevation: 5
               }}>
@@ -420,24 +415,32 @@ const Home = ({navigation}) => {
                   // flex: 1,
                   flexDirection: 'row-reverse',
                   alignSelf: 'flex-end',
+
                   width: '5%',
                   elevation: 5,
-                  height: '0%',
+                  height: `${parseInt(sumpLevel)}%`,
                   backgroundColor: COLORS.blue_300,
-                  padding: 10,
+                  // padding: 10,
+                  paddingHorizontal: 10,
+                  // paddingTop:15
+                  // marginTop:0
                 }}></View>
+
               <View
                 style={{
-                  flexDirection: 'row-reverse',
-                  alignSelf: 'flex-end',
-                  height: `${20 + 0}%`,
-                  // backgroundColor: COLORS.blue_300,
+                  // flexDirection: 'row-reverse',
+                  alignSelf: 'flex-end', 
+
+                  // marginBottom:SIZES.base*0.5,
+                  height: `${21+parseInt(sumpLevel)}%`,
+                  // height: `${20 + sumpLevel}%`,                  
+                  // backgroundColor: COLORS.amber_300                  
                 }}>
-                <Text> 0%</Text>
+                <Text style={{...FONTS.body5}}> {parseInt(sumpLevel)}%</Text>
               </View>
             </View>
             <Text
-              style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 8}}>
+              style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 15}}>
               Sump{'\n'}Level
             </Text>
           </View>
@@ -713,7 +716,7 @@ const Home = ({navigation}) => {
           <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             PH Value{' - '}
             {/* {Math.round(phValue)} */}
-            {parseFloat(phValue).toFixed(2)}
+            {phValue? parseFloat(phValue).toFixed(2):''}
           </Text>
           <View
             style={{

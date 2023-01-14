@@ -6,6 +6,7 @@ import {postNotificationStatus} from '../controllers/NotificationController';
 import {useSelector} from 'react-redux';
 import {getWaterLevelSettings} from '../controllers/SettingsController';
 import PushNotification, {Importance} from 'react-native-push-notification';
+import {getObjectData} from '../utils/localStorage.js';
 
 PushNotification.configure({
   onRegister: function (token) {
@@ -38,7 +39,21 @@ PushNotification.configure({
 
 const Notification = () => {
   const user = useSelector(state => state.userCreds);
-  const user_id = user.user_credentials._id;
+  let user_id;
+
+  const credFunc = async () => {
+    try {
+      let us_cred = await getObjectData('user_credentials');
+
+      if (Object.keys(user).length === 0) {
+        return us_cred._id;
+      } else {
+        return user.user_credentials._id;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [uses, setUses] = React.useState(false);
   const [leakage, setLeakage] = React.useState(false);
@@ -75,6 +90,7 @@ const Notification = () => {
   };
 
   React.useEffect(() => {
+    credFunc();
     PushNotification.createChannel(
       {
         channelId: '1',
@@ -85,7 +101,7 @@ const Notification = () => {
         importance: Importance.DEFAULT,
         vibrate: true,
       },
-    //   created => console.log(`createChannel returned '${created}'`),
+      //   created => console.log(`createChannel returned '${created}'`),
     );
     getNotificationSettings();
   }, []);
