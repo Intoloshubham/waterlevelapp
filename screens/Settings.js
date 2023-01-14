@@ -166,21 +166,16 @@ const Settings = ({navigation}) => {
 
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
-      const response = await getWaterLevelSettings(registeredId.product_id);
-      // console.log(
-      //   '🚀 ~ file: Settings.js:140 ~ fetchWaterLevelHeightSettings ~ response',
-      //   response,
-      // );
+      const response = await getWaterLevelSettings(registeredId.product_id);    
+
       if (response.status === 200 && response.data != null) {
-        // console.log("==========",response.data.tank_height)
-        setTempTankHeight(response.data.tank_height);
         setWaterLevelData(response.data);
         setIsEnabledSource1(response.data.water_source_1);
         setIsEnabledSource2(response.data.water_source_2);
         setIsEnabledNotification(response.data.motor_notification);
+        setTempTankHeight(response.data.tank_height)
+       return response.data.tank_height;
       }
-      // if (response.data.motor_notification == true) {
-      // }
     }
   };
 
@@ -198,11 +193,14 @@ const Settings = ({navigation}) => {
       );
 
       if (response.status === 200) {
-        setTankHeightModal(false);
+        
         setValue('');
         setTankHeight('');
-        setIsEnabledManually('');
-        fetchWaterLevelHeightSettings();
+        const temp=await fetchWaterLevelHeightSettings();
+        setIsEnabledManually(false);
+        __getWaterLevel();
+        let Oh = temp * (1 - waterLevel/100);                         
+        setAutoHeight(Oh);
       }
     }
   };
@@ -239,7 +237,6 @@ const Settings = ({navigation}) => {
   };
 
   const logout = async () => {
-    // BackHandler.exitApp();
     try {
       await credFunc();
 
@@ -248,10 +245,8 @@ const Settings = ({navigation}) => {
           Object.keys(creds).length === 0 ? lg_tkn : creds.refresh_token,
       };
       const temp = await UserlogOut(body);
-      console.log("🚀 ~ file: Settings.js:250 ~ logout ~ temp", temp)
 
       if (temp.status == 200) {
-        // await AsyncStorage.clear();
         setStatusCode(temp.status);
         setMssg(temp.data);
         setSubmitToast(true);
@@ -262,10 +257,10 @@ const Settings = ({navigation}) => {
 
         removeData('login_token');
         removeData('user_credential_body');
-        // clearStorage();
+
         storeObjectData('login_token_status', false);
         setTimeout(() => {
-          navigation.navigate('Login')
+          navigation.navigate('Login');
         }, 400);
       }
     } catch (error) {
@@ -297,9 +292,7 @@ const Settings = ({navigation}) => {
           <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
             Set ON/OFF Tank
           </Text>
-          {/* <Text style={{fontSize: 18, color: COLORS.white, fontWeight: '500'}}>
-            Water Level Height
-          </Text> */}
+
           <View
             style={{
               flexDirection: 'row',
@@ -309,7 +302,6 @@ const Settings = ({navigation}) => {
             }}>
             <View>
               <Text style={{fontSize: 15, color: COLORS.white}}>
-                {/* OHT Minimum level{' - '} */}
                 OHT ON{' - '}
                 {waterLevelData.start_level == ''
                   ? '0'
@@ -318,7 +310,6 @@ const Settings = ({navigation}) => {
               </Text>
               <Text style={{fontSize: 15, color: COLORS.white}}>
                 OHT OFF{' - '}
-                {/* OHT Maximum level{' - '} */}
                 {waterLevelData.stop_level == ''
                   ? '0'
                   : waterLevelData.stop_level}
@@ -377,7 +368,6 @@ const Settings = ({navigation}) => {
             <TextInput
               mode="outlined"
               label="Minimum %"
-              // placeholder="Type something"
               left={<TextInput.Icon icon="file-percent-outline" />}
               onChangeText={value => {
                 SetMinimumPersent(value);
@@ -398,7 +388,6 @@ const Settings = ({navigation}) => {
               style={{marginTop: 10}}
               mode="outlined"
               label="Maximum %"
-              // placeholder="Type something"
               left={<TextInput.Icon icon="file-percent-outline" />}
               onChangeText={value => {
                 SetMaximumPersent(value);
@@ -419,7 +408,7 @@ const Settings = ({navigation}) => {
               style={{
                 marginTop: 30,
                 borderRadius: SIZES.base * 0.5,
-                // backgroundColor: COLORS.blue_600,
+
                 backgroundColor: COLORS.cyan_600,
                 alignItems: 'center',
                 padding: 10,
@@ -510,13 +499,10 @@ const Settings = ({navigation}) => {
             }}>
             <View
               style={{
-                // flexDirection: 'row',
-                // justifyContent: 'space-between',
                 alignItems: 'flex-start',
               }}>
               <Pressable
                 style={{
-                  // flex:1,
                   width: '100%',
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -562,9 +548,7 @@ const Settings = ({navigation}) => {
                   setIsEnabledManually(false);
                   __getWaterLevel();
 
-                  // console.log('waterLevel=-', waterLevel);
-                  // console.log('tempTankHeight--', tempTankHeight);
-                  let tcs = tempTankHeight * (1 - waterLevel);
+                  let tcs = tempTankHeight * (1 - waterLevel/100);
                   setAutoHeight(tcs);
                 }}>
                 <TouchableOpacity
@@ -581,15 +565,9 @@ const Settings = ({navigation}) => {
                   onPress={() => {
                     setIsEnabledManually(false);
                     __getWaterLevel();
-                    fetchWaterLevelHeightSettings();
-                    // console.log('waterLevel=-', waterLevel);
-                    // console.log('tempTankHeight--', tempTankHeight);
-                    let tc = tempTankHeight * (1 - waterLevel);
+                    fetchWaterLevelHeightSettings();      
+                    let tc = tempTankHeight * (1 - waterLevel/100);                 
                     setAutoHeight(tc);
-                    // console.log(
-                    //   '🚀 ~ file: Settings.js:480 ~ renderTankHeightModal ~ tc',
-                    //   tc,
-                    // );
                   }}></TouchableOpacity>
                 <View style={{width: '90%'}}>
                   <Text
@@ -621,7 +599,6 @@ const Settings = ({navigation}) => {
                     mode="outlined"
                     label="Tank height"
                     onChangeText={value => {
-                      // console.log('unit--', unit);
                       unit == 'CM'
                         ? setTankHeight(value)
                         : setTankHeight(value * 100);
@@ -650,7 +627,6 @@ const Settings = ({navigation}) => {
                       zIndex={1000}
                       listMode="SCROLLVIEW"
                       onSelectItem={value => {
-                        // console.log(value)
                         setUnit(value.label);
                       }}
                     />
@@ -697,14 +673,13 @@ const Settings = ({navigation}) => {
                           color: COLORS.darkGray,
                           textAlign: 'center',
                         }}>
-                        Height Calculated{'\n'} {autoHeight} cm
+                        Height Calculated{'\n'} {parseFloat(autoHeight).toFixed(2)} cm                     
                       </Text>
                     </View>
                     <View
                       style={{
                         flexDirection: 'row',
                         alignSelf: 'center',
-                        // marginTop: SIZES.base*4 ,
                       }}>
                       <Text
                         style={{
@@ -782,7 +757,7 @@ const Settings = ({navigation}) => {
                 </View>
               )}
             </View>
-            {/* <TouchableOpacity
+           {isEnabledManually? <TouchableOpacity
               style={{
                 marginTop: 10,
                 // backgroundColor: COLORS.blue_600,
@@ -793,7 +768,7 @@ const Settings = ({navigation}) => {
               }}
               onPress={() => postWaterTankHeightSettings()}>
               <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>:null}
           </View>
         </View>
       </Modal>
