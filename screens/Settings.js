@@ -83,7 +83,7 @@ const Settings = ({navigation}) => {
 
   const [autoHeight, setAutoHeight] = useState(0);
 
-  const [unit, setUnit] = useState('');
+  const [unit, setUnit] = useState('CM');
 
   // oprational
   const [isSourceOne, setIsSourceOne] = React.useState(false);
@@ -130,14 +130,15 @@ const Settings = ({navigation}) => {
   const [value, setValue] = useState(null);
 
   const [items, setItems] = useState([
-    {label: 'CM', value: '1'},
-    {label: 'Meter', value: '2'},
+    {label: 'CM', value: '0'},
+    {label: 'Meter', value: '1'},
   ]);
 
   const __getWaterLevel = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
       if (registeredId.product_id) {
         const res = await getWaterLevel(registeredId.product_id);
+        
         if (res.data != null) {
           return setWaterLevel(res.data.water_level);
         }
@@ -145,13 +146,12 @@ const Settings = ({navigation}) => {
     }
   };
 
-  const _updateWaterLevel = async () => {
-    try {
-      
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const _updateWaterLevel = async () => {
+  //   try {
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const postWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
@@ -163,6 +163,7 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
+      console.log("🚀 ~ file: Settings.js:166 ~ postWaterLevelHeightSettings ~ response", response)
       if (response.status == 200) {
         alert(response.message);
         setPersentModal(false);
@@ -176,6 +177,7 @@ const Settings = ({navigation}) => {
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
       const response = await getWaterLevelSettings(registeredId.product_id);
+      console.log("🚀 ~ file: Settings.js:180 ~ fetchWaterLevelHeightSettings ~ response", response)
 
       if (response.status === 200 && response.data != null) {
         setWaterLevelData(response.data);
@@ -187,12 +189,17 @@ const Settings = ({navigation}) => {
       }
     }
   };
-
   const postWaterTankHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
+
       const formData = {
         tank_height_type: isEnabledManually,
-        tank_height: isEnabledManually === false ? 0 : tankHeight,
+        tank_height:
+          isEnabledManually === false
+            ? autoHeight
+            : (value == 0
+            ? tankHeight
+            : tankHeight * 100),
         tank_height_unit: isEnabledManually === false ? 0 : value,
       };
 
@@ -200,15 +207,19 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
+      console.log("🚀 ~ file: Settings.js:210 ~ postWaterTankHeightSettings ~ response", response)
 
       if (response.status === 200) {
+        setSubmitToast(true);
         setValue('');
         setTankHeight('');
         const temp = await fetchWaterLevelHeightSettings();
         setIsEnabledManually(false);
         __getWaterLevel();
         let Oh = temp * (1 - waterLevel / 100);
-        setAutoHeight(Oh);
+        // setAutoHeight(Oh);
+        setAutoHeight('0');
+
       }
     }
   };
@@ -223,6 +234,7 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
+      console.log("🚀 ~ file: Settings.js:237 ~ postWaterSourceSetting ~ response", response)
     }
   };
 
@@ -517,6 +529,7 @@ const Settings = ({navigation}) => {
                   justifyContent: 'space-between',
                 }}
                 onPress={() => {
+                  setUnit('CM');
                   setIsEnabledManually(true);
                 }}>
                 <TouchableOpacity
@@ -607,9 +620,10 @@ const Settings = ({navigation}) => {
                     mode="outlined"
                     label="Tank height"
                     onChangeText={value => {
-                      unit == 'CM'
-                        ? setTankHeight(value)
-                        : setTankHeight(value * 100);
+                      // value == 0
+                      //   ? setTankHeight(value)
+                      //   : setTankHeight(parseFloat(value) * 100);
+                      setTankHeight(parseFloat(value));
                     }}
                   />
                   <View style={{width: '30%', marginTop: 5}}>
@@ -636,6 +650,13 @@ const Settings = ({navigation}) => {
                       listMode="SCROLLVIEW"
                       onSelectItem={value => {
                         setUnit(value.label);
+                      }}
+                      onChangeValue={val => {
+                        if (val == 0) {
+                          setUnit('CM');
+                        } else {
+                          setUnit('Meter');
+                        }
                       }}
                     />
                   </View>
@@ -696,7 +717,7 @@ const Settings = ({navigation}) => {
                           color: COLORS.darkGray,
                           textAlign: 'center',
                         }}>
-                        Press reset button for 2 seconds
+                        {/* Press reset button for 2 seconds */}
                       </Text>
                     </View>
                   </View>
@@ -706,7 +727,7 @@ const Settings = ({navigation}) => {
                       justifyContent: 'space-around',
                       width: '100%',
                     }}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={{
                         alignSelf: 'center',
                         borderWidth: 1,
@@ -728,7 +749,7 @@ const Settings = ({navigation}) => {
                         }}>
                         Reset
                       </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity
                       style={{
                         alignSelf: 'center',

@@ -37,12 +37,17 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
+
+
 const Notification = () => {
   const user = useSelector(state => state.userCreds);
   let user_id;
+  let unique_id;
 
   const credFunc = async () => {
     try {
+      const temp_product_id = await getData('primary_product');
+      unique_id=temp_product_id;
       let us_cred = await getObjectData('user_credentials');
 
       if (Object.keys(user).length === 0) {
@@ -62,16 +67,21 @@ const Notification = () => {
 
   const postNotificationSettings = async (type, status) => {
     const formData = {notification_type: type, status: status};
-    const res = await postNotificationStatus(formData, user_id);
-    console.log('post noti', res);
-    if (res.status == 200) {
-      getNotificationSettings();
-    }
+    const temp = await credFunc();
+    user_id = temp;
+    const res = await postNotificationStatus(formData, unique_id);   
+    
+    if (res != undefined)
+      if (res.status == 200) {
+        getNotificationSettings();
+      }
   };
 
   const getNotificationSettings = async () => {
+    const temp = await credFunc();
+    user_id = temp;
     const res = await getWaterLevelSettings(user_id);
-    console.log('get noti', res);
+
     if (res.status === 200) {
       setUses(res.data.uses_notification);
       setLeakage(res.data.leakage_notification);
