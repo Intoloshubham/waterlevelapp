@@ -47,14 +47,15 @@ const Products = ({navigation}) => {
     try {
       lg_tkn = await getData('login_token');
       us_cred = await getObjectData('user_credentials');
-
+      
+  
       if (Object.keys(creds).length === 0) {
         // userId = us_cred._id;
         return us_cred._id;
         // return setUserId(us_cred._id);
       } else {
         // userId = creds.user_credentials._id;
-        return us_cred._id;
+        return creds.user_credentials._id;
         // return setUserId(creds.user_credentials._id);
       }
     } catch (error) {
@@ -130,7 +131,9 @@ const Products = ({navigation}) => {
   const getProductId = async () => {
     try {
       const temp = await credFunc();
+
       setUserId(temp);
+
       const data = await getProduct(temp);
 
       if (data.status == 200) {
