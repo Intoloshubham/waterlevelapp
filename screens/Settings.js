@@ -166,14 +166,15 @@ const Settings = ({navigation}) => {
 
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
-      const response = await getWaterLevelSettings(registeredId.product_id);
+      const response = await getWaterLevelSettings(registeredId.product_id);    
 
       if (response.status === 200 && response.data != null) {
-        setTempTankHeight(response.data.tank_height);
         setWaterLevelData(response.data);
         setIsEnabledSource1(response.data.water_source_1);
         setIsEnabledSource2(response.data.water_source_2);
         setIsEnabledNotification(response.data.motor_notification);
+        setTempTankHeight(response.data.tank_height)
+       return response.data.tank_height;
       }
     }
   };
@@ -192,11 +193,14 @@ const Settings = ({navigation}) => {
       );
 
       if (response.status === 200) {
-        setTankHeightModal(false);
+        
         setValue('');
         setTankHeight('');
-        setIsEnabledManually('');
-        fetchWaterLevelHeightSettings();
+        const temp=await fetchWaterLevelHeightSettings();
+        setIsEnabledManually(false);
+        __getWaterLevel();
+        let Oh = temp * (1 - waterLevel/100);                         
+        setAutoHeight(Oh);
       }
     }
   };
@@ -544,7 +548,7 @@ const Settings = ({navigation}) => {
                   setIsEnabledManually(false);
                   __getWaterLevel();
 
-                  let tcs = tempTankHeight * (1 - waterLevel);
+                  let tcs = tempTankHeight * (1 - waterLevel/100);
                   setAutoHeight(tcs);
                 }}>
                 <TouchableOpacity
@@ -753,7 +757,7 @@ const Settings = ({navigation}) => {
                 </View>
               )}
             </View>
-            {/* <TouchableOpacity
+           {isEnabledManually? <TouchableOpacity
               style={{
                 marginTop: 10,
                 // backgroundColor: COLORS.blue_600,
@@ -764,7 +768,7 @@ const Settings = ({navigation}) => {
               }}
               onPress={() => postWaterTankHeightSettings()}>
               <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>:null}
           </View>
         </View>
       </Modal>
