@@ -15,9 +15,13 @@ import {TextInput} from 'react-native-paper';
 import {TextButton, CustomToast} from '../../componets';
 import {loginUser} from '../../controllers/LoginController';
 import {useDispatch} from 'react-redux';
-import {storeData, storeObjectData, getData,getObjectData} from '../../utils/localStorage.js';
+import {
+  storeData,
+  storeObjectData,
+  getData,
+  getObjectData,
+} from '../../utils/localStorage.js';
 import {addLoginCredentials} from '../../redux/userCredentialSlice';
-
 
 const Login = ({navigation}) => {
   // const { setToken } = React.useContext(Auth)
@@ -39,8 +43,7 @@ const Login = ({navigation}) => {
       const body = {mobile: temp1.mobile, password: temp1.password};
       const temp_login = await loginUser(body);
 
-      if (temp_login.status == 200) 
-        return true
+      if (temp_login.status == 200) return true;
     }
   };
 
@@ -49,7 +52,7 @@ const Login = ({navigation}) => {
       let tc = await getCred();
       if (tc) {
         navigation.replace('Tabs');
-      } 
+      }
       // else {
       //   navigation.replace('Login');
       // }
@@ -64,7 +67,7 @@ const Login = ({navigation}) => {
       storeObjectData('user_credential_body', body);
       if (temp.status === 200) {
         // setToken(temp.refresh_token)
-        
+
         storeData('login_token', temp.refresh_token);
         storeObjectData('user_credentials', temp.data);
         storeObjectData('login_token_status', true);
