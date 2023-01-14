@@ -62,12 +62,16 @@ const Notification = () => {
 
   const postNotificationSettings = async (type, status) => {
     const formData = {notification_type: type, status: status};
-    await postNotificationStatus(formData, user_id);
+    const res = await postNotificationStatus(formData, user_id);
+    console.log('post noti', res);
+    if (res.status == 200) {
+      getNotificationSettings();
+    }
   };
 
   const getNotificationSettings = async () => {
     const res = await getWaterLevelSettings(user_id);
-    // console.log(res);
+    console.log('get noti', res);
     if (res.status === 200) {
       setUses(res.data.uses_notification);
       setLeakage(res.data.leakage_notification);
@@ -75,16 +79,16 @@ const Notification = () => {
       setNeedCleaning(res.data.need_cleaning_notification);
 
       if (res.data.uses_notification) {
-        pushNotification('Uses', 'body');
+        pushNotification('Uses', 'Notification is enable');
       }
       if (res.data.leakage_notification) {
-        pushNotification('Leakage', 'body');
+        pushNotification('Leakage', 'Notification is enable');
       }
       if (res.data.quality_notification) {
-        pushNotification('Quality', 'body');
+        pushNotification('Quality', 'Notification is enable');
       }
       if (res.data.need_cleaning_notification) {
-        pushNotification('Need cleaning', 'body');
+        pushNotification('Need cleaning', 'Notification is enable');
       }
     }
   };
@@ -98,7 +102,7 @@ const Notification = () => {
         channelDescription: 'A channel to categorise your notifications',
         playSound: true,
         soundName: 'default',
-        importance: Importance.DEFAULT,
+        importance: Importance.HIGH,
         vibrate: true,
       },
       //   created => console.log(`createChannel returned '${created}'`),
