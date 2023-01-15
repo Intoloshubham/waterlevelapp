@@ -69,7 +69,7 @@ const Notification = () => {
     const formData = {notification_type: type, status: status};
     const temp = await credFunc();
 
-    user_id = temp;
+    user_id = unique_id;
     const res = await postNotificationStatus(formData, unique_id);
 
     if (res != undefined)

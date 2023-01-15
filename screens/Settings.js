@@ -4,14 +4,15 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  ScrollView,
   RefreshControl,
   Image,
   Switch,
   ImageBackground,
   Pressable,
   BackHandler,
+  Platform,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
 import CheckBox from '@react-native-community/checkbox';
@@ -42,7 +43,7 @@ import {
   storeObjectData,
 } from '../utils/localStorage.js';
 import Notification from './Notification';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -141,7 +142,7 @@ const Settings = ({navigation}) => {
     if (registeredId.hasOwnProperty('product_id')) {
       if (registeredId.product_id) {
         const res = await getWaterLevel(registeredId.product_id);
-        
+
         if (res.data != null) {
           return setWaterLevel(res.data.water_level);
         }
@@ -192,15 +193,14 @@ const Settings = ({navigation}) => {
   };
   const postWaterTankHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
-
       const formData = {
         tank_height_type: isEnabledManually,
         tank_height:
           isEnabledManually === false
             ? autoHeight
-            : (value == 0
+            : value == 0
             ? tankHeight
-            : tankHeight * 100),
+            : tankHeight * 100,
         tank_height_unit: isEnabledManually === false ? 0 : value,
       };
 
@@ -219,7 +219,6 @@ const Settings = ({navigation}) => {
         let Oh = temp * (1 - waterLevel / 100);
         // setAutoHeight(Oh);
         setAutoHeight('0');
-
       }
     }
   };
@@ -490,9 +489,14 @@ const Settings = ({navigation}) => {
   function renderTankHeightModal() {
     return (
       <Modal animationType="fade" transparent={true} visible={tankHeightModal}>
-        <View
-          style={{
-            flex: 1,
+        <KeyboardAwareScrollView
+          // enableOnAndroid={true}  
+ 
+          keyboardShouldPersistTaps={'handled'}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      
+          contentContainerStyle={{
+            flexGrow: 1,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: COLORS.transparentBlack7,
@@ -509,16 +513,17 @@ const Settings = ({navigation}) => {
           </TouchableOpacity>
           <View
             style={{
-              height:isEnabledManually?'65%': '50%',
+              // height:'70%',
               width: '90%',
-              padding: 30,
-              borderRadius: 10,
+              padding: SIZES.padding,
+              borderRadius: SIZES.base,
               backgroundColor: COLORS.white,
-              justifyContent: 'space-between',
             }}>
             <View
-              style={{
-                alignItems: 'flex-start',
+              style={{                
+                flex:1,
+                alignItems: 'center',
+                justifyContent: 'space-evenly'
               }}>
               <Pressable
                 style={{
@@ -600,267 +605,174 @@ const Settings = ({navigation}) => {
                   </Text>
                 </View>
               </Pressable>
-            </View>
-            <View style={{flex: 1, marginTop: SIZES.base * 3}}>
               {isEnabledManually ? (
                 <>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    marginTop: 10,
-                    marginBottom: 20,
-                  }}>
-                  <TextInput
-                    style={{
-                      width: '60%',
-                      height: 35,
-                    }}
-                    mode="outlined"
-                    label="Tank height"
-                    onChangeText={value => {
-                      // value == 0
-                      //   ? setTankHeight(value)
-                      //   : setTankHeight(parseFloat(value) * 100);
-                      setTankHeight(parseFloat(value));
-                    }}
-                  />
-                  <View style={{width: '30%', marginTop: 5}}>
-                    <DropDownPicker
-                      style={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray1,
-                        minHeight: 35,
-                      }}
-                      dropDownContainerStyle={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray2,
-                      }}
-                      placeholder="Unit"
-                      open={open}
-                      value={value}
-                      items={items}
-                      setOpen={setOpen}
-                      setValue={setValue}
-                      setItems={setItems}
-                      zIndex={1000}
-                      listMode="SCROLLVIEW"
-                      onSelectItem={value => {
-                        setUnit(value.label);
-                      }}
-                      onChangeValue={val => {
-                        if (val == 0) {
-                          setUnit('CM');
-                        } else {
-                          setUnit('Meter');
-                        }
-                      }}
-                    />
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                    marginTop: 10,
-                    marginBottom: 20,
-                  }}>
-                  <TextInput
-                    style={{
-                      width: '60%',
-                      height: 35,
-                    }}
-                    mode="outlined"
-                    label="Sump height"
-                    onChangeText={value => {
-                      // value == 0
-                      //   ? setTankHeight(value)
-                      //   : setTankHeight(parseFloat(value) * 100);
-                      setSumpHeight(parseFloat(value));
-                    }}
-                  />
-                  <View style={{width: '30%', marginTop: 5}}>
-                    <DropDownPicker
-                      style={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray1,
-                        minHeight: 35,
-                      }}
-                      dropDownContainerStyle={{
-                        borderWidth: null,
-                        borderRadius: null,
-                        backgroundColor: COLORS.lightGray2,
-                      }}
-                      placeholder="Unit"
-                      open={open}
-                      value={value}
-                      items={items}
-                      setOpen={setOpen}
-                      setValue={setValue}
-                      setItems={setItems}
-                      zIndex={1000}
-                      listMode="SCROLLVIEW"
-                      onSelectItem={value => {
-                        setUnit(value.label);
-                      }}
-                      onChangeValue={val => {
-                        if (val == 0) {
-                          setUnit('CM');
-                        } else {
-                          setUnit('Meter');
-                        }
-                      }}
-                    />
-                  </View>
-                </View>
-                </>
-              ) : (
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: 'space-between',
-                      marginTop: SIZES.base * 2,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: SIZES.body1,
                     }}>
+                    <TextInput
+                      style={{
+                        width: '60%',
+                        height: 35,
+                      }}
+                      mode="outlined"
+                      label="Tank height"
+                      onChangeText={value => {
+                        setTankHeight(parseFloat(value));
+                      }}
+                    />
                     <View
                       style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
+                        width: '35%',
+                        paddingHorizontal: SIZES.base,
+                        marginTop: SIZES.base,
                       }}>
-                      <Text
+                      <DropDownPicker
                         style={{
-                          ...FONTS.body3,
-                          color: COLORS.darkGray,
-                          textAlign: 'center',
-                        }}>
-                        Please make sure that tank is empty {'\n'} if empty
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        borderWidth: 0.2,
-                        alignSelf: 'center',
-                        elevation: 2,
-                        borderColor: COLORS.white,
-                        padding: SIZES.base * 0.5,
-                      }}>
-                      <Text
-                        style={{
-                          ...FONTS.body3,
-                          color: COLORS.darkGray,
-                          textAlign: 'center',
-                        }}>
-                        Height Calculated{'\n'}{' '}
-                        {parseFloat(autoHeight).toFixed(2)} cm
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignSelf: 'center',
-                      }}>
-                      <Text
-                        style={{
-                          ...FONTS.body3,
-                          color: COLORS.darkGray,
-                          textAlign: 'center',
-                        }}>
-                        {/* Press reset button for 2 seconds */}
-                      </Text>
+                          borderWidth: null,
+                          borderRadius: null,
+                          backgroundColor: COLORS.lightGray1,
+                          minHeight: 35,
+                        }}
+                        dropDownContainerStyle={{
+                          borderWidth: null,
+                          borderRadius: null,
+                          backgroundColor: COLORS.lightGray2,
+                        }}
+                        placeholder="Unit"
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        zIndex={1000}
+                        listMode="SCROLLVIEW"
+                        onSelectItem={value => {
+                          setUnit(value.label);
+                        }}
+                        onChangeValue={val => {
+                          if (val == 0) {
+                            setUnit('CM');
+                          } else {
+                            setUnit('Meter');
+                          }
+                        }}
+                      />
                     </View>
                   </View>
                   <View
                     style={{
                       flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      width: '100%',
+                      alignItems: 'center',
+                      marginTop: SIZES.body1,
                     }}>
-                    {/* <TouchableOpacity
+                    <TextInput
                       style={{
-                        alignSelf: 'center',
-                        borderWidth: 1,
-                        borderColor: COLORS.transparent,
-                        elevation: 5,
-                        marginTop: SIZES.body1 * 0.5,
-                        padding: SIZES.base * 0.5,
-                        paddingHorizontal: SIZES.body1,
-                        borderRadius: SIZES.base * 0.5,
-                        backgroundColor: COLORS.cyan_600,
+                        width: '60%',
+                        height: 35,
                       }}
-                      delayLongPress={'2000'}
-                      onLongPress={() => alert('df')}>
-                      <Text
+                      mode="outlined"
+                      label="Sump height"
+                      onChangeText={value => {
+                        setTankHeight(parseFloat(value));
+                      }}
+                    />
+                    <View
+                      style={{
+                        width: '35%',
+                        paddingHorizontal: SIZES.base,
+                        marginTop: SIZES.base,
+                      }}>
+                      <DropDownPicker
                         style={{
-                          ...FONTS.body3,
-                          color: COLORS.white,
-                          textAlign: 'center',
-                        }}>
-                        Reset
-                      </Text>
-                    </TouchableOpacity> */}
-                    <TouchableOpacity
-                      style={{
-                        alignSelf: 'center',
-                        borderWidth: 1,
-                        borderColor: COLORS.transparent,
-                        elevation: 5,
-                        marginTop: SIZES.body1 * 0.5,
-                        padding: SIZES.base * 0.5,
-                        paddingHorizontal: SIZES.body1*3,
-                        borderRadius: SIZES.base * 0.5,
-                        backgroundColor: COLORS.cyan_600,
-                      }}
-                      onPress={() => postWaterTankHeightSettings()}>
-                      <Text style={{...FONTS.h3, color: COLORS.white}}>
-                        Submit
-                      </Text>
-                    </TouchableOpacity>
+                          borderWidth: null,
+                          borderRadius: null,
+                          backgroundColor: COLORS.lightGray1,
+                          minHeight: 35,
+                        }}
+                        dropDownContainerStyle={{
+                          borderWidth: null,
+                          borderRadius: null,
+                          backgroundColor: COLORS.lightGray2,
+                        }}
+                        placeholder="Unit"
+                        open={open}
+                        value={value}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        zIndex={1000}
+                        listMode="SCROLLVIEW"
+                        onSelectItem={value => {
+                          setUnit(value.label);
+                        }}
+                        onChangeValue={val => {
+                          if (val == 0) {
+                            setUnit('CM');
+                          } else {
+                            setUnit('Meter');
+                          }
+                        }}
+                      />
+                    </View>
                   </View>
-                  {/* <TextInput
+                </>
+              ) : (
+                <View
+                  style={{
+                    flex:1,
+                    marginTop: SIZES.body2,
+                  }}>
+                  <Text
                     style={{
-                      width: '40%',
-                      height: 25,
-                      // position: 'absolute',
-                      top: SIZES.body1 * 1.7,
-                      alignSelf:'center'
-                    }}
-                    value={autoHeight.toString()}
-                    editable={false}
-                    mode="outlined" 
-                    label="Tank height"
-                    // onChangeText={value => {
-                    //   setTankHeight(value);
-                    // }}
-                  /> */}
+                      ...FONTS.body3,
+                      color: COLORS.darkGray,
+                      textAlign: 'center',
+                    }}>
+                    Please make sure that tank is empty {'\n'} if empty
+                  </Text>
+                  <View
+                    style={{
+                      borderWidth: 0.2,
+                      alignSelf: 'center',
+                      elevation: 2,
+                      borderColor: COLORS.white,
+                      marginTop: SIZES.body1 * 0.5,
+                      padding: SIZES.base * 0.5,
+                    }}>
+                    <Text
+                      style={{
+                        ...FONTS.body3,
+                        color: COLORS.darkGray,
+                        textAlign: 'center',
+                      }}>
+                      Height Calculated{'\n'}{' '}
+                      {parseFloat(autoHeight).toFixed(2)} cm
+                    </Text>
+                  </View>
                 </View>
               )}
-            </View>
-            {isEnabledManually ? (
               <TouchableOpacity
                 style={{
-                  marginTop: 10,
-                  // backgroundColor: COLORS.blue_600,
+                  alignSelf: 'center',
+                  marginTop: isEnabledManually ? SIZES.body1 * 3 : SIZES.body1,
+                  padding: SIZES.base * 0.5,
+                  paddingHorizontal: SIZES.width*0.3,
+                  // paddingHorizontal: SIZES.body1 * 3,
+                  borderRadius: SIZES.base * 0.5,
                   backgroundColor: COLORS.cyan_600,
-                  borderRadius: SIZES.body4 * 0.5,
-                  alignItems: 'center',
-                  padding: 5,
                 }}
                 onPress={() => postWaterTankHeightSettings()}>
                 <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
               </TouchableOpacity>
-            ) : null}
+            </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
     );
   }
@@ -1385,8 +1297,12 @@ const Settings = ({navigation}) => {
   }
 
   return (
+    <>
     <ScrollView
       style={{margin: 10}}
+      contentContainerStyle={{
+        flexGrow: 1,
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
@@ -1401,7 +1317,10 @@ const Settings = ({navigation}) => {
       <Notification />
       {/* //saurabh */}
       {renderPersentModal()}
-      {renderTankHeightModal()}
+     
+ 
+    
+  
       {renderOprationalLayout()}
       {logoutLayout()}
       {isSourceOne && renderSourceOne()}
@@ -1415,6 +1334,8 @@ const Settings = ({navigation}) => {
         message={mssg}
       />
     </ScrollView>
+         {renderTankHeightModal()}    
+    </>
   );
 };
 

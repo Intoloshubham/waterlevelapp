@@ -12,6 +12,7 @@ import {COLORS, FONTS, icons, SIZES} from '../constants';
 import {TextInput, Divider} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const WaterUses = () => {
   const [usesDetail, setUsesDetail] = useState(false);
@@ -22,13 +23,22 @@ const WaterUses = () => {
   const [cylinderShape, setCylinderShape] = useState(false);
   const [cuboidalShape, setCuboidalShape] = useState(false);
 
+
+  const [unit, setUnit] = useState('CM');
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+
+  const [items, setItems] = useState([
+    {label: 'CM', value: '0'},
+    {label: 'Meter', value: '1'},
+  ]);
+
   function renderUsesDetailsModel() {
     return (
       <Modal animationType="slide" transparent={true} visible={usesDetail}>
         <KeyboardAwareScrollView
           contentContainerStyle={{flexGrow: 1}}
-          keyboardShouldPersistTaps="handled"
-          >
+          keyboardShouldPersistTaps="handled">
           <View
             style={{
               flex: 1,
@@ -84,9 +94,9 @@ const WaterUses = () => {
               </View>
               <View
                 style={{
-                  borderWidth: 1,
                   marginTop: SIZES.base,
                   padding: SIZES.base,
+                  borderWidth: 1,
                   borderRadius: SIZES.base * 0.5,
                   borderColor: COLORS.cyan_600,
                   flexDirection: 'row',
@@ -159,6 +169,62 @@ const WaterUses = () => {
                       Cuboidal
                     </Text>
                   </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                <View
+                  style={{
+                    width: '100%',
+
+                    marginTop: SIZES.base,
+                  }}>
+                  <DropDownPicker
+                    style={{
+                      // borderWidth: null,
+                      // borderRadius: null,
+                      // backgroundColor: COLORS.lightGray1,
+                      
+                      minHeight: 35,
+                      width:'100%',
+                      borderWidth: 1,
+                      borderRadius: SIZES.base * 0.5,
+                      borderColor: COLORS.cyan_600,
+                      padding: SIZES.base,
+                      color:COLORS.gray        
+                    }}
+                    dropDownContainerStyle={{
+                      borderWidth: null,
+                      borderRadius: null,
+                      backgroundColor: COLORS.lightGray2,                      
+                      ...FONTS.body3,           
+                      color:COLORS.gray,
+                      padding: SIZES.base                      
+                    }}
+                    placeholderStyle={{
+                      color:COLORS.gray,
+                      placeholderTextColor:COLORS.gray
+                    }}
+                  
+                    placeholder="Unit"
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                    zIndex={1000}
+                    listMode="SCROLLVIEW"
+                    onSelectItem={value => {
+                      setUnit(value.label);
+                    }}
+                    onChangeValue={val => {
+                      if (val == 0) {
+                        setUnit('CM');
+                      } else {
+                        setUnit('Meter');
+                      }
+                    }}
+                  />
                 </View>
               </View>
 
@@ -250,14 +316,14 @@ const WaterUses = () => {
 
   function usesDashboard() {
     return (
-      <View style={{ alignItems: 'center'}}>
+      <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           style={{
             // backgroundColor: COLORS.blue_500,
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 4,            
+            paddingHorizontal: SIZES.body1 * 4,
             paddingVertical: SIZES.base,
           }}
           onPress={() => {
@@ -283,15 +349,14 @@ const WaterUses = () => {
             elevation: 1,
             marginTop: SIZES.base,
             backgroundColor: COLORS.white,
-          }}>
-        </View>
+          }}></View>
       </View>
     );
   }
 
   return (
     <View style={{}}>
-      <View style={{ marginTop: SIZES.body1}}>{usesDashboard()}</View>
+      <View style={{marginTop: SIZES.body1}}>{usesDashboard()}</View>
       {renderUsesDetailsModel()}
     </View>
   );

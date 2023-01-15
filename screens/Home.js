@@ -31,12 +31,13 @@ import {CustomSwitch} from '../componets';
 import {addMode} from '../redux/modeSlice';
 import socketIOClient from 'socket.io-client';
 import {addIntervalMode} from '../redux/intervalSlice';
+import {getData} from '../utils/localStorage';
 
 import {checkIfKeyExist} from '../utils/customFunctions';
 
-const END_POINT = 'http://192.168.0.117:8000';
+// const END_POINT = 'http://192.168.0.117:8000';
 
-let socket = socketIOClient(END_POINT);
+// let socket = socketIOClient(END_POINT);
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -44,8 +45,11 @@ const wait = timeout => {
 
 const Home = ({navigation}) => {
   let cls_interval;
-
+  let temp_storeRegistId;
+  let temp_product_name;
   let temp_registeredId = useSelector(state => state.product);
+
+   const [productName, setProductName] = useState('');
   const [registeredId, setRegisteredId] = useState(temp_registeredId);
 
   const interval = useSelector(state => state.intervalMode);
@@ -62,7 +66,6 @@ const Home = ({navigation}) => {
   const [switchValue, setSwitchValue] = useState(false);
   const [imageView, setImageView] = useState(false);
   let prevalue = 0;
-  // const [waterLevelStatus, setWaterLevelStatus] = useState(true);
   let overflowLevelStatus = true;
   let underFlowLevelStatus = true;
 
@@ -73,53 +76,72 @@ const Home = ({navigation}) => {
   //toggle
   const [isEnabled, setIsEnabled] = React.useState('');
 
+  const credFunc = async () => {
+    try {
+      
+      temp_storeRegistId = await getData('primary_product');
+
+      if (Object.keys(temp_registeredId).length === 0) {
+        return temp_storeRegistId;
+      } else {
+        return temp_registeredId.product_id;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const getStreamImage = async () => {
-    if (checkIfKeyExist(registeredId, 'product_id')) {
-      try {
-        if (registeredId.product_id) {
-          const res = await getImage(registeredId.product_id);
-          setStreamImage(res.image);
-          setDate(res.date);
-          setTime(res.time);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    // if (checkIfKeyExist(registeredId, 'product_id')) {
+    try {
+      // if (registeredId) {
+      const temp = await credFunc();
+      const res = await getImage(temp);
+      setStreamImage(res.image);
+      setDate(res.date);
+      setTime(res.time);
+      // }
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
 
   const fetchLedStatus = async () => {
-    if (checkIfKeyExist(registeredId, 'product_id')) {
-      try {
-        if (registeredId.product_id) {
-          const res = await getLEDStatus(registeredId.product_id);
-          if (res.data != null) {
-            setIsEnabled(res.data.led_status == 1 ? true : false);
-            if (waterLevelData.motor_notification == true) {
-            }
-          }
+    // if (checkIfKeyExist(registeredId, 'product_id')) {
+    try {
+      // if (registeredId) {
+      const temp = await credFunc();
+      const res = await getLEDStatus(temp);
+
+      if (res.data != null) {
+        setIsEnabled(res.data.led_status == 1 ? true : false);
+        if (waterLevelData.motor_notification == true) {
         }
-      } catch (error) {
-        console.log(error);
       }
+      // }
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
 
   const fetchSumpStatus = async () => {
-    if (checkIfKeyExist(registeredId, 'product_id')) {
-      try {
-        if (registeredId.product_id) {
-          const res = await getSUMPStatus(registeredId.product_id);
-          if (res.data != null) {
-            setSumpStatus(res.data.sump_status);
-          }
-        }
-      } catch (error) {
-        console.log(error);
+    // if (checkIfKeyExist(registeredId, 'product_id')) {
+    try {
+      // if (registeredId) {
+      const temp = await credFunc();
+      const res = await getSUMPStatus(temp);
+      if (res.data != null) {
+        setSumpStatus(res.data.sump_status);
       }
+      // }
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
 
   const getPrevWaterLevel = async () => {
@@ -136,51 +158,54 @@ const Home = ({navigation}) => {
   };
 
   const WaterLevel = async () => {
-    if (checkIfKeyExist(registeredId, 'product_id')) {
-      try {
-        const res = await getWaterLevel(registeredId.product_id);
-        if (res != undefined) {
-          if (
-            res.data.led_status == 1 &&
-            prevalue == res.data.water_level &&
-            resetStatus == true
-          ) {
-            // resetStatus = false;
-            setResetStatus(false);
+    // if (checkIfKeyExist(registeredId, 'product_id')) {
+    try {
+      const temp = await credFunc();
+
+      setRegisteredId(temp);
+      const res = await getWaterLevel(temp);
+      if (res != undefined) {
+        if (
+          res.data.led_status == 1 &&
+          prevalue == res.data.water_level &&
+          resetStatus == true
+        ) {
+          // resetStatus = false;
+          setResetStatus(false);
+          setWarningModal(true);
+        }
+
+        setSumpLevel(res.data.sump_level);
+        setLevel(res.data.water_level);
+        setPhValue(res.data.ph_level);
+
+        if (parseFloat(res.data.water_level) >= 90) {
+          if (overflowLevelStatus) {
             setWarningModal(true);
-          }
-
-          setSumpLevel(res.data.sump_level);
-          setLevel(res.data.water_level);
-          setPhValue(res.data.ph_level);
-
-          if (parseFloat(res.data.water_level) >= 90) {
-            if (overflowLevelStatus) {
-              setWarningModal(true);
-              overflowLevelStatus = false;
-              const formData = {led_status: 0};
-              const response = await postRemoteControl(
-                formData,
-                registeredId.product_id,
-              );
-            }
-          }
-
-          if (parseFloat(res.data.water_level) <= 20) {
-            if (underFlowLevelStatus) {
-              underFlowLevelStatus = false;
-              const formData = {led_status: 1};
-              const response = await postRemoteControl(
-                formData,
-                registeredId.product_id,
-              );
-            }
+            overflowLevelStatus = false;
+            const formData = {led_status: 0};
+            const response = await postRemoteControl(
+              formData,
+              registeredId.product_id,
+            );
           }
         }
-      } catch (error) {
-        console.log(error);
+
+        if (parseFloat(res.data.water_level) <= 20) {
+          if (underFlowLevelStatus) {
+            underFlowLevelStatus = false;
+            const formData = {led_status: 1};
+            const response = await postRemoteControl(
+              formData,
+              registeredId.product_id,
+            );
+          }
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -216,23 +241,30 @@ const Home = ({navigation}) => {
   }, []);
 
   React.useMemo(() => {
-    setRegisteredId(temp_registeredId);
-    if (interval.intervalMode === true) {
-      // timer.current =  setInterval(() => {
-      cls_interval = window.setInterval(() => {
-        WaterLevel();
-        getStreamImage();
-        fetchSumpStatus();
-        // getPrevWaterLevel();
-        socket.emit('join_room', 'fronte');
-        fetchLedStatus();
-      }, 4000);
+    (async () => {
+      temp_product_name = await getData('primary_product_name');
+      setProductName(temp_product_name);
+      let tc = await credFunc();
+      if (tc) setRegisteredId(tc);
+    })();
+    // console.log('temp_registeredId--', registeredId);
+    // if (interval.intervalMode === true) {
+    // timer.current =  setInterval(() => { 
+    cls_interval = window.setInterval(() => {
+      WaterLevel();
+      getStreamImage();
+      fetchSumpStatus();
+      // getPrevWaterLevel();
+      // socket.emit('join_room', 'fronte');
+      fetchLedStatus();
+    }, 4000);
 
-      return () => {
-        window.clearInterval(cls_interval);
-      };
-    }
+    return () => {
+      window.clearInterval(cls_interval);
+    };
+    // }
   }, [temp_registeredId, interval.intervalMode]);
+
 
   // useEffect(() => {
   //   await updateData(id, state, setState); // API call
@@ -367,17 +399,13 @@ const Home = ({navigation}) => {
             // onDoubleClick={()=>{setImageView(false)}}
           >
             <Image
-              resizeMode="center"
+              resizeMode="cover"
               style={{
-                // width: square == true ? '50%' : '50%',
-                // height: square == true ? '50%' : '50%',
-                marginTop: SIZES.height * 0.3,
-                height: square == true ? 260 : 200,
-                width: square == true ? 390 : 600,
-
+                width: square == true ? '98%' : '98%',
+                height: square == true ? '50%' : '50%',
+                marginTop: SIZES.height * 0.25,
                 alignSelf: 'center',
-
-                borderRadius: square == true ? 10 : 100,
+                borderRadius: 5,
                 borderWidth: 1,
                 borderColor: COLORS.black,
               }}
@@ -404,48 +432,39 @@ const Home = ({navigation}) => {
               style={{
                 flex: 1,
                 flexDirection: 'row',
-
-                marginTop: SIZES.body1 * 2.6,
-
-                // backgroundColor: COLORS.amber_300,
-                // elevation: 5
+                marginTop: SIZES.body1 * 2.6   
               }}>
               <View
-                style={{
-                  // flex: 1,
+                style={{             
                   flexDirection: 'row-reverse',
                   alignSelf: 'flex-end',
-
                   width: '5%',
                   elevation: 5,
                   height: `${parseInt(sumpLevel)}%`,
-                  backgroundColor: COLORS.blue_300,
-                  // padding: 10,
+                  backgroundColor: COLORS.blue_300, 
                   paddingHorizontal: 10,
-                  // paddingTop:15
-                  // marginTop:0
+          
                 }}></View>
-
               <View
-                style={{
-                  // flexDirection: 'row-reverse',
-                  alignSelf: 'flex-end', 
-
-                  // marginBottom:SIZES.base*0.5,
-                  height: `${21+parseInt(sumpLevel)}%`,
-                  // height: `${20 + sumpLevel}%`,                  
-                  // backgroundColor: COLORS.amber_300                  
+                style={{            
+                  alignSelf: 'flex-end',               
+                  height: `${21 + parseInt(sumpLevel)}%`,    
                 }}>
-                <Text style={{...FONTS.body5}}> {parseInt(sumpLevel)}%</Text>
+                <Text style={{...FONTS.body5}}>
+                  {' '}
+                  {sumpLevel ? parseInt(sumpLevel) : '0'}%
+                </Text>
               </View>
             </View>
             <Text
               style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 15}}>
               Sump{'\n'}Level
             </Text>
-          </View>
+          </View>       
+
           <View
             style={{
+              paddingHorizontal: 5,
               alignItems: 'center',
             }}>
             <Text
@@ -509,6 +528,7 @@ const Home = ({navigation}) => {
               (OverHead Tank)
             </Text>
           </View>
+          
           <View
             style={{
               justifyContent: 'flex-end',
@@ -716,7 +736,7 @@ const Home = ({navigation}) => {
           <Text style={{fontSize: 15, color: COLORS.darkGray}}>
             PH Value{' - '}
             {/* {Math.round(phValue)} */}
-            {phValue? parseFloat(phValue).toFixed(2):''}
+            {phValue ? parseFloat(phValue).toFixed(2) : ''}
           </Text>
           <View
             style={{
@@ -790,6 +810,9 @@ const Home = ({navigation}) => {
             marginBottom: 10,
             alignItems: 'center',
           }}>
+        
+          <Text style={{textAlign:'center',...FONTS.body2,color:COLORS.gray}}>{productName}</Text>
+   
           {/* <CustomSwitch
             selectionMode={0}
             roundCorner={true}
@@ -814,7 +837,7 @@ const Home = ({navigation}) => {
                 navigation.navigate('Remote Control');
               }, 700);
 
-              // postRemoteControlData(0);
+              // postRemoteControlData(0); 
             }}
             onSecondaryPress={() => {
               setMode(1);
