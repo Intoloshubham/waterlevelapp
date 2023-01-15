@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Pressable,
   BackHandler,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {FONTS, COLORS, icons, SIZES, images} from '../constants';
 import CheckBox from '@react-native-community/checkbox';
@@ -41,6 +42,7 @@ import {
   storeObjectData,
 } from '../utils/localStorage.js';
 import Notification from './Notification';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -80,6 +82,7 @@ const Settings = ({navigation}) => {
   const [waterLevelData, setWaterLevelData] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const [tankHeight, setTankHeight] = React.useState('');
+  const [sumpHeight, setSumpHeight] = React.useState('');
 
   const [autoHeight, setAutoHeight] = useState(0);
 
@@ -163,7 +166,6 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
-      console.log("🚀 ~ file: Settings.js:166 ~ postWaterLevelHeightSettings ~ response", response)
       if (response.status == 200) {
         alert(response.message);
         setPersentModal(false);
@@ -177,7 +179,6 @@ const Settings = ({navigation}) => {
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
       const response = await getWaterLevelSettings(registeredId.product_id);
-      console.log("🚀 ~ file: Settings.js:180 ~ fetchWaterLevelHeightSettings ~ response", response)
 
       if (response.status === 200 && response.data != null) {
         setWaterLevelData(response.data);
@@ -207,7 +208,6 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
-      console.log("🚀 ~ file: Settings.js:210 ~ postWaterTankHeightSettings ~ response", response)
 
       if (response.status === 200) {
         setSubmitToast(true);
@@ -234,7 +234,6 @@ const Settings = ({navigation}) => {
         formData,
         registeredId.product_id,
       );
-      console.log("🚀 ~ file: Settings.js:237 ~ postWaterSourceSetting ~ response", response)
     }
   };
 
@@ -510,7 +509,7 @@ const Settings = ({navigation}) => {
           </TouchableOpacity>
           <View
             style={{
-              height: '50%',
+              height:isEnabledManually?'65%': '50%',
               width: '90%',
               padding: 30,
               borderRadius: 10,
@@ -604,6 +603,7 @@ const Settings = ({navigation}) => {
             </View>
             <View style={{flex: 1, marginTop: SIZES.base * 3}}>
               {isEnabledManually ? (
+                <>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -661,6 +661,64 @@ const Settings = ({navigation}) => {
                     />
                   </View>
                 </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    marginTop: 10,
+                    marginBottom: 20,
+                  }}>
+                  <TextInput
+                    style={{
+                      width: '60%',
+                      height: 35,
+                    }}
+                    mode="outlined"
+                    label="Sump height"
+                    onChangeText={value => {
+                      // value == 0
+                      //   ? setTankHeight(value)
+                      //   : setTankHeight(parseFloat(value) * 100);
+                      setSumpHeight(parseFloat(value));
+                    }}
+                  />
+                  <View style={{width: '30%', marginTop: 5}}>
+                    <DropDownPicker
+                      style={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray1,
+                        minHeight: 35,
+                      }}
+                      dropDownContainerStyle={{
+                        borderWidth: null,
+                        borderRadius: null,
+                        backgroundColor: COLORS.lightGray2,
+                      }}
+                      placeholder="Unit"
+                      open={open}
+                      value={value}
+                      items={items}
+                      setOpen={setOpen}
+                      setValue={setValue}
+                      setItems={setItems}
+                      zIndex={1000}
+                      listMode="SCROLLVIEW"
+                      onSelectItem={value => {
+                        setUnit(value.label);
+                      }}
+                      onChangeValue={val => {
+                        if (val == 0) {
+                          setUnit('CM');
+                        } else {
+                          setUnit('Meter');
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+                </>
               ) : (
                 <View
                   style={{
@@ -758,7 +816,7 @@ const Settings = ({navigation}) => {
                         elevation: 5,
                         marginTop: SIZES.body1 * 0.5,
                         padding: SIZES.base * 0.5,
-                        paddingHorizontal: SIZES.body1,
+                        paddingHorizontal: SIZES.body1*3,
                         borderRadius: SIZES.base * 0.5,
                         backgroundColor: COLORS.cyan_600,
                       }}

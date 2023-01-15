@@ -6,7 +6,7 @@ import {postNotificationStatus} from '../controllers/NotificationController';
 import {useSelector} from 'react-redux';
 import {getWaterLevelSettings} from '../controllers/SettingsController';
 import PushNotification, {Importance} from 'react-native-push-notification';
-import {getObjectData} from '../utils/localStorage.js';
+import {getObjectData, getData} from '../utils/localStorage.js';
 
 PushNotification.configure({
   onRegister: function (token) {
@@ -37,8 +37,6 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
-
-
 const Notification = () => {
   const user = useSelector(state => state.userCreds);
   let user_id;
@@ -47,7 +45,9 @@ const Notification = () => {
   const credFunc = async () => {
     try {
       const temp_product_id = await getData('primary_product');
-      unique_id=temp_product_id;
+
+      unique_id = temp_product_id;
+
       let us_cred = await getObjectData('user_credentials');
 
       if (Object.keys(user).length === 0) {
@@ -68,9 +68,10 @@ const Notification = () => {
   const postNotificationSettings = async (type, status) => {
     const formData = {notification_type: type, status: status};
     const temp = await credFunc();
+
     user_id = temp;
-    const res = await postNotificationStatus(formData, unique_id);   
-    
+    const res = await postNotificationStatus(formData, unique_id);
+
     if (res != undefined)
       if (res.status == 200) {
         getNotificationSettings();
