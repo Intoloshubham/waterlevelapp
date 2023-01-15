@@ -166,15 +166,15 @@ const Settings = ({navigation}) => {
 
   const fetchWaterLevelHeightSettings = async () => {
     if (registeredId.hasOwnProperty('product_id')) {
-      const response = await getWaterLevelSettings(registeredId.product_id);    
+      const response = await getWaterLevelSettings(registeredId.product_id);
 
       if (response.status === 200 && response.data != null) {
         setWaterLevelData(response.data);
         setIsEnabledSource1(response.data.water_source_1);
         setIsEnabledSource2(response.data.water_source_2);
         setIsEnabledNotification(response.data.motor_notification);
-        setTempTankHeight(response.data.tank_height)
-       return response.data.tank_height;
+        setTempTankHeight(response.data.tank_height);
+        return response.data.tank_height;
       }
     }
   };
@@ -193,13 +193,12 @@ const Settings = ({navigation}) => {
       );
 
       if (response.status === 200) {
-        
         setValue('');
         setTankHeight('');
-        const temp=await fetchWaterLevelHeightSettings();
+        const temp = await fetchWaterLevelHeightSettings();
         setIsEnabledManually(false);
         __getWaterLevel();
-        let Oh = temp * (1 - waterLevel/100);                         
+        let Oh = temp * (1 - waterLevel / 100);
         setAutoHeight(Oh);
       }
     }
@@ -548,7 +547,7 @@ const Settings = ({navigation}) => {
                   setIsEnabledManually(false);
                   __getWaterLevel();
 
-                  let tcs = tempTankHeight * (1 - waterLevel/100);
+                  let tcs = tempTankHeight * (1 - waterLevel / 100);
                   setAutoHeight(tcs);
                 }}>
                 <TouchableOpacity
@@ -565,8 +564,8 @@ const Settings = ({navigation}) => {
                   onPress={() => {
                     setIsEnabledManually(false);
                     __getWaterLevel();
-                    fetchWaterLevelHeightSettings();      
-                    let tc = tempTankHeight * (1 - waterLevel/100);                 
+                    fetchWaterLevelHeightSettings();
+                    let tc = tempTankHeight * (1 - waterLevel / 100);
                     setAutoHeight(tc);
                   }}></TouchableOpacity>
                 <View style={{width: '90%'}}>
@@ -673,7 +672,8 @@ const Settings = ({navigation}) => {
                           color: COLORS.darkGray,
                           textAlign: 'center',
                         }}>
-                        Height Calculated{'\n'} {parseFloat(autoHeight).toFixed(2)} cm                     
+                        Height Calculated{'\n'}{' '}
+                        {parseFloat(autoHeight).toFixed(2)} cm
                       </Text>
                     </View>
                     <View
@@ -757,18 +757,20 @@ const Settings = ({navigation}) => {
                 </View>
               )}
             </View>
-           {isEnabledManually? <TouchableOpacity
-              style={{
-                marginTop: 10,
-                // backgroundColor: COLORS.blue_600,
-                backgroundColor: COLORS.cyan_600,
-                borderRadius: SIZES.body4 * 0.5,
-                alignItems: 'center',
-                padding: 5,
-              }}
-              onPress={() => postWaterTankHeightSettings()}>
-              <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
-            </TouchableOpacity>:null}
+            {isEnabledManually ? (
+              <TouchableOpacity
+                style={{
+                  marginTop: 10,
+                  // backgroundColor: COLORS.blue_600,
+                  backgroundColor: COLORS.cyan_600,
+                  borderRadius: SIZES.body4 * 0.5,
+                  alignItems: 'center',
+                  padding: 5,
+                }}
+                onPress={() => postWaterTankHeightSettings()}>
+                <Text style={{...FONTS.h3, color: COLORS.white}}>Submit</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
       </Modal>
