@@ -18,7 +18,7 @@ const RemoteControl = () => {
   let user_id;
   let us_cred;
   const dispatch = useDispatch();
-  const [mode, setMode] = React.useState('');
+  const [mode, setMode] = React.useState(0);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const user = useSelector(state => state.userCreds);
@@ -247,8 +247,8 @@ const RemoteControl = () => {
             trackColor={{false: '#767577', true: '#767577'}}
             thumbColor={isEnabled ? COLORS.blue_300 : COLORS.red}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={mode == 0 ? isEnabled : true}
+            value={mode == 1 ? isEnabled : true}
+            onValueChange={value => toggleSwitch(value)}
           />
         </View>
       </View>
