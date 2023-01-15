@@ -13,6 +13,8 @@ import {TextInput, Divider} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { getData } from '../utils/localStorage';
+// import {} from 
 
 const WaterUses = () => {
   const [usesDetail, setUsesDetail] = useState(false);
@@ -22,8 +24,7 @@ const WaterUses = () => {
   const [breadth, setBreadth] = useState('');
   const [cylinderShape, setCylinderShape] = useState(false);
   const [cuboidalShape, setCuboidalShape] = useState(false);
-
-
+  const [uniqueId, setUniqueId] = useState('')
   const [unit, setUnit] = useState('CM');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -33,9 +34,30 @@ const WaterUses = () => {
     {label: 'Meter', value: '1'},
   ]);
 
+  const credFunc = async () => {
+    try {
+
+      temp_storeRegistId = await getData('primary_product');
+      return temp_storeRegistId;
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+ const feedUsesData = async ()=>{
+  try {
+    const tc=await credFunc();
+    setUniqueId(tc);
+    const temp=await saveWaterUses();
+  } catch (error) {
+    console.log(error)
+  }
+ }
+
   function renderUsesDetailsModel() {
     return (
-      <Modal animationType="slide" transparent={true} visible={usesDetail}>
+      <Modal animationType="fade" transparent={true} visible={usesDetail}>
         <KeyboardAwareScrollView
           contentContainerStyle={{flexGrow: 1}}
           keyboardShouldPersistTaps="handled">
@@ -47,7 +69,7 @@ const WaterUses = () => {
             }}>
             <View
               style={{
-                marginTop: SIZES.height * 0.5,
+                marginTop: SIZES.height * 0.4,
                 height: '100%',
                 width: '100%',
                 borderTopEndRadius: SIZES.base,
@@ -80,7 +102,7 @@ const WaterUses = () => {
                   placeholder="No. of Users"
                   style={{
                     backgroundColor: COLORS.white2,
-                    placeholderTextColor: 'red',
+                    placeholderTextColor: COLORS.gray
                   }}
                   outlineColor={COLORS.cyan_600}
                   activeOutlineColor={COLORS.cyan_600}
@@ -123,8 +145,8 @@ const WaterUses = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-evenly',
                     alignItems: 'center',
-                    width: '50%',
-                    marginLeft: SIZES.body1 * 1,
+                    width: '55%',
+                    marginLeft: SIZES.body1 * 0.7,
                   }}>
                   <TouchableOpacity
                     style={{
@@ -132,7 +154,7 @@ const WaterUses = () => {
                       backgroundColor: cylinderShape
                         ? COLORS.cyan_600
                         : COLORS.transparentBlack2,
-                      width: '45%',
+                      width: '50%',
                       elevation: 0.2,
                     }}
                     onPress={() => {
@@ -154,7 +176,8 @@ const WaterUses = () => {
                         ? COLORS.cyan_600
                         : COLORS.transparentBlack2,
 
-                      width: '45%',
+                      width: '50%',
+                      left: SIZES.base * 0.5,
                       elevation: 1,
                     }}
                     onPress={() => {
@@ -171,61 +194,59 @@ const WaterUses = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View>
-                <View
-                  style={{
-                    width: '100%',
 
-                    marginTop: SIZES.base,
-                  }}>
-                  <DropDownPicker
-                    style={{
-                      // borderWidth: null,
-                      // borderRadius: null,
-                      // backgroundColor: COLORS.lightGray1,
-                      
-                      minHeight: 35,
-                      width:'100%',
-                      borderWidth: 1,
-                      borderRadius: SIZES.base * 0.5,
-                      borderColor: COLORS.cyan_600,
-                      padding: SIZES.base,
-                      color:COLORS.gray        
-                    }}
-                    dropDownContainerStyle={{
-                      borderWidth: null,
-                      borderRadius: null,
-                      backgroundColor: COLORS.lightGray2,                      
-                      ...FONTS.body3,           
-                      color:COLORS.gray,
-                      padding: SIZES.base                      
-                    }}
-                    placeholderStyle={{
-                      color:COLORS.gray,
-                      placeholderTextColor:COLORS.gray
-                    }}
-                  
-                    placeholder="Unit"
-                    open={open}
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    zIndex={1000}
-                    listMode="SCROLLVIEW"
-                    onSelectItem={value => {
-                      setUnit(value.label);
-                    }}
-                    onChangeValue={val => {
-                      if (val == 0) {
-                        setUnit('CM');
-                      } else {
-                        setUnit('Meter');
-                      }
-                    }}
-                  />
-                </View>
+              <View
+                style={{
+                  marginTop: SIZES.base,
+                }}>
+                <DropDownPicker
+                  style={{
+                    alignItems: 'center',
+                    width: '100%',
+                    borderWidth: 1,
+                    borderRadius: SIZES.base * 0.5,
+                    borderColor: COLORS.cyan_600,
+                    padding: SIZES.base,
+                    color: COLORS.gray,
+                  }}
+                  containerStyle={{
+                    color: COLORS.gray,
+                    zIndex: 1000,
+                  }}
+                  selectedItemContainerStyle={{
+                    color: COLORS.gray,
+                  }}
+                  dropDownContainerStyle={{
+                    borderWidth: null,
+                    borderRadius: null,
+                    backgroundColor: COLORS.lightGray2,
+                    alignSelf: 'center',
+                    margin: 5,
+                    color: COLORS.gray,
+                  }}
+                  placeholderStyle={{
+                    color: 'grey',
+                    fontWeight: 'bold',
+                  }}
+                  placeholder="Unit"
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  listMode="SCROLLVIEW"
+                  onSelectItem={value => {
+                    setUnit(value.label);
+                  }}
+                  onChangeValue={val => {
+                    if (val == 0) {
+                      setUnit('CM');
+                    } else {
+                      setUnit('Meter');
+                    }
+                  }}
+                />
               </View>
 
               {cylinderShape && cuboidalShape == false ? (
@@ -297,7 +318,11 @@ const WaterUses = () => {
                   elevation: 1,
                   backgroundColor: COLORS.cyan_600,
                   borderColor: COLORS.white,
-                }}>
+                }}
+                onPress={()=>{
+                  FeedUsesData()
+                }}
+                >
                 <Text
                   style={{
                     textAlign: 'center',
@@ -319,11 +344,10 @@ const WaterUses = () => {
       <View style={{alignItems: 'center'}}>
         <TouchableOpacity
           style={{
-            // backgroundColor: COLORS.blue_500,
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 4,
+            paddingHorizontal: SIZES.body1 * 3,
             paddingVertical: SIZES.base,
           }}
           onPress={() => {
