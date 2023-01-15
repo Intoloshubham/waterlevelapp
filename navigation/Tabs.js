@@ -2,6 +2,8 @@ import React from 'react';
 
 import {
   Image,
+  View,
+  Text,
   TouchableOpacity,
   Button,
   TouchableWithoutFeedback,
@@ -21,7 +23,6 @@ import {addIntervalMode} from '../redux/intervalSlice';
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
-
   const dispatch = useDispatch();
 
   return (
@@ -29,9 +30,8 @@ const Tabs = () => {
       <Tab.Screen
         name="Home"
         component={Home}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {       
-            // navigation.navigate("Products");
+        listeners={({navigation}) => ({
+          tabPress: e => {
             dispatch(
               addIntervalMode({
                 intervalMode: true,
@@ -55,18 +55,36 @@ const Tabs = () => {
               size={size}
             />
           ),
-          headerTitle: 'Smart Water Info',
-          headerTitleAlign: 'center',
+          headerTitle: 'Smart WaterInfo',
+          // headerTitleAlign: 'center',
           headerTitleStyle: {
             color: COLORS.cyan_700,
           },
+          headerRight: () => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginHorizontal: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: COLORS.blue,
+                  fontWeight: '500',
+                  textDecorationLine:'underline'
+                }}>
+                Intenics
+              </Text>
+            </View>
+          ),
         }}
       />
       <Tab.Screen
         name="Add Products"
         component={Products}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {       
+        listeners={({navigation}) => ({
+          tabPress: e => {
             // navigation.navigate("Products");
             dispatch(
               addIntervalMode({
