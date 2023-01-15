@@ -93,11 +93,28 @@ const UserlogOut = async inputs =>{
   }
 }
 
+const updateWaterLevel =async ()=>{ 
+  try {
+    const res=await fetch(API_URL+`water-level/${registeredId}`,{
+      method:'put',
+      headers:{
+        'Content-Type':'application/json'
+      }
+    });
+    const data=await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+} 
+
+
 export {
   postWaterLevelSettings,
   getWaterLevelSettings,
   postTankHeightSettings,
   postWaterSourceSettings,
   postMotorNotification,
-  UserlogOut
+  UserlogOut,
+  updateWaterLevel
 };

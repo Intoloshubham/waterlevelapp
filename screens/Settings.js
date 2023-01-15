@@ -21,6 +21,7 @@ import {
   postWaterSourceSettings,
   postMotorNotification,
   UserlogOut,
+  updateWaterLevel,
 } from '../controllers/SettingsController';
 import {getWaterLevel} from '../controllers/getImageController.js';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -141,6 +142,14 @@ const Settings = ({navigation}) => {
           return setWaterLevel(res.data.water_level);
         }
       }
+    }
+  };
+
+  const _updateWaterLevel = async () => {
+    try {
+      
+    } catch (error) {
+      console.log(error);
     }
   };
 
