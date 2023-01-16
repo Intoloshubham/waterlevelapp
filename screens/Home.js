@@ -458,8 +458,7 @@ const Home = ({navigation}) => {
                 </Text>
               </View>
             </View>
-            <Text
-              style={{fontSize: 14, color: COLORS.gray, marginRight: 15}}>
+            <Text style={{fontSize: 14, color: COLORS.gray, marginRight: 15}}>
               Sump{'\n'}Level
             </Text>
           </View>
@@ -594,10 +593,12 @@ const Home = ({navigation}) => {
             source={{uri: streamImage}}
             resizeMode={'stretch'}
             style={{
+
               height: square == true ? SIZES.height*0.25 : SIZES.height*0.25,
               width: square == true ? SIZES.width*0.9 : SIZES.width*0.52,           
               // height: square == true ? 200 : 200,
               // width: square == true ? 320 : 200,           
+
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
               borderWidth: 1,
@@ -822,7 +823,9 @@ const Home = ({navigation}) => {
               fontSize: 17,
               color: COLORS.gray,
             }}>
-            {productName.charAt(0).toUpperCase() + productName.slice(1)}
+            {productName
+              ? productName.charAt(0).toUpperCase() + productName.slice(1)
+              : ''}
           </Text>
 
           {/* <CustomSwitch

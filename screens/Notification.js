@@ -66,12 +66,9 @@ const Notification = () => {
   const [needCleaning, setNeedCleaning] = React.useState(false);
 
   const postNotificationSettings = async (type, status) => {
+    await credFunc();
     const formData = {notification_type: type, status: status};
-    const temp = await credFunc();
-
-    user_id = unique_id;
     const res = await postNotificationStatus(formData, unique_id);
-
     if (res != undefined)
       if (res.status == 200) {
         getNotificationSettings();
@@ -79,9 +76,7 @@ const Notification = () => {
   };
 
   const getNotificationSettings = async () => {
-    const temp = await credFunc();
-    user_id = temp;
-    const res = await getWaterLevelSettings(user_id);
+    const res = await getWaterLevelSettings(unique_id);
 
     if (res.status === 200) {
       setUses(res.data.uses_notification);

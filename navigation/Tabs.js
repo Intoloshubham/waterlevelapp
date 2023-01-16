@@ -1,23 +1,18 @@
 import React from 'react';
-
-import {
-  Image,
-  View,
-  Text,
-  TouchableOpacity,
-  Button,
-  TouchableWithoutFeedback,
-  Pressable,
-  TouchableHighlight,
-} from 'react-native';
-
+import {Image, View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Home, Settings, RemoteControl, Products, WaterUses} from '../screens';
+import {
+  Home,
+  Settings,
+  Products,
+  WaterUses,
+  ShowNotification,
+} from '../screens';
 import {COLORS, icons} from '../constants';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {addIntervalMode} from '../redux/intervalSlice';
 
 const Tab = createBottomTabNavigator();
@@ -55,31 +50,30 @@ const Tabs = () => {
               size={size}
             />
           ),
-          headerTitle: 'Smart WaterInfo',
-          // headerTitleAlign: 'center',
-          headerTitleStyle: {
-            color: COLORS.cyan_700,
-          },
-          headerRight: () => (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginHorizontal: 10,
-              }}>
+          headerTitle: () => (
+            <View style={{alignItems: 'center'}}>
               <Text
                 style={{
                   fontSize: 18,
-                  color: COLORS.blue,
+                  color: COLORS.cyan_700,
                   fontWeight: '500',
-                  textDecorationLine:'underline'
                 }}>
                 Intenics
               </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: COLORS.cyan_700,
+                  fontWeight: '500',
+                }}>
+                Smart WaterInfo
+              </Text>
             </View>
           ),
+          headerTitleAlign: 'center',
         }}
       />
+
       <Tab.Screen
         name="Add Products"
         component={Products}
@@ -95,13 +89,11 @@ const Tabs = () => {
         })}
         options={{
           tabBarLabel: 'Product List',
-
           tabBarLabelStyle: {
             marginBottom: 5,
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
-
           tabBarIcon: ({color, size}) => (
             <Image
               resizeMode="contain"
@@ -137,21 +129,22 @@ const Tabs = () => {
           headerShown: false,
         }}
       /> */}
+      
       <Tab.Screen
-        name="Water Uses"
-        component={WaterUses}
+        name="Notification"
+        component={ShowNotification}
         options={{
-          tabBarLabel: 'Water Uses',
+          tabBarLabel: 'Notification',
           tabBarLabelStyle: {
             marginBottom: 5,
             fontSize: 12,
             color: COLORS.true_gray_800,
           },
           tabBarIcon: ({color, size}) => (
-            <FontAwesome5
-              name="hand-holding-water"
+            <MaterialCommunityIcons
+              name="bell"
               color={COLORS.cyan_600}
-              size={20}
+              size={size}
             />
           ),
           headerShown: false,
@@ -171,7 +164,6 @@ const Tabs = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="settings" color={COLORS.cyan_600} size={20} />
           ),
-
           headerShown: false,
         }}
       />
