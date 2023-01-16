@@ -129,9 +129,9 @@ const Tabs = () => {
           headerShown: false,
         }}
       /> */}
-      
+
       <Tab.Screen
-        name="Notification"
+        name="Notifications"
         component={ShowNotification}
         options={{
           tabBarLabel: 'Notification',
@@ -147,7 +147,7 @@ const Tabs = () => {
               size={size}
             />
           ),
-          headerShown: false,
+          headerShown: true,
         }}
       />
 

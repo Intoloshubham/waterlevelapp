@@ -160,7 +160,7 @@ const RemoteControl = () => {
               marginHorizontal: SIZES.base,
             }}>
             <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-              Sump Pump {'{ Source-I }'}
+              Sump Pump <Text style={{...FONTS.h4}}>(Source-1)</Text>
             </Text>
             <View
               style={{
@@ -205,7 +205,7 @@ const RemoteControl = () => {
                 fontWeight: '600',
                 color: COLORS.white,
               }}>
-              Bore Pump {'{ Source-II }'}
+              Bore Pump <Text style={{...FONTS.h4}}>(Source-2)</Text>
             </Text>
             <View
               style={{
@@ -251,7 +251,7 @@ const RemoteControl = () => {
             marginHorizontal: SIZES.base,
           }}>
           <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-            Manually Motor ON/OFF
+            Manually Motor On/Off
           </Text>
           <Switch
             trackColor={{false: '#767577', true: '#767577'}}
