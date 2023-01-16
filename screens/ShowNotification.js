@@ -43,7 +43,6 @@ const Notification = ({title, message, icon}) => {
 
 const ShowNotification = () => {
   const [refreshing, setRefreshing] = React.useState(false);
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -52,6 +51,7 @@ const ShowNotification = () => {
     }, 2000);
   }, []);
 
+  
   let unique_id;
 
   const credFunc = async () => {
