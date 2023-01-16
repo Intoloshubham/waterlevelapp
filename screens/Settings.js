@@ -45,6 +45,7 @@ import {
 } from '../utils/localStorage.js';
 import Notification from './Notification';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import WaterUses from './WaterUses';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -1322,6 +1323,7 @@ const Settings = ({navigation}) => {
         {renderPersentModal()}
 
         {renderOprationalLayout()}
+        <WaterUses />
         {logoutLayout()}
         {isSourceOne && renderSourceOne()}
         {isSourceTwo && renderSourceTwo()}

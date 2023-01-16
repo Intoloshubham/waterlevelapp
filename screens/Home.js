@@ -613,11 +613,12 @@ const Home = ({navigation}) => {
             source={streamImage ? {uri: streamImage} : images.image_not_found1}
             resizeMode={'stretch'}
             style={{
-              height:
-                square == true ? SIZES.height * 0.25 : SIZES.height * 0.25,
-              width: square == true ? SIZES.width * 0.9 : SIZES.width * 0.52,
+
+              height: square == true ? SIZES.height*0.25 : SIZES.height*0.25,
+              width: square == true ? SIZES.width*0.9 : SIZES.width*0.52,           
               // height: square == true ? 200 : 200,
-              // width: square == true ? 320 : 200,
+              // width: square == true ? 320 : 200,           
+
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
               // borderWidth: 1,
