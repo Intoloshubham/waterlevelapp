@@ -397,13 +397,16 @@ const Home = ({navigation}) => {
             // onDoubleClick={()=>{setImageView(false)}}
           >
             <Image
-              resizeMode="cover"
+              resizeMode="cover" 
+              // resizeMode="cover" 
               style={{
                 // width: square == true ? '98%' : '98%',
                 // height: square == true ? '50%' : '50%',
-                width: square == true ? '98%' : '98%',
-                height: square == true ? '50%' : '50%',
-                marginTop: SIZES.height * 0.25,
+                width: square == true ? SIZES.width*0.99 : SIZES.width*0.99,
+                
+                height: square == true ?SIZES.height*0.33 : SIZES.height*0.33,
+           
+                marginTop: SIZES.height * 0.3,
                 alignSelf: 'center',
                 borderRadius: 5,
                 borderWidth: 1,
@@ -449,7 +452,7 @@ const Home = ({navigation}) => {
                   alignSelf: 'flex-end',
                   height: `${21 + parseInt(sumpLevel)}%`,
                 }}>
-                <Text style={{...FONTS.body5}}>
+                <Text style={{...FONTS.body5,right:25}}> 
                   {' '}
                   {sumpLevel ? parseInt(sumpLevel) : '0'}%
                 </Text>
@@ -591,8 +594,10 @@ const Home = ({navigation}) => {
             source={{uri: streamImage}}
             resizeMode={'stretch'}
             style={{
-              height: square == true ? 150 : 150,
-              width: square == true ? 300 : 150,           
+              height: square == true ? SIZES.height*0.25 : SIZES.height*0.25,
+              width: square == true ? SIZES.width*0.9 : SIZES.width*0.52,           
+              // height: square == true ? 200 : 200,
+              // width: square == true ? 320 : 200,           
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
               borderWidth: 1,
@@ -769,7 +774,7 @@ const Home = ({navigation}) => {
   }
 
   return (
-    <View style={{flex: 1, margin: 10}}>
+    <View style={{flex: 1, margin: 8}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -805,7 +810,7 @@ const Home = ({navigation}) => {
           style={{
             alignSelf: 'center',
             flexDirection: 'row',
-            // marginBottom: 10,
+            marginBottom: 5,
             // padding: 5,
 
             // backgroundColor:'red',
@@ -813,7 +818,6 @@ const Home = ({navigation}) => {
           }}>
           <Text
             style={{
-              flex: 0.5,
               textAlign: 'center',
               fontSize: 17,
               color: COLORS.gray,
