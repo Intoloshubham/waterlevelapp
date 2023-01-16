@@ -452,7 +452,7 @@ const Home = ({navigation}) => {
                   alignSelf: 'flex-end',
                   height: `${21 + parseInt(sumpLevel)}%`,
                 }}>
-                <Text style={{...FONTS.body5,right:25}}> 
+                <Text style={{fontSize:12,right:23,color:COLORS.gray}}> 
                   {' '}
                   {sumpLevel ? parseInt(sumpLevel) : '0'}%
                 </Text>
