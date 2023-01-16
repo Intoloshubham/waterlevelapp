@@ -362,28 +362,27 @@ const WaterUses = () => {
 
   function usesDashboard() {
     return (
-      <View style={{alignItems: 'center'}}>
+      <View style={{}}>
         <TouchableOpacity
           style={{
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 3,
-            paddingVertical: SIZES.base,
+            padding:15
           }}
           onPress={() => {
             setUsesDetail(true);
           }}>
           <Text
             style={{
-              ...FONTS.h3,
+              ...FONTS.h2,
               color: COLORS.white,
-              textAlign: 'center',
+              // textAlign: 'center',
             }}>
             Add Water Uses
           </Text>
         </TouchableOpacity>
-        <View
+        {/* <View
           style={{
             height: '25%',
             width: '95%',
@@ -394,14 +393,14 @@ const WaterUses = () => {
             elevation: 1,
             marginTop: SIZES.base,
             backgroundColor: COLORS.white,
-          }}></View>
+          }}></View> */}
       </View>
     );
   }
 
   return (
     <View style={{}}>
-      <View style={{marginTop: SIZES.body1}}>{usesDashboard()}</View>
+      <View style={{marginTop:10}}>{usesDashboard()}</View>
       {renderUsesDetailsModel()}
     </View>
   );

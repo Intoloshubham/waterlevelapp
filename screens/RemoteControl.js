@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {View, Text, Switch} from 'react-native';
 import {FONTS, COLORS, SIZES} from '../constants';
 import {postRemoteControl} from '../controllers/RemoteControlController';
@@ -10,27 +10,27 @@ import {
   getSumpStatus,
   postBoreStatus,
   postSumpStatus,
+  updateMotorStatus,
 } from '../controllers/PumpController';
 import {useSelector} from 'react-redux';
-import { getObjectData } from '../utils/localStorage';
+import {getObjectData, getData} from '../utils/localStorage';
 
 const RemoteControl = () => {
   let user_id;
+  let unique_id;
   let us_cred;
   const dispatch = useDispatch();
   const [mode, setMode] = React.useState(0);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const user = useSelector(state => state.userCreds);
-  
-  
 
   const credFunc = async () => {
     try {
-      // lg_tkn = await getData('login_token');
+      unique_id = await getData('primary_product');
       us_cred = await getObjectData('user_credentials');
-      user_id=us_cred._id;
-  
+      user_id = us_cred._id;
+
       if (Object.keys(user).length === 0) {
         // userId = us_cred._id;
         return us_cred._id;
@@ -85,37 +85,47 @@ const RemoteControl = () => {
   //saurabh
   //sump pump
   const postSump = async status => {
+    await credFunc();
     const formData = {
       sump_status: status,
     };
-    const res = await postSumpStatus(formData, user_id);
+    const res = await updateMotorStatus(formData, unique_id);
     if (res.status == 200) {
       getSump();
     }
   };
 
   const getSump = async () => {
-    const res = await getSumpStatus(user_id);
-    if (res.data.sump_status === 1) {
-      setSump(true);
+    await credFunc();
+    const res = await getSumpStatus(unique_id);
+    if (res.status === 200) {
+      setSump(res.data.sump_status);
+      if (res.data.sump_status) {
+        setIsEnabled(true);
+      }
     }
   };
 
   //bore pump
   const postBore = async status => {
+    await credFunc();
     const formData = {
       bore_status: status,
     };
-    const res = await postBoreStatus(formData, user_id);
+    const res = await updateMotorStatus(formData, unique_id);
     if (res.status == 200) {
       getBore();
     }
   };
 
   const getBore = async () => {
-    const res = await getBoreStatus(user_id);
-    if (res.data.bore_status === 1) {
-      setBore(true);
+    await credFunc();
+    const res = await getBoreStatus(unique_id);
+    if (res.status === 200) {
+      setBore(res.data.bore_status);
+      if (res.data.bore_status) {
+        setIsEnabled(true);
+      }
     }
   };
 
@@ -247,8 +257,10 @@ const RemoteControl = () => {
             trackColor={{false: '#767577', true: '#767577'}}
             thumbColor={isEnabled ? COLORS.blue_300 : COLORS.red}
             ios_backgroundColor="#3e3e3e"
-            value={mode == 1 ? isEnabled : true}
-            onValueChange={value => toggleSwitch(value)}
+            value={isEnabled}
+            onValueChange={value => {
+              toggleSwitch(value);
+            }}
           />
         </View>
       </View>
@@ -258,7 +270,7 @@ const RemoteControl = () => {
   return (
     <View style={{marginBottom: 10}}>
       {renderManuallyOnOffMotor()}
-      {mode == 1 && renderSourceRemote()}
+      {isEnabled == true && renderSourceRemote()}
     </View>
   );
 };

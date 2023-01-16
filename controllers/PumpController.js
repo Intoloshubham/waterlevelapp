@@ -43,6 +43,20 @@ const postBoreStatus = async (inputs, id) => {
   }
 };
 
+const updateMotorStatus = async (inputs, id) => {
+  try {
+    const resp = await fetch(`${API_URL}update-motor-status/` + id, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(inputs),
+    });
+    const temp = await resp.json();
+    return temp;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getBoreStatus = async id => {
   try {
     const res = await fetch(API_URL + `bore-status/` + id, {
@@ -58,4 +72,4 @@ const getBoreStatus = async id => {
   }
 };
 
-export {postSumpStatus, getSumpStatus, postBoreStatus, getBoreStatus};
+export {postSumpStatus, getSumpStatus, postBoreStatus, getBoreStatus,updateMotorStatus};
