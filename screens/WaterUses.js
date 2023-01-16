@@ -23,7 +23,6 @@ const WaterUses = () => {
   const [cylinderShape, setCylinderShape] = useState(false);
   const [cuboidalShape, setCuboidalShape] = useState(false);
 
-
   const [unit, setUnit] = useState('CM');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -183,28 +182,27 @@ const WaterUses = () => {
                       // borderWidth: null,
                       // borderRadius: null,
                       // backgroundColor: COLORS.lightGray1,
-                      
+
                       minHeight: 35,
-                      width:'100%',
+                      width: '100%',
                       borderWidth: 1,
                       borderRadius: SIZES.base * 0.5,
                       borderColor: COLORS.cyan_600,
                       padding: SIZES.base,
-                      color:COLORS.gray        
+                      color: COLORS.gray,
                     }}
                     dropDownContainerStyle={{
                       borderWidth: null,
                       borderRadius: null,
-                      backgroundColor: COLORS.lightGray2,                      
-                      ...FONTS.body3,           
-                      color:COLORS.gray,
-                      padding: SIZES.base                      
+                      backgroundColor: COLORS.lightGray2,
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                      padding: SIZES.base,
                     }}
                     placeholderStyle={{
-                      color:COLORS.gray,
-                      placeholderTextColor:COLORS.gray
+                      color: COLORS.gray,
+                      placeholderTextColor: COLORS.gray,
                     }}
-                  
                     placeholder="Unit"
                     open={open}
                     value={value}
@@ -316,29 +314,27 @@ const WaterUses = () => {
 
   function usesDashboard() {
     return (
-      <View style={{alignItems: 'center'}}>
+      <View style={{}}>
         <TouchableOpacity
           style={{
-            // backgroundColor: COLORS.blue_500,
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 4,
-            paddingVertical: SIZES.base,
+            padding: 15,
           }}
           onPress={() => {
             setUsesDetail(true);
           }}>
           <Text
             style={{
-              ...FONTS.h3,
+              ...FONTS.h2,
               color: COLORS.white,
-              textAlign: 'center',
+              // textAlign: 'center',
             }}>
             Add Water Uses
           </Text>
         </TouchableOpacity>
-        <View
+        {/* <View
           style={{
             height: '25%',
             width: '95%',
@@ -349,14 +345,14 @@ const WaterUses = () => {
             elevation: 1,
             marginTop: SIZES.base,
             backgroundColor: COLORS.white,
-          }}></View>
+          }}></View> */}
       </View>
     );
   }
 
   return (
     <View style={{}}>
-      <View style={{marginTop: SIZES.body1}}>{usesDashboard()}</View>
+      <View style={{marginTop:10}}>{usesDashboard()}</View>
       {renderUsesDetailsModel()}
     </View>
   );

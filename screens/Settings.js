@@ -44,6 +44,7 @@ import {
 } from '../utils/localStorage.js';
 import Notification from './Notification';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import WaterUses from './WaterUses';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -490,11 +491,10 @@ const Settings = ({navigation}) => {
     return (
       <Modal animationType="fade" transparent={true} visible={tankHeightModal}>
         <KeyboardAwareScrollView
-          // enableOnAndroid={true}  
- 
+          // enableOnAndroid={true}
+
           keyboardShouldPersistTaps={'handled'}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      
           contentContainerStyle={{
             flexGrow: 1,
             alignItems: 'center',
@@ -520,10 +520,10 @@ const Settings = ({navigation}) => {
               backgroundColor: COLORS.white,
             }}>
             <View
-              style={{                
-                flex:1,
+              style={{
+                flex: 1,
                 alignItems: 'center',
-                justifyContent: 'space-evenly'
+                justifyContent: 'space-evenly',
               }}>
               <Pressable
                 style={{
@@ -725,7 +725,7 @@ const Settings = ({navigation}) => {
               ) : (
                 <View
                   style={{
-                    flex:1,
+                    flex: 1,
                     marginTop: SIZES.body2,
                   }}>
                   <Text
@@ -762,7 +762,7 @@ const Settings = ({navigation}) => {
                   alignSelf: 'center',
                   marginTop: isEnabledManually ? SIZES.body1 * 3 : SIZES.body1,
                   padding: SIZES.base * 0.5,
-                  paddingHorizontal: SIZES.width*0.3,
+                  paddingHorizontal: SIZES.width * 0.3,
                   // paddingHorizontal: SIZES.body1 * 3,
                   borderRadius: SIZES.base * 0.5,
                   backgroundColor: COLORS.cyan_600,
@@ -1298,43 +1298,41 @@ const Settings = ({navigation}) => {
 
   return (
     <>
-    <ScrollView
-      style={{margin: 10}}
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      showsVerticalScrollIndicator={false}>
-      {renderTankHeight()}
-      <RemoteControl />
-      {renderSwitchOnOffSettings()}
-      {renderWaterSource()}
-      {renderLeakage()}
-      {/* {renderOtherSettings()} */}
-      {/* //saurabh */}
-      <Notification />
-      {/* //saurabh */}
-      {renderPersentModal()}
-     
- 
-    
-  
-      {renderOprationalLayout()}
-      {logoutLayout()}
-      {isSourceOne && renderSourceOne()}
-      {isSourceTwo && renderSourceTwo()}
-      {renderVersion()}
-      <CustomToast
-        isVisible={submitToast}
-        onClose={() => setSubmitToast(false)}
-        color={statusCode == 200 ? COLORS.green : COLORS.red}
-        title={statusCode == 200 ? 'Logout' : 'Something Went Wrong'}
-        message={mssg}
-      />
-    </ScrollView>
-         {renderTankHeightModal()}    
+      <ScrollView
+        style={{margin: 10}}
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}>
+        {renderTankHeight()}
+        <RemoteControl />
+        {renderSwitchOnOffSettings()}
+        {renderWaterSource()}
+        {renderLeakage()}
+        {/* {renderOtherSettings()} */}
+        {/* //saurabh */}
+        <Notification />
+        {/* //saurabh */}
+        {renderPersentModal()}
+
+        {renderOprationalLayout()}
+        <WaterUses />
+        {logoutLayout()}
+        {isSourceOne && renderSourceOne()}
+        {isSourceTwo && renderSourceTwo()}
+        {renderVersion()}
+        <CustomToast
+          isVisible={submitToast}
+          onClose={() => setSubmitToast(false)}
+          color={statusCode == 200 ? COLORS.green : COLORS.red}
+          title={statusCode == 200 ? 'Logout' : 'Something Went Wrong'}
+          message={mssg}
+        />
+      </ScrollView>
+      {renderTankHeightModal()}
     </>
   );
 };
