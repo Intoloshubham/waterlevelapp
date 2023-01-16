@@ -56,9 +56,12 @@ const Settings = ({navigation}) => {
   // const { setToken } = React.useContext(Auth)
   let lg_tkn;
   let us_cred;
+  let temp_storeRegistId;
 
   const credFunc = async () => {
     try {
+      temp_storeRegistId = await getData('primary_product');
+
       lg_tkn = await getData('login_token');
       us_cred = await getObjectData('user_credentials');
       return {lg_tkn, us_cred};
@@ -80,6 +83,7 @@ const Settings = ({navigation}) => {
   const [submitToast, setSubmitToast] = React.useState(false);
   const [mssg, setMssg] = useState('');
   const [statusCode, setStatusCode] = useState('');
+  const [respTitle, setRespTitle] = useState('');
 
   const [waterLevelData, setWaterLevelData] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
@@ -140,15 +144,16 @@ const Settings = ({navigation}) => {
   ]);
 
   const __getWaterLevel = async () => {
-    if (registeredId.hasOwnProperty('product_id')) {
-      if (registeredId.product_id) {
-        const res = await getWaterLevel(registeredId.product_id);
+    // if (registeredId.hasOwnProperty('product_id')) {
+    // if (registeredId.product_id) {
+    await credFunc();
+    const res = await getWaterLevel(temp_storeRegistId);
 
-        if (res.data != null) {
-          return setWaterLevel(res.data.water_level);
-        }
-      }
+    if (res.data != null) {
+      return setWaterLevel(res.data.water_level);
     }
+    // }
+    // }
   };
 
   // const _updateWaterLevel = async () => {
@@ -159,82 +164,81 @@ const Settings = ({navigation}) => {
   // };
 
   const postWaterLevelHeightSettings = async () => {
-    if (registeredId.hasOwnProperty('product_id')) {
-      const formData = {
-        start_level: minimumPersent,
-        stop_level: maximumPersent,
-      };
-      const response = await postWaterLevelSettings(
-        formData,
-        registeredId.product_id,
-      );
-      if (response.status == 200) {
-        alert(response.message);
-        setPersentModal(false);
-        fetchWaterLevelHeightSettings();
-      } else {
-        alert(response.message);
-      }
+    // if (registeredId.hasOwnProperty('product_id')) {
+    await credFunc();
+    const formData = {
+      start_level: minimumPersent,
+      stop_level: maximumPersent,
+    };
+    const response = await postWaterLevelSettings(formData, temp_storeRegistId);
+    if (response.status == 200) {
+      alert(response.message);
+      setPersentModal(false);
+      fetchWaterLevelHeightSettings();
+    } else {
+      alert(response.message);
     }
+    // }
   };
 
   const fetchWaterLevelHeightSettings = async () => {
-    if (registeredId.hasOwnProperty('product_id')) {
-      const response = await getWaterLevelSettings(registeredId.product_id);
 
-      if (response.status === 200 && response.data != null) {
-        setWaterLevelData(response.data);
-        setIsEnabledSource1(response.data.water_source_1);
-        setIsEnabledSource2(response.data.water_source_2);
-        setIsEnabledNotification(response.data.motor_notification);
-        setTempTankHeight(response.data.tank_height);
-        return response.data.tank_height;
-      }
+    await credFunc();
+    const response = await getWaterLevelSettings(temp_storeRegistId);
+
+    if (response.status === 200 && response.data != null) {
+      setWaterLevelData(response.data);
+      setIsEnabledSource1(response.data.water_source_1);
+      setIsEnabledSource2(response.data.water_source_2);
+      setIsEnabledNotification(response.data.motor_notification);
+      setTempTankHeight(response.data.tank_height);
+      return response.data.tank_height;
     }
+
   };
   const postWaterTankHeightSettings = async () => {
-    if (registeredId.hasOwnProperty('product_id')) {
-      const formData = {
-        tank_height_type: isEnabledManually,
-        tank_height:
-          isEnabledManually === false
-            ? autoHeight
-            : value == 0
-            ? tankHeight
-            : tankHeight * 100,
-        tank_height_unit: isEnabledManually === false ? 0 : value,
-      };
 
-      const response = await postTankHeightSettings(
-        formData,
-        registeredId.product_id,
-      );
+    await credFunc();
+    const formData = {
+      tank_height_type: isEnabledManually,
+      tank_height:
+        isEnabledManually === false
+          ? autoHeight
+          : value == 0
+          ? tankHeight
+          : tankHeight * 100,
+      tank_height_unit: isEnabledManually === false ? 0 : value,
+    };
 
-      if (response.status === 200) {
-        setSubmitToast(true);
-        setValue('');
-        setTankHeight('');
-        const temp = await fetchWaterLevelHeightSettings();
-        setIsEnabledManually(false);
-        __getWaterLevel();
-        let Oh = temp * (1 - waterLevel / 100);
-        // setAutoHeight(Oh);
-        setAutoHeight('0');
-      }
+    const response = await postTankHeightSettings(formData, temp_storeRegistId);
+
+    if (response.status === 200) {
+      setSubmitToast(true);
+      setMssg(response.message);
+      setStatusCode(response.status);
+      setRespTitle('Tank Height');
+      setValue('');
+      setTankHeight('');
+      const temp = await fetchWaterLevelHeightSettings();
+      setIsEnabledManually(false);
+      __getWaterLevel();
+      let Oh = temp * (1 - waterLevel / 100);
+      // setAutoHeight(Oh);
+      setAutoHeight('0');
     }
+ 
   };
 
   const postWaterSourceSetting = async () => {
-    if (registeredId.hasOwnProperty('product_id')) {
-      const formData = {
-        water_source_1: isEnabledSource1,
-        water_source_2: isEnabledSource2,
-      };
-      const response = await postWaterSourceSettings(
-        formData,
-        registeredId.product_id,
-      );
-    }
+    await credFunc();
+    const formData = {
+      water_source_1: isEnabledSource1,
+      water_source_2: isEnabledSource2,
+    };
+    const response = await postWaterSourceSettings(
+      formData,
+      temp_storeRegistId,
+    );
   };
 
   {
@@ -250,7 +254,7 @@ const Settings = ({navigation}) => {
       };
       const response = await postMotorNotification(
         formData,
-        registeredId.product_id,
+        temp_storeRegistId,
       );
     }
   };
@@ -268,6 +272,7 @@ const Settings = ({navigation}) => {
       if (temp.status == 200) {
         setStatusCode(temp.status);
         setMssg(temp.data);
+        setRespTitle('Session Track');
         setSubmitToast(true);
 
         setTimeout(() => {
@@ -626,7 +631,7 @@ const Settings = ({navigation}) => {
                     />
                     <View
                       style={{
-                        width: '35%',
+                        width: '40%',
                         paddingHorizontal: SIZES.base,
                         marginTop: SIZES.base,
                       }}>
@@ -683,7 +688,7 @@ const Settings = ({navigation}) => {
                     />
                     <View
                       style={{
-                        width: '35%',
+                        width: '40%',
                         paddingHorizontal: SIZES.base,
                         marginTop: SIZES.base,
                       }}>
@@ -1328,7 +1333,7 @@ const Settings = ({navigation}) => {
           isVisible={submitToast}
           onClose={() => setSubmitToast(false)}
           color={statusCode == 200 ? COLORS.green : COLORS.red}
-          title={statusCode == 200 ? 'Logout' : 'Something Went Wrong'}
+          title={statusCode == 200 ? respTitle : 'Something Went Wrong'}
           message={mssg}
         />
       </ScrollView>
