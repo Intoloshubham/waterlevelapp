@@ -15,7 +15,7 @@ import {
 import Lottie from 'lottie-react-native';
 import DuoToggleSwitch from 'react-native-duo-toggle-switch';
 import {widthToDo, heightToDo} from './setImagePixels';
-import {FONTS, COLORS, icons, SIZES} from '../constants';
+import {FONTS, COLORS, icons, SIZES, images} from '../constants';
 import ProgressBar from 'react-native-animated-progress';
 import {
   getImage,
@@ -112,7 +112,7 @@ const Home = ({navigation}) => {
     // if (checkIfKeyExist(registeredId, 'product_id')) {
     try {
       // if (registeredId) {
-      const temp = await credFunc();   
+      const temp = await credFunc();
       const res = await getLEDStatus(temp);
 
       if (res.data != null) {
@@ -397,7 +397,7 @@ const Home = ({navigation}) => {
             // onDoubleClick={()=>{setImageView(false)}}
           >
             <Image
-              resizeMode="cover"
+              resizeMode={streamImage ? 'cover' : 'contain'}
               // resizeMode="cover"
               style={{
                 // width: square == true ? '98%' : '98%',
@@ -410,10 +410,12 @@ const Home = ({navigation}) => {
                 marginTop: SIZES.height * 0.3,
                 alignSelf: 'center',
                 borderRadius: 5,
-                borderWidth: 1,
-                borderColor: COLORS.black,
+                // borderWidth: 1,
+                // borderColor: COLORS.black,
               }}
-              source={{uri: streamImage}}
+              // source={{uri: streamImage}}
+              source={streamImage ? {uri: streamImage} : images.image_not_found1}
+              // source={{uri: streamImage?streamImage:images.image_not_found}}
             />
           </ImageZoom>
         </View>
@@ -543,17 +545,18 @@ const Home = ({navigation}) => {
                 // padding: 4,
                 justifyContent: 'space-between',
                 borderWidth: 1,
-                borderColor:isEnabled == false?COLORS.red: COLORS.green, 
+                borderColor: isEnabled == false ? COLORS.red : COLORS.green,
                 height: 45,
                 paddingTop: 5,
                 // // margin:5
               }}>
-           <View
+              <View
                 style={{
                   padding: 5,
                   alignSelf: 'center',
                   borderRadius: 5,
-                  backgroundColor:isEnabled == true? COLORS.green:COLORS.red,
+                  backgroundColor:
+                    isEnabled == true ? COLORS.green : COLORS.red,
                 }}></View>
               {/* {isEnabled  ? (
                 <Text
@@ -575,11 +578,11 @@ const Home = ({navigation}) => {
                 style={{
                   ...FONTS.body5,
                   color: isEnabled == true ? COLORS.white : COLORS.white,
-                  paddingHorizontal:isEnabled == true? 4:2,
-                  elevation: 5,                
+                  paddingHorizontal: isEnabled == true ? 4 : 2,
+                  elevation: 5,
                   backgroundColor: isEnabled == true ? 'green' : COLORS.red,
                 }}>
-                {isEnabled?'ON':'OFF'}
+                {isEnabled ? 'ON' : 'OFF'}
               </Text>
             </View>
             <Text style={{fontSize: 14, color: COLORS.gray}}>
@@ -607,7 +610,7 @@ const Home = ({navigation}) => {
             setImageView(true);
           }}>
           <Image
-            source={{uri: streamImage}}
+            source={streamImage ? {uri: streamImage} : images.image_not_found1}
             resizeMode={'stretch'}
             style={{
 
@@ -618,8 +621,8 @@ const Home = ({navigation}) => {
 
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
-              borderWidth: 1,
-              borderColor: COLORS.black,
+              // borderWidth: 1,
+              // borderColor: COLORS.black,
             }}
           />
         </TouchableOpacity>

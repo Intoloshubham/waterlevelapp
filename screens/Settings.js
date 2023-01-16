@@ -466,7 +466,7 @@ const Settings = ({navigation}) => {
           }}>
           <View>
             <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-              Overhead Water Tank Height
+              Overhead Water Tank{'\n'}Height
             </Text>
           </View>
           <TouchableOpacity
