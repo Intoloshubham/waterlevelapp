@@ -347,8 +347,7 @@ const WaterUses = () => {
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            paddingHorizontal: SIZES.body1 * 3,
-            paddingVertical: SIZES.base,
+            padding:15
           }}
           onPress={() => {
             setUsesDetail(true);

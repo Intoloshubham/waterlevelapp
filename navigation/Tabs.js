@@ -55,7 +55,7 @@ const Tabs = () => {
               <Text
                 style={{
                   fontSize: 18,
-                  color: COLORS.darkGray,
+                  color: COLORS.cyan_700,
                   fontWeight: '500',
                 }}>
                 Intenics

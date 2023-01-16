@@ -455,8 +455,7 @@ const Home = ({navigation}) => {
                 </Text>
               </View>
             </View>
-            <Text
-              style={{fontSize: 14, color: COLORS.gray, marginRight: 15}}>
+            <Text style={{fontSize: 14, color: COLORS.gray, marginRight: 15}}>
               Sump{'\n'}Level
             </Text>
           </View>
@@ -592,7 +591,7 @@ const Home = ({navigation}) => {
             resizeMode={'stretch'}
             style={{
               height: square == true ? 150 : 150,
-              width: square == true ? 300 : 150,           
+              width: square == true ? 300 : 150,
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
               borderWidth: 1,
@@ -818,7 +817,9 @@ const Home = ({navigation}) => {
               fontSize: 17,
               color: COLORS.gray,
             }}>
-            {productName.charAt(0).toUpperCase() + productName.slice(1)}
+            {productName
+              ? productName.charAt(0).toUpperCase() + productName.slice(1)
+              : ''}
           </Text>
 
           {/* <CustomSwitch
