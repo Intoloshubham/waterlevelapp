@@ -8,23 +8,31 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
-import {COLORS, FONTS, icons, SIZES} from '../constants';
+import {COLORS, FONTS, icons, SIZES, constant} from '../constants';
 import {TextInput, Divider} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { getData } from '../utils/localStorage';
-// import {} from 
+import {getData} from '../utils/localStorage';
+import {feedWaterUse} from '../controllers/WaterUsesController';
 
 const WaterUses = () => {
+  let temp_storeRegistId;
   const [usesDetail, setUsesDetail] = useState(false);
   const [noOfUser, setNoOfUser] = useState('');
+
   const [diameter, setDiameter] = useState('');
   const [langth, setLangth] = useState('');
   const [breadth, setBreadth] = useState('');
+
   const [cylinderShape, setCylinderShape] = useState(false);
   const [cuboidalShape, setCuboidalShape] = useState(false);
-  const [uniqueId, setUniqueId] = useState('')
+
+  const [shape, setShape] = useState('')
+
+  const [tankHeight, setTankHeight] = useState('');
+
+  const [uniqueId, setUniqueId] = useState('');
   const [unit, setUnit] = useState('CM');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -37,23 +45,35 @@ const WaterUses = () => {
   const credFunc = async () => {
     try {
 
+      const temp = await getData('tank_height');
+      setTankHeight(temp);      
       temp_storeRegistId = await getData('primary_product');
       return temp_storeRegistId;
-
     } catch (error) {
       console.log(error);
     }
   };
 
- const feedUsesData = async ()=>{
-  try {
-    const tc=await credFunc();
-    setUniqueId(tc);
-    const temp=await saveWaterUses();
-  } catch (error) {
-    console.log(error)
-  }
- }
+  const feedUsesData = async () => {
+    try {
+      const tc = await credFunc();
+      
+      setUniqueId(tc);
+      const inputs = {
+        unique_id: tc,
+        no_of_users: noOfUser,
+        tank_shape:shape ,
+        tank_diameter: diameter,
+        unit:unit,
+        tank_height: tankHeight,
+      };
+      console.log("🚀 ~ file: WaterUses.js:70 ~ feedUsesData ~ inputs", inputs)
+   
+      // const temp = await feedWaterUse();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   function renderUsesDetailsModel() {
     return (
@@ -102,7 +122,7 @@ const WaterUses = () => {
                   placeholder="No. of Users"
                   style={{
                     backgroundColor: COLORS.white2,
-                    placeholderTextColor: COLORS.gray
+                    placeholderTextColor: COLORS.gray,
                   }}
                   outlineColor={COLORS.cyan_600}
                   activeOutlineColor={COLORS.cyan_600}
@@ -159,6 +179,7 @@ const WaterUses = () => {
                     }}
                     onPress={() => {
                       setCylinderShape(true);
+                      setShape(constant.CYLINDRICAL);
                       setCuboidalShape(false);
                     }}>
                     <Text
@@ -182,6 +203,7 @@ const WaterUses = () => {
                     }}
                     onPress={() => {
                       setCuboidalShape(true);
+                      setShape(constant.CUBOIDAL);
                       setCylinderShape(false);
                     }}>
                     <Text
@@ -319,10 +341,9 @@ const WaterUses = () => {
                   backgroundColor: COLORS.cyan_600,
                   borderColor: COLORS.white,
                 }}
-                onPress={()=>{
-                  FeedUsesData()
-                }}
-                >
+                onPress={() => {
+                  feedUsesData();
+                }}>
                 <Text
                   style={{
                     textAlign: 'center',
