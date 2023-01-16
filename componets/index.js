@@ -4,4 +4,4 @@ import CustomToast from './CustomToast.js';
 import CustomSwitch from './CustomSwitch';
 
 
-export {HeaderBar, TextButton,CustomToast,CustomSwitch};
+export {HeaderBar, TextButton, CustomToast, CustomSwitch};
