@@ -40,6 +40,7 @@ import {
   getData,
   getObjectData,
   removeData,
+  storeData,
   storeObjectData,
 } from '../utils/localStorage.js';
 import Notification from './Notification';
@@ -181,7 +182,6 @@ const Settings = ({navigation}) => {
   };
 
   const fetchWaterLevelHeightSettings = async () => {
-
     await credFunc();
     const response = await getWaterLevelSettings(temp_storeRegistId);
 
@@ -193,22 +193,22 @@ const Settings = ({navigation}) => {
       setTempTankHeight(response.data.tank_height);
       return response.data.tank_height;
     }
-
   };
   const postWaterTankHeightSettings = async () => {
-
     await credFunc();
+    let tk =
+      isEnabledManually === false
+        ? autoHeight
+        : value == 0
+        ? tankHeight
+        : tankHeight * 100;
     const formData = {
       tank_height_type: isEnabledManually,
-      tank_height:
-        isEnabledManually === false
-          ? autoHeight
-          : value == 0
-          ? tankHeight
-          : tankHeight * 100,
+      tank_height: tk,
       tank_height_unit: isEnabledManually === false ? 0 : value,
     };
 
+    await storeData('tank_height', tk.toString());
     const response = await postTankHeightSettings(formData, temp_storeRegistId);
 
     if (response.status === 200) {
@@ -225,7 +225,6 @@ const Settings = ({navigation}) => {
       // setAutoHeight(Oh);
       setAutoHeight('0');
     }
- 
   };
 
   const postWaterSourceSetting = async () => {
