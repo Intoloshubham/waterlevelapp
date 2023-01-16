@@ -49,7 +49,7 @@ const Home = ({navigation}) => {
   let temp_product_name;
   let temp_registeredId = useSelector(state => state.product);
 
-   const [productName, setProductName] = useState('');
+  const [productName, setProductName] = useState('');
   const [registeredId, setRegisteredId] = useState(temp_registeredId);
 
   const interval = useSelector(state => state.intervalMode);
@@ -78,7 +78,6 @@ const Home = ({navigation}) => {
 
   const credFunc = async () => {
     try {
-      
       temp_storeRegistId = await getData('primary_product');
 
       if (Object.keys(temp_registeredId).length === 0) {
@@ -249,7 +248,7 @@ const Home = ({navigation}) => {
     })();
     // console.log('temp_registeredId--', registeredId);
     // if (interval.intervalMode === true) {
-    // timer.current =  setInterval(() => { 
+    // timer.current =  setInterval(() => {
     cls_interval = window.setInterval(() => {
       WaterLevel();
       getStreamImage();
@@ -264,7 +263,6 @@ const Home = ({navigation}) => {
     };
     // }
   }, [temp_registeredId, interval.intervalMode]);
-
 
   // useEffect(() => {
   //   await updateData(id, state, setState); // API call
@@ -401,6 +399,8 @@ const Home = ({navigation}) => {
             <Image
               resizeMode="cover"
               style={{
+                // width: square == true ? '98%' : '98%',
+                // height: square == true ? '50%' : '50%',
                 width: square == true ? '98%' : '98%',
                 height: square == true ? '50%' : '50%',
                 marginTop: SIZES.height * 0.25,
@@ -432,23 +432,22 @@ const Home = ({navigation}) => {
               style={{
                 flex: 1,
                 flexDirection: 'row',
-                marginTop: SIZES.body1 * 2.6   
+                marginTop: SIZES.body1 * 2.6,
               }}>
               <View
-                style={{             
+                style={{
                   flexDirection: 'row-reverse',
                   alignSelf: 'flex-end',
                   width: '5%',
                   elevation: 5,
                   height: `${parseInt(sumpLevel)}%`,
-                  backgroundColor: COLORS.blue_300, 
+                  backgroundColor: COLORS.blue_300,
                   paddingHorizontal: 10,
-          
                 }}></View>
               <View
-                style={{            
-                  alignSelf: 'flex-end',               
-                  height: `${21 + parseInt(sumpLevel)}%`,    
+                style={{
+                  alignSelf: 'flex-end',
+                  height: `${21 + parseInt(sumpLevel)}%`,
                 }}>
                 <Text style={{...FONTS.body5}}>
                   {' '}
@@ -457,10 +456,10 @@ const Home = ({navigation}) => {
               </View>
             </View>
             <Text
-              style={{...FONTS.body5, color: COLORS.darkGray, marginRight: 15}}>
+              style={{fontSize: 14, color: COLORS.gray, marginRight: 15}}>
               Sump{'\n'}Level
             </Text>
-          </View>       
+          </View>
 
           <View
             style={{
@@ -522,13 +521,12 @@ const Home = ({navigation}) => {
                   zIndex: 0,
                 }}></View>
             </View>
-            <Text
-              style={{fontSize: 15, color: COLORS.darkGray, marginVertical: 5}}>
+            <Text style={{fontSize: 15, color: COLORS.gray}}>
               Live Water Level{'\n'}
               (OverHead Tank)
             </Text>
           </View>
-          
+
           <View
             style={{
               justifyContent: 'flex-end',
@@ -565,7 +563,7 @@ const Home = ({navigation}) => {
                 ON
               </Text>
             </View>
-            <Text style={{...FONTS.body5, color: COLORS.darkGray}}>
+            <Text style={{fontSize: 14, color: COLORS.gray}}>
               Pump{'\n'}Status
             </Text>
           </View>
@@ -591,10 +589,10 @@ const Home = ({navigation}) => {
           }}>
           <Image
             source={{uri: streamImage}}
-            resizeMode={'center'}
+            resizeMode={'stretch'}
             style={{
-              height: square == true ? 200 : 200,
-              width: square == true ? 300 : 200,
+              height: square == true ? 150 : 150,
+              width: square == true ? 300 : 150,           
               alignSelf: 'center',
               borderRadius: square == true ? 10 : 100,
               borderWidth: 1,
@@ -807,14 +805,24 @@ const Home = ({navigation}) => {
           style={{
             alignSelf: 'center',
             flexDirection: 'row',
-            marginBottom: 10,
+            // marginBottom: 10,
+            // padding: 5,
+
+            // backgroundColor:'red',
             alignItems: 'center',
           }}>
-        
-          <Text style={{textAlign:'center',...FONTS.body2,color:COLORS.gray}}>{productName}</Text>
-   
+          <Text
+            style={{
+              flex: 0.5,
+              textAlign: 'center',
+              fontSize: 17,
+              color: COLORS.gray,
+            }}>
+            {productName.charAt(0).toUpperCase() + productName.slice(1)}
+          </Text>
+
           {/* <CustomSwitch
-            selectionMode={0}
+            selectionMode={0} 
             roundCorner={true}
             option1={'Manual'}
             option2={'Automatic'}
