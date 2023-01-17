@@ -2,8 +2,8 @@ import {API_URL} from '@env';
 
 const feedWaterUse = async (inputs) => {
   try {
-    const temp=await fetch(`${API_URL}`,{
-        method:'PUT',
+    const temp=await fetch(`${API_URL}water-uses`,{
+        method:'POST',
         headers:{"Content-Type":'application/json'},
         body:JSON.stringify(inputs)
     });
@@ -13,5 +13,6 @@ const feedWaterUse = async (inputs) => {
     console.log(error);
   }
 };
+
 
 export {feedWaterUse};
