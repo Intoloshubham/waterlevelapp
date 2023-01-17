@@ -54,7 +54,7 @@ const RemoteControl = () => {
           mode: 1,
         }),
       );
-      postRemoteControlData(1);
+      // postRemoteControlData(1);
     } else {
       dispatch(
         addMode({
@@ -63,7 +63,7 @@ const RemoteControl = () => {
       );
       setMode(0);
       setIsEnabled(val);
-      postRemoteControlData(0);
+      // postRemoteControlData(0);
     }
   };
 
