@@ -13,11 +13,13 @@ import {TextInput, Divider} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { CustomToast } from '../componets';
 import {getData} from '../utils/localStorage';
 import {feedWaterUse} from '../controllers/WaterUsesController';
 
 const WaterUses = () => {
   let temp_storeRegistId;
+
   const [usesDetail, setUsesDetail] = useState(false);
   const [noOfUser, setNoOfUser] = useState('');
 
@@ -28,7 +30,7 @@ const WaterUses = () => {
   const [cylinderShape, setCylinderShape] = useState(false);
   const [cuboidalShape, setCuboidalShape] = useState(false);
 
-  const [shape, setShape] = useState('')
+  const [shape, setShape] = useState('');
 
   const [tankHeight, setTankHeight] = useState('');
 
@@ -37,6 +39,13 @@ const WaterUses = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
+  
+  //toast
+  const [submitToast, setSubmitToast] = React.useState(false);
+  const [mssg, setMssg] = useState('');
+  const [statusCode, setStatusCode] = useState('');
+  const [respTitle, setRespTitle] = useState('');
+
   const [items, setItems] = useState([
     {label: 'CM', value: '0'},
     {label: 'Meter', value: '1'},
@@ -44,9 +53,6 @@ const WaterUses = () => {
 
   const credFunc = async () => {
     try {
-
-      const temp = await getData('tank_height');
-      setTankHeight(temp);      
       temp_storeRegistId = await getData('primary_product');
       return temp_storeRegistId;
     } catch (error) {
@@ -57,19 +63,27 @@ const WaterUses = () => {
   const feedUsesData = async () => {
     try {
       const tc = await credFunc();
-      
       setUniqueId(tc);
+      const tk = await getData('tank_height');
+      setTankHeight(tk);
       const inputs = {
         unique_id: tc,
         no_of_users: noOfUser,
-        tank_shape:shape ,
+        tank_shape: shape,
         tank_diameter: diameter,
-        unit:unit,
-        tank_height: tankHeight,
+        unit: unit == 'CM' ? 0 : 1,
+        tank_length: langth,
+        tank_breadth: breadth,
+        tank_height: tk,
       };
-      console.log("🚀 ~ file: WaterUses.js:70 ~ feedUsesData ~ inputs", inputs)
-   
-      // const temp = await feedWaterUse();
+      const temp = await feedWaterUse(inputs);
+      if (temp.status==200) {
+        setSubmitToast(true);
+        setLangth('');
+        setBreadth('');
+        setTankHeight('');
+        setUnit(' ');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -80,6 +94,7 @@ const WaterUses = () => {
       <Modal animationType="fade" transparent={true} visible={usesDetail}>
         <KeyboardAwareScrollView
           contentContainerStyle={{flexGrow: 1}}
+          extraScrollHeight={21}
           keyboardShouldPersistTaps="handled">
           <View
             style={{
@@ -131,6 +146,7 @@ const WaterUses = () => {
                   onChangeText={value => {
                     setNoOfUser(value);
                   }}
+
                   value={noOfUser}
                 />
               </View>
@@ -368,7 +384,7 @@ const WaterUses = () => {
             backgroundColor: COLORS.cyan_600,
             borderRadius: SIZES.base,
             elevation: 2,
-            padding:15
+            padding: 15,
           }}
           onPress={() => {
             setUsesDetail(true);
@@ -400,8 +416,15 @@ const WaterUses = () => {
 
   return (
     <View style={{}}>
-      <View style={{marginTop:10}}>{usesDashboard()}</View>
+      <View style={{marginTop: 10}}>{usesDashboard()}</View>
       {renderUsesDetailsModel()}
+      <CustomToast
+          isVisible={submitToast}
+          onClose={() => setSubmitToast(false)}
+          color={statusCode == 200 ? COLORS.green : COLORS.red}
+          title={statusCode == 200 ? respTitle : 'Something Went Wrong'}
+          message={mssg}
+        />
     </View>
   );
 };

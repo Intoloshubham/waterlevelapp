@@ -32,12 +32,11 @@ import {addMode} from '../redux/modeSlice';
 import socketIOClient from 'socket.io-client';
 import {addIntervalMode} from '../redux/intervalSlice';
 import {getData} from '../utils/localStorage';
-
 import {checkIfKeyExist} from '../utils/customFunctions';
 
-// const END_POINT = 'http://192.168.0.117:8000';
+const END_POINT = 'http://192.168.0.117:8000';
 
-// let socket = socketIOClient(END_POINT);
+let io = socketIOClient(END_POINT);
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -57,7 +56,7 @@ const Home = ({navigation}) => {
   const [streamImage, setStreamImage] = React.useState();
   const [date, setDate] = React.useState();
   const [time, setTime] = React.useState();
-  const [level, setLevel] = React.useState('');
+  const [level, setLevel] = React.useState(''); 
   const [phValue, setPhValue] = React.useState('');
   const [square, setSquare] = React.useState(false);
   const [warningModal, setWarningModal] = useState(false);
@@ -254,7 +253,8 @@ const Home = ({navigation}) => {
       getStreamImage();
       fetchSumpStatus();
       // getPrevWaterLevel();
-      // socket.emit('join_room', 'fronte');
+
+      
       fetchLedStatus();
     }, 4000);
 
@@ -264,9 +264,26 @@ const Home = ({navigation}) => {
     // }
   }, [temp_registeredId, interval.intervalMode]);
 
-  // useEffect(() => {
-  //   await updateData(id, state, setState); // API call
-  // }, []);
+    // await updateData(id, state, setState); // API call
+ useEffect(() => {
+  io.emit('polar','hello world');
+ 
+  io.on('connect',(socket)=>{
+      console.log('use connected')
+      // socket.on('bear', (data)=>{
+      //   console.log(data);
+      // });
+      // socket.on('send_online_friend',(d)=>{
+      //   console.log(d)
+      // }) 
+    })
+    io.on('send_online_friend',(d)=>{ 
+      console.log(d)
+    })
+ }, [])
+
+
+ 
 
   function renderWarningModal() {
     return (
@@ -542,11 +559,11 @@ const Home = ({navigation}) => {
             }}>
             <View
               style={{
-                // padding: 4,
+                padding: 4,
                 justifyContent: 'space-between',
                 borderWidth: 1,
                 borderColor: isEnabled == false ? COLORS.red : COLORS.green,
-                height: 45,
+                // height: 45,
                 paddingTop: 5,
                 // // margin:5
               }}>
@@ -574,7 +591,7 @@ const Home = ({navigation}) => {
               ) : (
                 ''
               )} */}
-              <Text
+              {/* <Text
                 style={{
                   ...FONTS.body5,
                   color: isEnabled == true ? COLORS.white : COLORS.white,
@@ -583,7 +600,7 @@ const Home = ({navigation}) => {
                   backgroundColor: isEnabled == true ? 'green' : COLORS.red,
                 }}>
                 {isEnabled ? 'ON' : 'OFF'}
-              </Text>
+              </Text> */}
             </View>
             <Text style={{fontSize: 14, color: COLORS.gray}}>
               Pump{'\n'}Status
