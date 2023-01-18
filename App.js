@@ -1,23 +1,23 @@
 import React, {useEffect, useState} from 'react';
 // import { useAppState } from '@react-native-community/hooks'
-import {AppState} from 'react-native';
+import {AppState, View, Text} from 'react-native';
 import Tabs from './navigation/Tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Login, Register, ForgetPassword} from './screens/userCredentials';
-import {Home, Products, RemoteControl, Settings} from './screens';
+import {Home, Products, RemoteControl, Settings, WaterUses} from './screens';
 import {loginUser} from './controllers/LoginController';
 import {Provider} from 'react-redux';
 import store from './redux/store.js';
 import {COLORS} from './constants';
 import {getData, getObjectData} from './utils/localStorage.js';
+import {Button} from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [status, setStatus] = useState(false);
   const [aState, setAppState] = useState(AppState.currentState);
-  // const navigation = useNavigation();
 
   let temp = null;
 
@@ -33,7 +33,7 @@ const App = () => {
     //      setStatus(true);
     // }
 
-    // if (temp != null) { 
+    // if (temp != null) {
     //   if (temp) {
     //     setStatus(true);
     //   } else {
@@ -44,7 +44,7 @@ const App = () => {
 
   useEffect(() => {
     getToken();
-   
+
     // (async () => {
     //   let tc = await getToken();
     //   if (tc) {
@@ -87,16 +87,60 @@ const App = () => {
             }}
             name="Products"
             component={Products}
-          /> 
-   
-          {/* {status  ? (
-            <Stack.Screen name="Login" component={Login} />
-            ) : (
-            <Stack.Screen name= "Home" component={Home} />
-          )} */}
+          />
 
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen
+            name="WaterUses"
+            options={{
+              headerTitle: () => (
+                <View style={{alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: COLORS.cyan_700,
+                      fontWeight: '500',
+                    }}>
+                    Intenics
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      color: COLORS.cyan_700,
+                      fontWeight: '500',
+                    }}>
+                    Smart WaterInfo
+                  </Text>
+                </View>
+              ),
+              headerBackTitleVisible: true,
+
+              headerShown: true,
+              headerTitleAlign: 'center',
+
+              headerStyle: {
+                backgroundColor: Platform.OS === 'android' ? COLORS.white : '',
+              },
+              headerTintColor:
+                Platform.OS === 'android' ? COLORS.cyan_700 : COLORS.white,
+              // headerBackTitleStyle
+              // headerTitleStyle: {
+              //   fontSize: 18,
+              //   color: COLORS.cyan_700,
+              //   fontWeight: '500',
+              // },
+              // headerBackTitle:true,
+
+              headerBackVisible: true,
+              headerBackTitleStyle: {
+                fontSize: 12,
+                color: COLORS.cyan_700,
+                fontWeight: '500',
+              },
+            }}
+            component={WaterUses}
+          />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
           <Stack.Screen name="Register" component={Register} />
         </Stack.Navigator>

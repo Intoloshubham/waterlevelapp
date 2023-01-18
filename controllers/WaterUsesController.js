@@ -14,5 +14,15 @@ const feedWaterUse = async (inputs) => {
   }
 };
 
+const getWaterUse = async ()=>{
+  try {
+    const temp=await fetch(`${API_URL}water-uses`);
+    const resp=await temp.json();
+    return resp;
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-export {feedWaterUse};
+
+export {feedWaterUse,getWaterUse};
