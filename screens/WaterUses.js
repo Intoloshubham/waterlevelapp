@@ -6,6 +6,7 @@ import {
   Modal,
   Image,
   KeyboardAvoidingView,
+  FlatList,
   ScrollView,
 } from 'react-native';
 import {COLORS, FONTS, icons, SIZES, constant} from '../constants';
@@ -13,11 +14,12 @@ import {TextInput, Divider} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { CustomToast } from '../componets';
+import {CustomToast} from '../componets';
 import {getData} from '../utils/localStorage';
-import {feedWaterUse} from '../controllers/WaterUsesController';
+import {feedWaterUse, getWaterUse} from '../controllers/WaterUsesController';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const WaterUses = () => {
+const WaterUses = ({navigation}) => {
   let temp_storeRegistId;
 
   const [usesDetail, setUsesDetail] = useState(false);
@@ -38,8 +40,8 @@ const WaterUses = () => {
   const [unit, setUnit] = useState('CM');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [waterUseData, setWaterUseData] = useState([]);
 
-  
   //toast
   const [submitToast, setSubmitToast] = React.useState(false);
   const [mssg, setMssg] = useState('');
@@ -77,8 +79,18 @@ const WaterUses = () => {
         tank_height: tk,
       };
       const temp = await feedWaterUse(inputs);
-      if (temp.status==200) {
+
+      if (temp.status == 200) {
+        getWaterUsage();
+        setStatusCode(temp.status);
+        setMssg(temp.msg);
+        setRespTitle('Water Usage Details');
         setSubmitToast(true);
+        setTimeout(() => {
+          setSubmitToast(false);
+          setUsesDetail(false);
+        }, 1500);
+
         setLangth('');
         setBreadth('');
         setTankHeight('');
@@ -88,6 +100,21 @@ const WaterUses = () => {
       console.log(error);
     }
   };
+
+  const getWaterUsage = async () => {
+    try {
+      const temp = await getWaterUse();
+      if (temp.data.length > 0) {
+        setWaterUseData(temp.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getWaterUsage();
+  }, []);
 
   function renderUsesDetailsModel() {
     return (
@@ -146,7 +173,6 @@ const WaterUses = () => {
                   onChangeText={value => {
                     setNoOfUser(value);
                   }}
-
                   value={noOfUser}
                 />
               </View>
@@ -382,9 +408,41 @@ const WaterUses = () => {
         <TouchableOpacity
           style={{
             backgroundColor: COLORS.cyan_600,
-            borderRadius: SIZES.base,
+            borderRadius: SIZES.base * 0.5,
             elevation: 2,
-            padding: 15,
+            alignSelf: 'flex-start',
+            marginLeft: SIZES.body5 * 0.6,
+            padding: SIZES.base * 0.5,
+          }}
+          onPress={() => {
+            navigation.goBack();
+          }}>
+          <View
+            style={{
+              width: '25%',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+              backgroundColor: COLORS.cyan_700,
+            }}>
+            <Ionicons name="arrow-back" size={22} color={COLORS.white2} />
+            <Text
+              style={{
+                ...FONTS.h2,
+                color: COLORS.white,
+              }}>
+              Back
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: COLORS.cyan_600,
+            borderRadius: SIZES.base * 0.5,
+            elevation: 2,
+            marginHorizontal: SIZES.base,
+            padding: SIZES.base,
+            marginTop: SIZES.base,
           }}
           onPress={() => {
             setUsesDetail(true);
@@ -393,11 +451,12 @@ const WaterUses = () => {
             style={{
               ...FONTS.h2,
               color: COLORS.white,
-              // textAlign: 'center',
+              textAlign: 'center',
             }}>
-            Add Water Uses
+            Feed Water Use Data
           </Text>
         </TouchableOpacity>
+
         {/* <View
           style={{
             height: '25%',
@@ -414,17 +473,353 @@ const WaterUses = () => {
     );
   }
 
+  function renderUsageDetail() {
+    return (
+      <View>
+        {waterUseData.map(ele => {
+          return (
+            <TouchableOpacity
+              key={ele._id}
+              style={{
+                backgroundColor: COLORS.white2,
+                // backgroundColor: COLORS.cyan_400,
+                margin: SIZES.base,
+                // padding: SIZES.base,
+             
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 4.65,
+                elevation: 8,
+                borderRadius: SIZES.base,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  // margin: 5,
+                  backgroundColor: COLORS.cyan_600,
+                  paddingHorizontal: SIZES.width * 0.3,
+                  paddingVertical: SIZES.base * 0.9,
+                  borderTopEndRadius:SIZES.base,
+                  borderTopStartRadius:SIZES.base,
+                  justifyContent:'center'
+                  // alignSelf:'center'
+                  // borderRadius: 5,
+                  // borderWidth: 1,
+                  // borderColor: COLORS.transparentBlack1,
+                }}>
+                <Text
+                  style={{
+                    ...FONTS.body3,
+                    // textAlign:'center',
+                    color: COLORS.white2,
+                  }}>
+                  {ele.tank_shape.toUpperCase()}
+                </Text>
+              </View>
+              {/* <Divider
+                style={{
+                  backgroundColor: COLORS.lightGray1,
+                  padding: 0.4,
+                  width: SIZES.width * 0.92,
+                  alignSelf: 'center',
+                  height: SIZES.height * 0.001,
+                }}
+              /> */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  // backgroundColor: COLORS.w,
+                  // borderRadius: 2,
+                  // borderWidth: 1,
+                  // borderColor: COLORS.transparentBlack1,
+                  paddingHorizontal: SIZES.base * 2,
+                  marginVertical: SIZES.base * 0.5,
+                  paddingVertical: SIZES.base * 0.9,
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    Tank Unit
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    {ele.unit}
+                  </Text>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    Total Users
+                  </Text>
+                  <Text
+                    style={{
+                      // flex: 0.46,
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      // backgroundColor:'red',
+                      color: COLORS.gray,
+                    }}>
+                    {ele.no_of_users}
+                  </Text>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    Tank Diameter
+                  </Text>
+                  <Text
+                    style={{
+                      // flex: 0.5,
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    {ele.radius + ele.radius}
+                  </Text>
+                </View>
+              </View>
+              {/* <Divider
+                style={{
+                  backgroundColor: COLORS.lightGray1,
+                  padding: 0.4,
+                  width: SIZES.width * 0.92,
+                  alignSelf: 'center',
+                  height: SIZES.height * 0.001,
+                }}
+              /> */}
+              <View
+                style={{
+                  // marginVertical: SIZES.base * 0.5,
+                  // alignSelf: 'center',
+                  flexDirection:'row',
+                  // paddingHorizontal: SIZES.width * 0.01,
+                  padding:SIZES.base,
+                  backgroundColor: COLORS.cyan_600,
+                  justifyContent:'space-between',
+                  // borderRadius: 2,
+                  // borderWidth: 1,
+                  borderBottomEndRadius:SIZES.base,
+                  borderBottomStartRadius:SIZES.base,
+                  borderColor: COLORS.transparentBlack1,
+                }}>
+                <Text
+                  style={{
+                    ...FONTS.body3,
+                    color: COLORS.white2,
+                  }}>
+                  Tank Capacity :
+                </Text>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    ...FONTS.body3,
+                    color: COLORS.white2,
+                  }}>
+                  {ele.volume}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  }
+
+  const ListHeader = () => {
+    return (
+      <View>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{width: 150, backgroundColor: 'white'}}>
+            <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              No. of Users
+            </Text>
+          </View>
+          <View style={{width: 80, backgroundColor: 'white'}}>
+            <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              Shape
+            </Text>
+          </View>
+          <View style={{width: 80, backgroundColor: 'white'}}>
+            <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              Unit
+            </Text>
+          </View>
+          <View style={{width: 120, backgroundColor: 'white'}}>
+            <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              Radius
+            </Text>
+          </View>
+          <View style={{width: 200, backgroundColor: 'white'}}>
+            <Text
+              style={{
+                ...FONTS.body3,
+                fontWeight: '600',
+                color: COLORS.darkGray,
+                textAlign: 'center',
+              }}>
+              Volume
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderItem = ({item}) => (
+    <View
+      style={{
+        flexDirection: 'row',
+        margin: 1,
+        borderWidth: 0.05,
+        marginTop: SIZES.base,
+        marginVertical: SIZES.base * 0.5,
+      }}>
+      <View style={{width: 150}}>
+        <Text style={{fontSize: 16, textAlign: 'center'}}>
+          {item.no_of_users}
+        </Text>
+      </View>
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+      <View style={{width: 80}}>
+        <Text style={{fontSize: 16, textAlign: 'center'}}>
+          {item.tank_shape}
+        </Text>
+      </View>
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+      <View style={{width: 60}}>
+        <Text style={{fontSize: 16, textAlign: 'center'}}>{item.unit}</Text>
+      </View>
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+      <View style={{width: 120}}>
+        <Text style={{fontSize: 16, textAlign: 'center'}}>{item.radius}</Text>
+      </View>
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+      <View style={{width: 200}}>
+        <Text style={{fontSize: 16, textAlign: 'center'}}>{item.volume}</Text>
+      </View>
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+      <Divider
+        style={{
+          backgroundColor: COLORS.lightGray1,
+          padding: 0.4,
+          height: SIZES.height * 0.04,
+        }}
+      />
+    </View>
+  );
+
   return (
     <View style={{}}>
-      <View style={{marginTop: 10}}>{usesDashboard()}</View>
+      {/* <View style={{marginTop: 10}}>{usesDashboard()}</View> */}
       {renderUsesDetailsModel()}
-      <CustomToast
-          isVisible={submitToast}
-          onClose={() => setSubmitToast(false)}
-          color={statusCode == 200 ? COLORS.green : COLORS.red}
-          title={statusCode == 200 ? respTitle : 'Something Went Wrong'}
-          message={mssg}
+      {renderUsageDetail()}
+      <ScrollView style={{marginTop: SIZES.body2}}>
+        <FlatList
+          data={waterUseData}
+          renderItem={renderItem}
+          contentContainerStyle={{
+            marginHorizontal: SIZES.base,
+            paddingHorizontal: SIZES.base,
+            flexDirection: 'column',
+          }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item._id}
+          ListHeaderComponent={ListHeader}
+          ItemSeparatorComponent={
+            <View
+              style={{
+                height: 1,
+                width: '86%',
+                backgroundColor: '#CED0CE',
+                marginLeft: '14%',
+              }}
+            />
+          }
         />
+      </ScrollView>
+      <CustomToast
+        isVisible={submitToast}
+        onClose={() => setSubmitToast(false)}
+        color={statusCode == 200 ? COLORS.green : COLORS.red}
+        title={statusCode == 200 ? respTitle : 'Something Went Wrong'}
+        message={mssg}
+      />
     </View>
   );
 };

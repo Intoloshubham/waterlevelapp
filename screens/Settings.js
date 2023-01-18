@@ -1300,6 +1300,45 @@ const Settings = ({navigation}) => {
     );
   }
 
+  function usesDashboard() {
+    return (
+      <View style={{}}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: COLORS.cyan_600,
+            borderRadius: SIZES.base,
+            elevation: 2,
+            padding: 15,
+          }}
+          onPress={() => {
+            // setUsesDetail(true);
+            navigation.navigate('WaterUses');
+          }}>
+          <Text
+            style={{
+              ...FONTS.h2,
+              color: COLORS.white,
+              // textAlign: 'center',
+            }}>
+            Add Water Uses
+          </Text>
+        </TouchableOpacity>
+        {/* <View
+          style={{
+            height: '25%',
+            width: '95%',
+            borderRadius: SIZES.base,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: SIZES.base,
+            elevation: 1,
+            marginTop: SIZES.base,
+            backgroundColor: COLORS.white,
+          }}></View> */}
+      </View>
+    );
+  }
+
   return (
     <>
       <ScrollView
@@ -1323,7 +1362,12 @@ const Settings = ({navigation}) => {
         {renderPersentModal()}
 
         {renderOprationalLayout()}
-        <WaterUses />
+        {/* <WaterUses /> */}
+        
+        <View style={{marginTop: 10}}>{usesDashboard()}</View>
+        <View>
+           
+        </View>
         {logoutLayout()}
         {isSourceOne && renderSourceOne()}
         {isSourceTwo && renderSourceTwo()}
