@@ -55,6 +55,8 @@ const Settings = ({navigation}) => {
   // const Auth = React.createContext(null);
   // const navigation = useNavigation();
   // const { setToken } = React.useContext(Auth)
+  // let water_tank_height = 100;
+  const [waterTankHeight, setWaterTankHeight] = useState(100)
   let lg_tkn;
   let us_cred;
   let temp_storeRegistId;
@@ -203,6 +205,8 @@ const Settings = ({navigation}) => {
         : value == 0
         ? tankHeight
         : tankHeight * 100;
+    setWaterTankHeight(tk);
+
     const formData = {
       tank_height_type: isEnabledManually,
       tank_height: tk,
@@ -466,7 +470,7 @@ const Settings = ({navigation}) => {
           }}>
           <View>
             <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-              Overhead Water Tank{'\n'}Height
+              Overhead Water Tank{'\n'}Height {parseFloat(waterTankHeight).toFixed(2) +' '+ unit} 
             </Text>
           </View>
           <TouchableOpacity
@@ -1363,11 +1367,9 @@ const Settings = ({navigation}) => {
 
         {renderOprationalLayout()}
         {/* <WaterUses /> */}
-        
+
         <View style={{marginTop: 10}}>{usesDashboard()}</View>
-        <View>
-           
-        </View>
+        <View></View>
         {logoutLayout()}
         {isSourceOne && renderSourceOne()}
         {isSourceTwo && renderSourceTwo()}

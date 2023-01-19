@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 // import { useAppState } from '@react-native-community/hooks'
-import {AppState, View, Text} from 'react-native';
+import {AppState, View, Text,TouchableOpacity,Image} from 'react-native';
 import Tabs from './navigation/Tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Login, Register, ForgetPassword} from './screens/userCredentials';
 import {Home, Products, RemoteControl, Settings, WaterUses} from './screens';
 import {loginUser} from './controllers/LoginController';
+import {icons} from './constants/index.js';
 import {Provider} from 'react-redux';
 import store from './redux/store.js';
 import {COLORS} from './constants';
@@ -115,28 +116,32 @@ const App = () => {
                 </View>
               ),
               headerBackTitleVisible: true,
-
               headerShown: true,
               headerTitleAlign: 'center',
-
+              headerTransparent: false,
               headerStyle: {
                 backgroundColor: Platform.OS === 'android' ? COLORS.white : '',
               },
               headerTintColor:
-                Platform.OS === 'android' ? COLORS.cyan_700 : COLORS.white,
-              // headerBackTitleStyle
-              // headerTitleStyle: {
-              //   fontSize: 18,
-              //   color: COLORS.cyan_700,
-              //   fontWeight: '500',
-              // },
-              // headerBackTitle:true,
-
+                Platform.OS === 'android' ? COLORS.cyan_700 : COLORS.white,          
+              headerLeft: ({onPress, focused}) => (
+                <TouchableOpacity onPress={onPress}>
+                 {/* <Image
+                   source={icons.back}
+                   resizeMode="contain"
+                   style={{
+                     width: 15,
+                     height: 15,
+                     marginLeft: 20,
+                     tintColor: focused ? 'gray' : 'black',}}
+                 /> */}
+               </TouchableOpacity>
+             ),
               headerBackVisible: true,
               headerBackTitleStyle: {
                 fontSize: 12,
                 color: COLORS.cyan_700,
-                fontWeight: '500',
+                fontWeight: '500'
               },
             }}
             component={WaterUses}
