@@ -34,4 +34,14 @@ const getWaterUsageDetail = async ()=>{
   }
 }
 
-export {feedWaterUse,getWaterUse,getWaterUsageDetail};
+const totalUsage = async (unique_id)=>{
+  try {
+    const temp=await fetch(`${API_URL}total-usage/${unique_id}`);
+    const resp=await temp.json();
+    return resp;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export {feedWaterUse,getWaterUse,getWaterUsageDetail,totalUsage};

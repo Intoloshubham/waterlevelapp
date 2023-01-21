@@ -212,12 +212,15 @@ const Settings = ({navigation}) => {
       tank_height: tk,
       tank_height_unit: isEnabledManually === false ? 0 : value,
     };
-
     await storeData('tank_height', tk.toString());
     const response = await postTankHeightSettings(formData, temp_storeRegistId);
 
     if (response.status === 200) {
       setSubmitToast(true);
+      setTimeout(() => {
+        setSubmitToast(false);
+        isEnabledManually === false?setTankHeightModal(false):null
+      }, 900);
       setMssg(response.message);
       setStatusCode(response.status);
       setRespTitle('Tank Height');
@@ -470,7 +473,7 @@ const Settings = ({navigation}) => {
           }}>
           <View>
             <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-              Overhead Water Tank{'\n'}Height {parseFloat(waterTankHeight).toFixed(2) +' '+ unit} 
+              Overhead Water Tank{'\n'}Height {waterTankHeight? parseFloat(waterTankHeight).toFixed(2):'0' +' '+ unit} 
             </Text>
           </View>
           <TouchableOpacity

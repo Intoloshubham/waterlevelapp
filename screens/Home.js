@@ -164,42 +164,42 @@ const Home = ({navigation}) => {
       setRegisteredId(temp);
       const res = await getWaterLevel(temp);
       if (res != undefined) {
-        if (
-          res.data.led_status == 1 &&
-          prevalue == res.data.water_level &&
-          resetStatus == true
-        ) {
-          // resetStatus = false;
-          setResetStatus(false);
-          setWarningModal(true);
-        }
+        // if (
+        //   res.data.led_status == 1 &&
+        //   prevalue == res.data.water_level &&
+        //   resetStatus == true
+        // ) {
+        //   // resetStatus = false;
+        //   setResetStatus(false);
+        //   setWarningModal(true);
+        // }
 
         setSumpLevel(res.data.sump_level);
         setLevel(res.data.water_level);
         setPhValue(res.data.ph_level);
 
-        if (parseFloat(res.data.water_level) >= 90) {
-          if (overflowLevelStatus) {
-            setWarningModal(true);
-            overflowLevelStatus = false;
-            const formData = {led_status: 0};
-            const response = await postRemoteControl(
-              formData,
-              registeredId.product_id,
-            );
-          }
-        }
+        // if (parseFloat(res.data.water_level) >= 90) {
+        //   if (overflowLevelStatus) {
+        //     setWarningModal(true);
+        //     overflowLevelStatus = false;
+        //     const formData = {led_status: 0};
+        //     const response = await postRemoteControl(
+        //       formData,
+        //       registeredId.product_id,
+        //     );
+        //   }
+        // }
 
-        if (parseFloat(res.data.water_level) <= 20) {
-          if (underFlowLevelStatus) {
-            underFlowLevelStatus = false;
-            const formData = {led_status: 1};
-            const response = await postRemoteControl(
-              formData,
-              registeredId.product_id,
-            );
-          }
-        }
+        // if (parseFloat(res.data.water_level) <= 20) {
+        //   if (underFlowLevelStatus) {
+        //     underFlowLevelStatus = false;
+        //     const formData = {led_status: 1};
+        //     const response = await postRemoteControl(
+        //       formData,
+        //       registeredId.product_id,
+        //     );
+        //   }
+        // }
       }
     } catch (error) {
       console.log(error);

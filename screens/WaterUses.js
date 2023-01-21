@@ -15,11 +15,12 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {CustomToast, CustomConfirmationToast} from '../componets';
-import {getData} from '../utils/localStorage';
+import {getData, storeData} from '../utils/localStorage';
 import {
   feedWaterUse,
   getWaterUse,
   getWaterUsageDetail,
+  totalUsage,
 } from '../controllers/WaterUsesController';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -48,7 +49,7 @@ const WaterUses = ({navigation}) => {
   const [value, setValue] = useState(null);
   const [waterUseData, setWaterUseData] = useState([]);
   const [WaterUsageDetails, setWaterUsageDetails] = useState([]);
-
+  const [totalUsageData, setTotalUsageData] = useState(0);
   //toast
   const [submitToast, setSubmitToast] = React.useState(false);
   const [mssg, setMssg] = useState('');
@@ -72,7 +73,8 @@ const WaterUses = ({navigation}) => {
   };
 
   const setTankDefaultHeight = async () => {
-
+    let temp=100;
+    const tk=await storeData('tank_height',temp.toString());
     setTankHeight(100);
     setConfirmToast(false);
   };
@@ -82,12 +84,19 @@ const WaterUses = ({navigation}) => {
       const tc = await credFunc();
       setUniqueId(tc);
       if (noOfUser == '' || shape == '' || unit == '') {
-        alert('Fill all required fields');     
-      } else {
-        if (tankHeight == undefined) {
+        alert('Fill all required fields');
+      } else if (
+        (shape == constant.CYLINDRICAL && diameter == '') ||
+        (shape == constant.CUBOIDAL && (langth == '' || breadth == ''))
+      ) {
+        if (shape == constant.CYLINDRICAL && diameter == '')
+          alert('diameter field required');
+        else alert('Length & Breadth is required');
+      } else {     
+        console.log('tankHeight-12--',tankHeight)
+        if ((tankHeight === undefined )|| (tankHeight === '0')) {
           setConfirmToast(true);
-        }else{
-          // console.log('tankHeight----',tankHeight)
+        } else {
           const inputs = {
             unique_id: tc,
             no_of_users: noOfUser,
@@ -99,9 +108,10 @@ const WaterUses = ({navigation}) => {
             tank_height: tankHeight,
           };
           const temp = await feedWaterUse(inputs);
-  
+
           if (temp.status == 200) {
             getWaterUsage();
+            usageDetails();
             setStatusCode(temp.status);
             setMssg(temp.msg);
             setRespTitle('Water Usage Details');
@@ -110,14 +120,13 @@ const WaterUses = ({navigation}) => {
               setSubmitToast(false);
               setUsesDetail(false);
             }, 1500);
-  
+
             setLangth('');
             setBreadth('');
             setTankHeight('');
             setUnit(' ');
           }
         }
- 
       }
     } catch (error) {
       console.log(error);
@@ -146,9 +155,19 @@ const WaterUses = ({navigation}) => {
       console.log(error);
     }
   };
-  console.log('WaterUsageDetails==', WaterUsageDetails);
+
+  const getTotalUsage = async () => {
+    try {
+      const tc = await credFunc();
+      const temp = await totalUsage(tc);
+      setTotalUsageData(temp.total_usage);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   React.useEffect(() => {
+    getTotalUsage();
     getWaterUsage();
     usageDetails();
   }, []);
@@ -615,14 +634,14 @@ const WaterUses = ({navigation}) => {
                     {ele.no_of_users}
                   </Text>
                 </View>
-                <View>
+                { ele.tank_shape==constant.CYLINDRICAL? <View>
                   <Text
                     style={{
                       textAlign: 'center',
                       ...FONTS.body3,
                       color: COLORS.gray,
                     }}>
-                    Tank Diameter
+                    Diameter
                   </Text>
                   <Text
                     style={{
@@ -632,6 +651,67 @@ const WaterUses = ({navigation}) => {
                       color: COLORS.gray,
                     }}>
                     {ele.radius + ele.radius}
+                  </Text>
+                </View>:
+                <>
+                <View>
+                 <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                     Length
+                  </Text>
+                  <Text
+                    style={{
+                      // flex: 0.5,
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    {ele.tank_length }
+                  </Text>
+                </View>
+                <View>
+                 <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    Breadth
+                  </Text>
+                  <Text
+                    style={{
+                      // flex: 0.5,
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    {ele.tank_breadth }
+                  </Text>
+                </View>
+                </>
+                
+                }
+                   <View>
+                 <Text
+                    style={{
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    Height
+                  </Text>
+                  <Text
+                    style={{
+                      // flex: 0.5,
+                      textAlign: 'center',
+                      ...FONTS.body3,
+                      color: COLORS.gray,
+                    }}>
+                    {ele.tank_height }
                   </Text>
                 </View>
               </View>
@@ -895,7 +975,7 @@ const WaterUses = ({navigation}) => {
               }}>
               Total Water Usage :
             </Text>
-            <Text>90 lit</Text>
+            <Text>{totalUsageData}</Text>
           </View>
         </View>
       ) : (
