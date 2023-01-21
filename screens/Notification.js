@@ -39,17 +39,13 @@ import {getObjectData, getData} from '../utils/localStorage.js';
 
 const Notification = () => {
   const user = useSelector(state => state.userCreds);
-  let user_id;
   let unique_id;
 
   const credFunc = async () => {
     try {
       const temp_product_id = await getData('primary_product');
-
       unique_id = temp_product_id;
-
       let us_cred = await getObjectData('user_credentials');
-
       if (Object.keys(user).length === 0) {
         return us_cred._id;
       } else {
@@ -76,8 +72,8 @@ const Notification = () => {
   };
 
   const getNotificationSettings = async () => {
+    await credFunc();
     const res = await getWaterLevelSettings(unique_id);
-
     if (res.status === 200) {
       setUses(res.data.uses_notification);
       setLeakage(res.data.leakage_notification);
@@ -113,6 +109,7 @@ const Notification = () => {
 
   React.useEffect(() => {
     credFunc();
+
     PushNotification.createChannel(
       {
         channelId: '1',
@@ -125,6 +122,7 @@ const Notification = () => {
       },
       //   created => console.log(`createChannel returned '${created}'`),
     );
+
     getNotificationSettings();
   }, []);
 
@@ -148,7 +146,7 @@ const Notification = () => {
         elevation: 5,
       }}>
       <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-        Notification Turn On / Off
+        Notification Turn On/Off
       </Text>
 
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>

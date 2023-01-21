@@ -12,7 +12,12 @@ const back = require('../assets/icons/back.png');
 const login = require('../assets/icons/login.png');
 const logout = require('../assets/icons/logout.png');
 const right = require('../assets/icons/right.png');
-const addProduct=require('../assets/icons/add.png');
+const addProduct = require('../assets/icons/add.png');
+//water
+const w_uses = require('../assets/icons/water/water_uses.png');
+const w_leakage = require('../assets/icons/water/leakage.png');
+const w_quality = require('../assets/icons/water/water_quality.png');
+const w_tank_clean = require('../assets/icons/water/tank_clean.png');
 
 export default {
   user,
@@ -29,5 +34,11 @@ export default {
   login,
   logout,
   right,
-  addProduct
+  addProduct,
+
+  //water
+  w_uses,
+  w_leakage,
+  w_quality,
+  w_tank_clean,
 };

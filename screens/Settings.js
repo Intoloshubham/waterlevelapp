@@ -320,7 +320,7 @@ const Settings = ({navigation}) => {
         }}>
         <View>
           <Text style={{...FONTS.h2, fontWeight: '600', color: COLORS.white}}>
-            Set ON/OFF Tank
+            Set On/off Tank
           </Text>
 
           <View
